@@ -15,14 +15,6 @@ jobs:
                   paths:
                       - ./node_modules
             - run: yarn build
-            - persist_to_workspace:
-                  root: /tmp/workspace
-                  paths:
-                      - dist
-                      - firebase.json
-                      - .firebaserc
-                      - firestore.rules
-                      - firestore.indexes.json
     deploy-staging:
         docker:
             - image: circleci/node:lts
