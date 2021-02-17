@@ -2,6 +2,19 @@ version: 2.1
 orbs:
     firebase-deploy: azdevs/firebase-deploy@1.0.0
 jobs:
+    test:
+        docker:
+            - image: "circleci/node:lts"
+        steps:
+            - checkout
+            - restore_cache:
+                  key: 'v1-yarn-{{ checksum "yarn.lock" }}'
+            - run: yarn install
+            - save_cache:
+                  key: 'v1-yarn-{{ checksum "yarn.lock" }}'
+                  paths:
+                      - ./node_modules
+            - run: yarn test
     build:
         docker:
             - image: "circleci/node:lts"
@@ -34,7 +47,10 @@ jobs:
 workflows:
     build-and-deploy:
         jobs:
-            - build
+            - test
+            - build:
+                  requires:
+                      - test
             - deploy:
                   requires:
                       - build
