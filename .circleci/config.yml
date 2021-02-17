@@ -4,42 +4,37 @@ orbs:
 jobs:
     build:
         docker:
-            - image: circleci/node:lts
+            - image: "circleci/node:lts"
         steps:
             - checkout
             - restore_cache:
-                  key: v1-yarn-{{ checksum "yarn.lock" }}
+                  key: 'v1-yarn-{{ checksum "yarn.lock" }}'
             - run: yarn install
             - save_cache:
-                  key: v1-yarn-{{ checksum "yarn.lock" }}
+                  key: 'v1-yarn-{{ checksum "yarn.lock" }}'
                   paths:
                       - ./node_modules
             - run: yarn build
             - persist_to_workspace:
-                  root: /tmp/workspace
+                  root: .
                   paths:
-                      - dist
+                      - build
                       - firebase.json
                       - .firebaserc
                       - firestore.rules
                       - firestore.indexes.json
-    deploy-staging:
+    deploy:
         docker:
-            - image: circleci/node:lts
+            - image: "circleci/node:lts"
         steps:
             - attach_workspace:
-                  at: /tmp/workspace
+                  at: .
             - firebase-deploy/deploy:
                   token: $FIREBASE_DEPLOY_TOKEN
-                  alias: .firebaserc
 workflows:
-    version: 2
-    build-and-deploy-staging:
+    build-and-deploy:
         jobs:
             - build
-            - deploy-staging:
+            - deploy:
                   requires:
                       - build
-                  filters:
-                      branches:
-                          ignore: master
