@@ -7,17 +7,17 @@ import createEngine, {
 } from "@projectstorm/react-diagrams";
 
 import { CanvasWidget } from "@projectstorm/react-canvas-core";
+import { WriteFile, WriteNewFile, ReadFile } from "./ReadFile";
 
-declare const window: any;
-let projectFile: any = null;
+let projectFile: any = undefined;
+
+//1) setup the diagram engine
+var engine = createEngine();
+
+//2) setup the diagram model
+var model = new DiagramModel();
 
 const App = () => {
-    //1) setup the diagram engine
-    var engine = createEngine();
-
-    //2) setup the diagram model
-    var model = new DiagramModel();
-
     //3-A) create a default node
     var node1 = new DefaultNodeModel("Node 1", "rgb(0,192,255)");
     var port1 = node1.addOutPort("Out");
@@ -37,35 +37,11 @@ const App = () => {
     //5) load model into engine
     engine.setModel(model);
 
-    const Save = () => {
-        var serializedModel = JSON.stringify(model.serialize(), null, 2);
-
-        if (projectFile !== null) {
-            WriteFile(projectFile, serializedModel);
-        } else {
-            projectFile = WriteNewFile();
-            WriteFile(projectFile, serializedModel);
-        }
-    };
-
-    const SaveAs = () => {
-        var serializedModel = JSON.stringify(model.serialize(), null, 2);
-
-        projectFile = WriteNewFile();
-        WriteFile(projectFile, serializedModel);
-    };
-
-    const Load = async () => {
-        var serializedModel = await ReadFile();
-        var tempModel = new DiagramModel();
-        tempModel.deserializeModel(JSON.parse(serializedModel), engine);
-        engine.setModel(tempModel);
-    };
-
     return (
         <div className="app-wrapper">
+            <button onClick={New}>New</button>
             <button onClick={Save}>Save</button>
-            <button onClick={SaveAs}>SaveAs</button>
+            <button onClick={SaveAs}>Save As</button>
             <button onClick={Load}>Load</button>
             <div
                 style={{
@@ -80,32 +56,72 @@ const App = () => {
     );
 };
 
-async function ReadFile(): Promise<string> {
-    let [fileHandle] = await window.showOpenFilePicker();
-    projectFile = await fileHandle.getFile();
-    const contents = await projectFile.text();
-    return contents;
-}
-
-async function WriteFile(fileHandle: any, contents: any) {
-    const writable = await fileHandle.createWritable();
-    await writable.write(contents);
-    await writable.close();
-}
-
-async function WriteNewFile() {
-    const options = {
-        types: [
-            {
-                description: "Json file",
-                accept: {
-                    "application/json": [".json"],
-                },
-            },
-        ],
-    };
-    const handle = await window.showSaveFilePicker(options);
-    return handle;
-}
-
 export default App;
+
+function New() {
+    model = new DiagramModel();
+    engine.setModel(model);
+}
+
+async function Save() {
+    var serializedModel = JSON.stringify(model.serialize(), null, 2);
+
+    if (projectFile !== undefined) {
+        await WriteFile(projectFile, serializedModel);
+    } else {
+        await SaveAs();
+    }
+}
+
+async function SaveAs() {
+    projectFile = await WriteNewFile();
+
+    if (!projectFile) return;
+
+    var serializedModel = JSON.stringify(model.serialize(), null, 2);
+
+    await WriteFile(projectFile, serializedModel);
+}
+
+async function Load() {
+    projectFile = await ReadFile();
+
+    if (!projectFile) return;
+
+    model = new DiagramModel();
+
+    var file = await projectFile.getFile();
+    var json = JSON.parse(await file.text());
+    model.deserializeModel(json, engine);
+    engine.setModel(model);
+}
+
+window.addEventListener("keydown", (e) => {
+    // Save As
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === "KeyS") {
+        e.preventDefault();
+        SaveAs();
+        return;
+    }
+
+    // Save
+    if ((e.ctrlKey === true || e.metaKey === true) && e.key === "s") {
+        e.preventDefault();
+        Save();
+        return;
+    }
+
+    // Open
+    if ((e.ctrlKey === true || e.metaKey === true) && e.key === "o") {
+        e.preventDefault();
+        Load();
+        return;
+    }
+
+    // Close
+    if ((e.ctrlKey === true || e.metaKey === true) && e.key === "n") {
+        e.preventDefault();
+        New();
+        return;
+    }
+});
