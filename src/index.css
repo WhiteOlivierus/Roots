@@ -19,3 +19,9 @@ code {
 .canvas {
     position: inherit !important;
 }
+
+.app-wrapper {
+    height: "auto";
+    width: "100vw";
+    background-color: "aliceblue";
+}

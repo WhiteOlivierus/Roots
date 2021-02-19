@@ -40,7 +40,7 @@ export async function WriteNewFile() {
         }
     }
 }
-
+/* 
 async function verifyPermission(fileHandle: any, readWrite: any) {
     const opts = { writable: false, mode: "" };
     if (readWrite) {
@@ -55,3 +55,4 @@ async function verifyPermission(fileHandle: any, readWrite: any) {
     }
     return false;
 }
+ */
