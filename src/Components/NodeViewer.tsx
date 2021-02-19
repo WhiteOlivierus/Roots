@@ -4,7 +4,7 @@ import { CanvasWidget } from "@projectstorm/react-canvas-core";
 
 import { useNodeViewerState } from "../Context/NodeViewer/NodeViewerContext";
 import { useEffect } from "react";
-import { HandleHoverFile } from "../Utilities/FileHandeling";
+import { HandleHoverFile } from "../Utilities/FileHandling";
 
 export declare const window: any;
 
@@ -43,9 +43,5 @@ export function NodeViewer(props: any) {
 
     setNodeViewerState(nodeViewerState);
 
-    return (
-        <div>
-            <CanvasWidget className="canvas" engine={nodeViewerState.engine} />
-        </div>
-    );
+    return <CanvasWidget className="canvas" engine={nodeViewerState.engine} />;
 }

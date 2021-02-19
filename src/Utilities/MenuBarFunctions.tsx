@@ -1,20 +1,11 @@
 import { DiagramModel } from "@projectstorm/react-diagrams";
 
-import {
-    WriteFile,
-    WriteNewFile,
-    ReadFile,
-    CreateFolder,
-    OpenFolder,
-} from "./FileHandeling";
+import { WriteFile, WriteNewFile, ReadFile, CreateFolder, OpenFolder } from "./FileHandling";
 
 import { NodeViewerState } from "../Context/NodeViewer/NodeViewerContext";
 
 export async function New(nodeViewerState: NodeViewerState) {
-    var projectName = await prompt(
-        "Please enter the projects name",
-        "Narrative"
-    );
+    var projectName = await prompt("Please enter the projects name", "Narrative");
 
     var dirHandle = await OpenFolder();
 
@@ -22,12 +13,8 @@ export async function New(nodeViewerState: NodeViewerState) {
 
     if (projectName !== null || projectName !== "") {
         projectStructure.push(await CreateFolder(dirHandle, projectName));
-        projectStructure.push(
-            await CreateFolder(projectStructure[0], "images")
-        );
-        projectStructure.push(
-            await CreateFolder(projectStructure[0], "node_views")
-        );
+        projectStructure.push(await CreateFolder(projectStructure[0], "images"));
+        projectStructure.push(await CreateFolder(projectStructure[0], "node_views"));
     } else {
         return [];
     }
@@ -44,12 +31,15 @@ export async function New(nodeViewerState: NodeViewerState) {
     return projectStructure;
 }
 
+export async function CreateProject(nodeViewerState: any, projectFilesState: any) {
+    let projectStructure = await New(nodeViewerState);
+
+    projectFilesState.files = projectStructure;
+    projectFilesState.activeRoot = projectStructure[2];
+}
+
 export async function Save(nodeViewerState: NodeViewerState) {
-    var serializedModel = JSON.stringify(
-        nodeViewerState.model.serialize(),
-        null,
-        2
-    );
+    var serializedModel = JSON.stringify(nodeViewerState.model.serialize(), null, 2);
 
     if (nodeViewerState.projectFile !== undefined) {
         await WriteFile(nodeViewerState.projectFile, serializedModel);
@@ -63,11 +53,7 @@ export async function SaveAs(nodeViewerState: NodeViewerState) {
 
     if (!nodeViewerState.projectFile) return;
 
-    var serializedModel = JSON.stringify(
-        nodeViewerState.model.serialize(),
-        null,
-        2
-    );
+    var serializedModel = JSON.stringify(nodeViewerState.model.serialize(), null, 2);
 
     await WriteFile(nodeViewerState.projectFile, serializedModel);
 }
