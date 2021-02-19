@@ -1,11 +1,16 @@
 import { useEffect } from "react";
 
 import { New, Save, SaveAs, Load } from "../Utilities/MenuBarFunctions";
-import { useNodeViewerState } from "../Context/NodeViewerContext";
+import { useNodeViewerState } from "../Context/NodeViewer/NodeViewerContext";
 import { CloneSelected } from "./CustomNode";
+import {
+    ProjectFilesState,
+    useProjectFilesState,
+} from "../Context/ProjectFiles/ProjectFilesContext";
 
 export function MenuBar(props: any) {
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
+    const { projectFilesState, setProjectFilesState } = useProjectFilesState();
 
     useEffect(() => {
         window.addEventListener("keydown", (e) => {
@@ -36,18 +41,27 @@ export function MenuBar(props: any) {
             // Close
             if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === "n") {
                 e.preventDefault();
-                New(nodeViewerState);
-                setNodeViewerState(nodeViewerState);
+                CreateProject();
                 return;
             }
         });
     });
 
+    const CreateProject = async () => {
+        let projectStructure = await New(nodeViewerState);
+
+        projectFilesState.files = projectStructure;
+        projectFilesState.activeRoot = projectStructure[2];
+
+        setProjectFilesState(projectFilesState);
+        setNodeViewerState(nodeViewerState);
+    };
+
     return (
         <div>
             <button
                 onClick={() => {
-                    New(nodeViewerState);
+                    CreateProject();
                     setNodeViewerState(nodeViewerState);
                 }}
             >

@@ -1,5 +1,44 @@
 export declare const window: any;
 
+export async function CreateFolder(fileHandle: any, directoryName: String) {
+    return await fileHandle.getDirectoryHandle(directoryName, {
+        create: true,
+    });
+}
+
+export async function OpenFolder() {
+    return await window.showDirectoryPicker();
+}
+
+export async function ReadFolder(dirHandle: any) {
+    var fileHandles = [];
+
+    for await (const fileHandle of dirHandle.values()) {
+        fileHandles.push(fileHandle);
+    }
+
+    return fileHandles;
+}
+
+export async function ReadProject(dirHandle: any) {
+    if (dirHandle.values().contains()) console.log("It's a project");
+}
+
+export async function HandleHoverFile(fileHandle: any) {
+    const entry = await fileHandle.getAsFileSystemHandle();
+    if (entry.kind === "directory") {
+        ReadProject(entry);
+    } else {
+        var s = await entry.getFile();
+        if (s.type === "image/jpeg") {
+            console.log("thats a image");
+        } else {
+            console.log(s.type);
+        }
+        console.log("Got a file ");
+    }
+}
+
 export async function ReadFile(): Promise<any> {
     try {
         let [fileHandle] = await window.showOpenFilePicker();
@@ -40,19 +79,3 @@ export async function WriteNewFile() {
         }
     }
 }
-/* 
-async function verifyPermission(fileHandle: any, readWrite: any) {
-    const opts = { writable: false, mode: "" };
-    if (readWrite) {
-        opts.writable = true;
-        opts.mode = "readwrite";
-    }
-    if ((await fileHandle.queryPermission(opts)) === "granted") {
-        return true;
-    }
-    if ((await fileHandle.requestPermission(opts)) === "granted") {
-        return true;
-    }
-    return false;
-}
- */

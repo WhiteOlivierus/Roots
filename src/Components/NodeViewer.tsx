@@ -2,10 +2,28 @@ import { DefaultNodeModel } from "@projectstorm/react-diagrams";
 
 import { CanvasWidget } from "@projectstorm/react-canvas-core";
 
-import { useNodeViewerState } from "../Context/NodeViewerContext";
+import { useNodeViewerState } from "../Context/NodeViewer/NodeViewerContext";
+import { useEffect } from "react";
+import { HandleHoverFile } from "../Utilities/FileHandeling";
+
+export declare const window: any;
 
 export function NodeViewer(props: any) {
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
+
+    useEffect(() => {
+        window.addEventListener("dragover", (e: any) => {
+            e.preventDefault();
+            console.log("Got a file dragged over");
+        });
+
+        window.addEventListener("drop", async (e: any) => {
+            e.preventDefault();
+            for (const item of e.dataTransfer.items) {
+                HandleHoverFile(item);
+            }
+        });
+    });
 
     var node1 = new DefaultNodeModel("Node 1", "rgb(0,192,255)");
     node1.addInPort("In");

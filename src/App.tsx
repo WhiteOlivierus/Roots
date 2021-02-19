@@ -1,34 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
 
 import { MenuBar } from "./Components/MenuBar";
 import { NodeViewer } from "./Components/NodeViewer";
-import { NodeViewerState } from "./Context/NodeViewerContext";
+import { NodeViewerProvider } from "./Context/NodeViewer/NodeViewerProvider";
+import { ProjectFilesProvider } from "./Context/ProjectFiles/ProjectFilesProvider";
 
 const App = () => {
     return (
         <div className="app-wrapper">
             <NodeViewerProvider>
-                <MenuBar />
-                <NodeViewer />
+                <ProjectFilesProvider>
+                    <MenuBar />
+                    <NodeViewer />
+                </ProjectFilesProvider>
             </NodeViewerProvider>
         </div>
-    );
-};
-
-const NodeViewerContext = React.createContext(null);
-
-const NodeViewerProvider = (props: any) => {
-    const [nodeViewerState, setNodeViewerState] = useState(
-        new NodeViewerState()
-    );
-
-    return (
-        <NodeViewerContext.Provider
-            value={{ nodeViewerState, setNodeViewerState }}
-        >
-            {props.children}
-        </NodeViewerContext.Provider>
     );
 };
 

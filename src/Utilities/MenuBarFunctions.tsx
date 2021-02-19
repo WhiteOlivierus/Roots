@@ -1,11 +1,47 @@
 import { DiagramModel } from "@projectstorm/react-diagrams";
 
-import { WriteFile, WriteNewFile, ReadFile } from "./FileHandeling";
-import { NodeViewerState } from "../Context/NodeViewerContext";
+import {
+    WriteFile,
+    WriteNewFile,
+    ReadFile,
+    CreateFolder,
+    OpenFolder,
+} from "./FileHandeling";
 
-export function New(nodeViewerState: NodeViewerState) {
+import { NodeViewerState } from "../Context/NodeViewer/NodeViewerContext";
+
+export async function New(nodeViewerState: NodeViewerState) {
+    var projectName = await prompt(
+        "Please enter the projects name",
+        "Narrative"
+    );
+
+    var dirHandle = await OpenFolder();
+
+    var projectStructure = [];
+
+    if (projectName !== null || projectName !== "") {
+        projectStructure.push(await CreateFolder(dirHandle, projectName));
+        projectStructure.push(
+            await CreateFolder(projectStructure[0], "images")
+        );
+        projectStructure.push(
+            await CreateFolder(projectStructure[0], "node_views")
+        );
+    } else {
+        return [];
+    }
+
     nodeViewerState.model = new DiagramModel();
     nodeViewerState.engine.setModel(nodeViewerState.model);
+
+    projectStructure.push(
+        await projectStructure[2].getFileHandle("main_root.json", {
+            create: true,
+        })
+    );
+
+    return projectStructure;
 }
 
 export async function Save(nodeViewerState: NodeViewerState) {
