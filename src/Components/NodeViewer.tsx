@@ -8,11 +8,13 @@ export function NodeViewer(props: any) {
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
 
     var node1 = new DefaultNodeModel("Node 1", "rgb(0,192,255)");
+    node1.addInPort("In");
     var port1 = node1.addOutPort("Out");
     node1.setPosition(100, 100);
 
     var node2 = new DefaultNodeModel("Node 2", "rgb(192,255,0)");
     var port2 = node2.addInPort("In");
+    node2.addOutPort("Out");
     node2.setPosition(400, 100);
 
     var link1 = port1.link(port2);
@@ -23,5 +25,9 @@ export function NodeViewer(props: any) {
 
     setNodeViewerState(nodeViewerState);
 
-    return <CanvasWidget className="canvas" engine={nodeViewerState.engine} />;
+    return (
+        <div>
+            <CanvasWidget className="canvas" engine={nodeViewerState.engine} />
+        </div>
+    );
 }

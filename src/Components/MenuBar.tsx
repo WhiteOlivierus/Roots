@@ -2,6 +2,7 @@ import { useEffect } from "react";
 
 import { New, Save, SaveAs, Load } from "../Utilities/MenuBarFunctions";
 import { useNodeViewerState } from "../Context/NodeViewerContext";
+import { CloneSelected } from "./CustomNode";
 
 export function MenuBar(props: any) {
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
@@ -76,6 +77,20 @@ export function MenuBar(props: any) {
             >
                 Load
             </button>
+            <CloneSelected
+                engine={nodeViewerState.engine}
+                model={nodeViewerState.model}
+                add={true}
+            >
+                Add port to node
+            </CloneSelected>
+            <CloneSelected
+                engine={nodeViewerState.engine}
+                model={nodeViewerState.model}
+                add={false}
+            >
+                Remove port from node
+            </CloneSelected>
         </div>
     );
 }
