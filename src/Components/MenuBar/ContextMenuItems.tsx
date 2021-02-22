@@ -1,17 +1,22 @@
 import { useNodeViewerState } from "../../Context/NodeViewer/NodeViewerContext";
 import { MenuItem } from "./MenuItem";
-import { ReadFile } from "../../Utilities/FileHandling";
-import { DefaultNodeModel } from "@projectstorm/react-diagrams";
+import { ReadFile, SaveFileInFolder } from "../../Utilities/FileHandling";
+import { DiamondNodeModel } from "../Nodes/Scene/DiamondNodeModel";
+import { useProjectFilesState } from "../../Context/ProjectFiles/ProjectFilesContext";
 
 export function ContextMenuItems(props: any) {
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
+    const { projectFilesState, setProjectFilesState } = useProjectFilesState();
 
     const CreateNode = async (e: any) => {
         var fileHandle = await ReadFile();
 
-        var node1 = new DefaultNodeModel(fileHandle.name, "rgb(0,192,255)");
-        node1.addInPort("In");
-        node1.addOutPort("Out");
+        // save file in project folder that is open
+        fileHandle = await SaveFileInFolder(projectFilesState.projectHandle, fileHandle);
+
+        var path = URL.createObjectURL(await fileHandle.getFile());
+
+        var node1 = new DiamondNodeModel(path);
         node1.setPosition(e.clientX, e.clientY);
 
         nodeViewerState.model.addNode(node1);

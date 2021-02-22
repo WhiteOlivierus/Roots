@@ -6,6 +6,17 @@ export async function CreateFolder(fileHandle: any, directoryName: String) {
     });
 }
 
+export async function SaveFileInFolder(dirHandle: any, fileHandle: any) {
+    let newFileHandle = await dirHandle.getFileHandle(fileHandle.name, { create: true });
+    let file = await fileHandle.getFile();
+
+    const writable = await newFileHandle.createWritable();
+    await writable.write(file);
+    await writable.close();
+
+    return newFileHandle;
+}
+
 export async function OpenFolder() {
     return await window.showDirectoryPicker();
 }

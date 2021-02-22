@@ -3,6 +3,8 @@ import { useNodeViewerState } from "../../Context/NodeViewer/NodeViewerContext";
 import { useProjectFilesState } from "../../Context/ProjectFiles/ProjectFilesContext";
 import { MenuItem } from "./MenuItem";
 
+export declare const window: any;
+
 export function FileMenuItems(props: any) {
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
@@ -26,10 +28,17 @@ export function FileMenuItems(props: any) {
         setNodeViewerState(nodeViewerState);
     };
 
-    const LoadProject = () => {
+    const LoadProject = async () => {
         console.log("LoadProject");
-        Load(nodeViewerState);
-        setNodeViewerState(nodeViewerState);
+
+        const dirHandle = await window.showDirectoryPicker();
+
+        projectFilesState.projectHandle = dirHandle;
+
+        setProjectFilesState(projectFilesState);
+
+        // Load(nodeViewerState);
+        // setNodeViewerState(nodeViewerState);
     };
 
     return (
