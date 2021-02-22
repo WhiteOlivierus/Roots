@@ -1,5 +1,4 @@
 import React from "react";
-import { MenuItem } from "./MenuBar/MenuItem";
 
 export class ContextMenu extends React.Component {
     state = {
@@ -66,10 +65,6 @@ export class ContextMenu extends React.Component {
         if (visible) this.setState({ visible: false });
     };
 
-    test = () => {
-        console.log("test");
-    };
-
     render() {
         const { visible } = this.state;
 
@@ -81,7 +76,7 @@ export class ContextMenu extends React.Component {
                     }}
                     className="contextMenu"
                 >
-                    <MenuItem action={this.test}>test</MenuItem>
+                    {this.props.children}
                 </div>
             )
         );
