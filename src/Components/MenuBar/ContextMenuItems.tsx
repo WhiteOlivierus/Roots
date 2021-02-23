@@ -1,12 +1,22 @@
 import { useNodeViewerState } from "../../Context/NodeViewer/NodeViewerContext";
 import { MenuItem } from "./MenuItem";
 import { ReadFile, SaveFileInFolder } from "../../Utilities/FileHandling";
-import { DiamondNodeModel } from "../Nodes/Scene/DiamondNodeModel";
 import { useProjectFilesState } from "../../Context/ProjectFiles/ProjectFilesContext";
+import { Elements } from "react-flow-renderer";
+import { setElements } from "react-flow-renderer/dist/store/actions";
+import { useState } from "react";
+import React from "react";
+import { useStoreState, useStoreActions } from "react-flow-renderer";
+
+let id = 0;
+const getId = () => `dndnode_${id++}`;
 
 export function ContextMenuItems(props: any) {
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
+
+    const nodes = useStoreState((store) => store.nodes);
+    const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
 
     const CreateNode = async (e: any) => {
         var fileHandle = await ReadFile();
@@ -16,10 +26,16 @@ export function ContextMenuItems(props: any) {
 
         var path = URL.createObjectURL(await fileHandle.getFile());
 
-        var node1 = new DiamondNodeModel(path);
-        node1.setPosition(e.clientX, e.clientY);
+        const newNode = {
+            id: getId(),
+            type: "special",
+            position: { x: 250, y: 5 },
+            data: { image: path },
+        };
 
-        nodeViewerState.model.addNode(node1);
+        setSelectedElements(function (es) {
+            return es.concat(newNode);
+        });
 
         nodeViewerState.engine.repaintCanvas();
 

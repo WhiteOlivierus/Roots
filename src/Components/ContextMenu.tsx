@@ -21,7 +21,7 @@ export class ContextMenu extends React.Component {
     _handleContextMenu = (event: any) => {
         event.preventDefault();
 
-        this.setState({ visible: true });
+        /*   this.setState({ visible: true });
 
         const clickX = event.clientX;
         const clickY = event.clientY;
@@ -49,7 +49,7 @@ export class ContextMenu extends React.Component {
 
         if (bottom) {
             this.root.style.top = `${clickY - rootH - 5}px`;
-        }
+        } */
     };
 
     _handleClick = (event: any) => {

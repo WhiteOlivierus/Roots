@@ -1,3 +1,7 @@
+import { Elements } from "react-flow-renderer";
+import { ProjectFilesState } from "../Context/ProjectFiles/ProjectFilesContext";
+import { FindFile } from "./MenuBarFunctions";
+
 export declare const window: any;
 
 export async function CreateFolder(fileHandle: any, directoryName: String) {
@@ -35,6 +39,29 @@ export async function ReadProject(dirHandle: any) {
     if (dirHandle.values().contains()) console.log("It's a project");
 }
 
+export async function GetImage(projectFilesState: ProjectFilesState) {
+    if (!projectFilesState.projectHandle) projectFilesState.projectHandle = await OpenFolder();
+
+    return await ReadFile();
+}
+
+export async function GetImageBlobPath(projectFilesState: ProjectFilesState, fileHandle: any) {
+    fileHandle = await SaveFileInFolder(projectFilesState.projectHandle, fileHandle);
+
+    var path = URL.createObjectURL(await fileHandle.getFile());
+    return path;
+}
+
+export async function LoadImages(projectFilesState: ProjectFilesState, elements: Elements<any>) {
+    for (let index = 0; index < elements.length; index++) {
+        const element: any = elements[index];
+        if ("data" in element && "imageName" in element.data) {
+            let fileHandle = await FindFile(projectFilesState, element.data.imageName);
+            element.data.image = URL.createObjectURL(await fileHandle.getFile());
+        }
+    }
+}
+
 export async function HandleHoverFile(fileHandle: any) {
     const entry = await fileHandle.getAsFileSystemHandle();
     if (entry.kind === "directory") {
@@ -60,6 +87,7 @@ export async function ReadFile(): Promise<any> {
         }
     }
 }
+
 export async function WriteFile(fileHandle: any, contents: any) {
     if (fileHandle.createWriter) {
         const writer = await fileHandle.createWriter();
