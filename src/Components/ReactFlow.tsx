@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import ReactFlow, { removeElements, addEdge, Controls, MiniMap, ReactFlowProvider } from "react-flow-renderer";
+import ReactFlow, { removeElements, addEdge, Controls, MiniMap, ReactFlowProvider, isNode } from "react-flow-renderer";
 import Sidebar from "./Sidebar";
 
 import "./ReactFlow.css";
@@ -9,13 +9,15 @@ import { useProjectFilesState } from "../Context/ProjectFiles/ProjectFilesContex
 import { getId } from "./NodeIDTracker";
 
 import { transform } from "lodash";
-import { Load, Save } from "../Utilities/MenuBarFunctions";
+import { Export, Load, Save } from "../Utilities/MenuBarFunctions";
+
+import { v4 as uuidv4 } from "uuid";
 
 const flowKey = "example-flow";
 
 const initialElements = [
     {
-        id: getId(),
+        id: uuidv4(),
         type: "input",
         position: { x: 100, y: 100 },
         data: { label: "Start" },
@@ -47,7 +49,7 @@ const DnDFlow = () => {
 
         const newLocal = await GetImageBlobPath(projectFilesState, fileHandle);
         const newNode = {
-            id: getId(),
+            id: uuidv4(),
             type,
             position,
             data: { label: `${type} node`, image: newLocal, imageName: fileHandle.name },
@@ -79,6 +81,33 @@ const DnDFlow = () => {
         restoreFlow();
     }, [setElements, transform]);
 
+    const onExport = useCallback(() => {
+        if (reactFlowInstance) {
+            const flow = reactFlowInstance.toObject();
+            let nodes = [];
+            let edges = [];
+            for (let index = 0; index < flow.elements.length; index++) {
+                const element = flow.elements[index];
+                if (isNode(element)) nodes.push(element);
+                else edges.push(element);
+            }
+
+            Export(projectFilesState, nodes, edges);
+        }
+    }, [reactFlowInstance]);
+
+    const MinimapSettings = (node) => {
+        switch (node.type) {
+            case "input":
+                return "red";
+            case "scene":
+                return "#00ff00";
+            case "output":
+                return "rgb(0,0,255)";
+            default:
+                return "#eee";
+        }
+    };
     return (
         <div className="dndflow">
             <ReactFlowProvider>
@@ -94,10 +123,12 @@ const DnDFlow = () => {
                         deleteKeyCode={46}
                     >
                         <Controls />
+                        <MiniMap nodeColor={MinimapSettings} nodeStrokeWidth={3} />
                     </ReactFlow>
                     <div style={{ float: "left", width: 300, bottom: 0, position: "absolute", zIndex: 9 }}>
                         <button onClick={onSave}>save</button>
                         <button onClick={onRestore}>restore</button>
+                        <button onClick={onExport}>export</button>
                     </div>
                 </div>
                 <Sidebar />

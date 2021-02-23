@@ -4,6 +4,8 @@ import { WriteFile, WriteNewFile, ReadFile, CreateFolder, OpenFolder } from "./F
 
 import { NodeViewerState } from "../Context/NodeViewer/NodeViewerContext";
 import { ProjectFilesState } from "../Context/ProjectFiles/ProjectFilesContext";
+import { Elements } from "react-flow-renderer";
+import { InputZone, ProjectFile, Scene } from "../ProjectFile";
 
 export async function New(nodeViewerState: NodeViewerState) {
     var projectName = await prompt("Please enter the projects name", "Narrative");
@@ -73,4 +75,74 @@ export async function FindFile(projectFileState: ProjectFilesState, fileName: st
     for await (const entry of projectFileState.projectHandle.values()) {
         if (entry.name === fileName) return entry;
     }
+}
+
+export async function Export(projectFileState: ProjectFilesState, nodes: any, edges: any) {
+    if (!projectFileState.projectHandle) projectFileState.projectHandle = await OpenFolder();
+
+    let projectFile: ProjectFile = new ProjectFile(projectFileState.projectHandle.name);
+
+    let images = [];
+
+    for (let index = 0; index < nodes.length; index++) {
+        const node: any = nodes[index];
+
+        const newScene = new Scene();
+
+        newScene.id = node.id;
+
+        if ("imageName" in node.data) {
+            newScene.img = node.data.imageName;
+
+            images.push(await FindFile(projectFileState, node.data.imageName));
+        }
+
+        let times = 0;
+
+        for (let index = 0; index < edges.length; index++) {
+            const edge: any = edges[index];
+
+            const newInputZone = new InputZone();
+
+            const newLocal_1 = edge.source !== node.id;
+            if (newLocal_1) continue;
+
+            newInputZone.sceneId = edge.target;
+            if ((times = 0)) newInputZone.svg = "1065,1268,0,0";
+            else newInputZone.svg = "1069,0,2052,1264";
+
+            newScene.inputZones.push(newInputZone);
+
+            times++;
+        }
+
+        projectFile.scenes.push(newScene);
+    }
+
+    const buildHandle = await projectFileState.projectHandle.getDirectoryHandle("Build", {
+        create: true,
+    });
+
+    const imagesHandle = await buildHandle.getDirectoryHandle("img", {
+        create: true,
+    });
+
+    for (let index = 0; index < images.length; index++) {
+        const image = images[index];
+        await Move(imagesHandle, image);
+    }
+
+    const newFileHandle = await buildHandle.getFileHandle("export.json", { create: true });
+
+    WriteFile(newFileHandle, JSON.stringify(projectFile, null, 2));
+}
+
+async function Move(folderHandle: any, fileHandle: any) {
+    let file = await fileHandle.getFile();
+
+    const newFileHandle = await folderHandle.getFileHandle(fileHandle.name, { create: true });
+
+    const writable = await newFileHandle.createWritable();
+    await writable.write(file);
+    await writable.close();
 }
