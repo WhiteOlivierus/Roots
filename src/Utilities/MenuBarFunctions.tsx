@@ -105,11 +105,18 @@ export async function Export(projectFileState: ProjectFilesState, nodes: any, ed
             const newInputZone = new InputZone();
 
             const newLocal_1 = edge.source !== node.id;
+
             if (newLocal_1) continue;
 
             newInputZone.sceneId = edge.target;
-            if ((times = 0)) newInputZone.svg = "1065,1268,0,0";
-            else newInputZone.svg = "1069,0,2052,1264";
+
+            if ((times = 0)) {
+                newInputZone.svg = "0,0 , 0.5,0 , 0.5,1 , 0,1";
+                newInputZone.text = "Left";
+            } else {
+                newInputZone.svg = "0.5,0 , 1,0 , 1,1 , 0.5,1";
+                newInputZone.text = "Right";
+            }
 
             newScene.inputZones.push(newInputZone);
 
@@ -132,7 +139,7 @@ export async function Export(projectFileState: ProjectFilesState, nodes: any, ed
         await Move(imagesHandle, image);
     }
 
-    const newFileHandle = await buildHandle.getFileHandle("export.json", { create: true });
+    const newFileHandle = await buildHandle.getFileHandle("game.json", { create: true });
 
     WriteFile(newFileHandle, JSON.stringify(projectFile, null, 2));
 }

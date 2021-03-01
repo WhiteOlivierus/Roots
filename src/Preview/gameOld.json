@@ -1,0 +1,93 @@
+{
+    "project": "test",
+    "audio": "/audio/noise.mp3",
+    "scenes": [
+        {
+            "id": "0",
+            "uiId": "",
+            "img": "/img/giancarlo-corti-AnwzytSWrv8-unsplash.jpg",
+            "audio": "/audio/noise.mp3",
+            "inputZones": [
+                {
+                    "sceneId": "1",
+                    "svg": "2,1705,8,3386,3994,3381,3690,2849,3084,2450,2711,2328,2440,2109,2110,2285,1663,2227,1492,1652,1359,1673,1327,1907,1295,2083,1024,1934,1019,1849,385,1822,135,1705",
+                    "text": "left",
+                    "img": ""
+                },
+                {
+                    "sceneId": "2",
+                    "svg": "3020,2245,4191,1851,5633,1851,6011,1841,6005,2219",
+                    "text": "right",
+                    "img": ""
+                }
+            ]
+        },
+        {
+            "id": "1",
+            "uiId": "",
+            "img": "/img/julian-larcher-e6Se5Gmcudw-unsplash.jpg",
+            "audio": "",
+            "inputZones": [
+                {
+                    "sceneId": "2",
+                    "svg": "",
+                    "text": "left",
+                    "img": ""
+                },
+                {
+                    "sceneId": "3",
+                    "svg": "",
+                    "text": "right",
+                    "img": ""
+                }
+            ]
+        },
+        {
+            "id": "2",
+            "uiId": "",
+            "img": "/img/lena-denk-vO_RghTzvxE-unsplash.jpg",
+            "audio": "",
+            "inputZones": [
+                {
+                    "sceneId": "3",
+                    "svg": "",
+                    "text": "left",
+                    "img": ""
+                },
+                {
+                    "sceneId": "4",
+                    "svg": "",
+                    "text": "right",
+                    "img": ""
+                }
+            ]
+        },
+        {
+            "id": "3",
+            "uiId": "",
+            "img": "/img/nicholas-selman-l8R8te0PIdk-unsplash.jpg",
+            "audio": "",
+            "inputZones": [
+                {
+                    "sceneId": "4",
+                    "svg": "",
+                    "text": "left",
+                    "img": ""
+                },
+                {
+                    "sceneId": "4",
+                    "svg": "",
+                    "text": "right",
+                    "img": ""
+                }
+            ]
+        },
+        {
+            "id": "4",
+            "uiId": "",
+            "img": "/img/ronald-smeets-Eo4sv1jzfsk-unsplash.jpg",
+            "audio": "",
+            "end": "End"
+        }
+    ]
+}

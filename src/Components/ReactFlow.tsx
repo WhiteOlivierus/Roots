@@ -12,6 +12,7 @@ import { transform } from "lodash";
 import { Export, Load, Save } from "../Utilities/MenuBarFunctions";
 
 import { v4 as uuidv4 } from "uuid";
+import { MenuBar } from "./MenuBar/MenuBar";
 
 const flowKey = "example-flow";
 
@@ -110,6 +111,7 @@ const DnDFlow = () => {
     };
     return (
         <div className="dndflow">
+            <MenuBar />
             <ReactFlowProvider>
                 <div className="reactflow-wrapper">
                     <ReactFlow
