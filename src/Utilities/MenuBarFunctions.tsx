@@ -1,45 +1,10 @@
-import { DiagramModel } from "@projectstorm/react-diagrams";
-
 import { WriteFile, WriteNewFile, ReadFile, CreateFolder, OpenFolder } from "./FileHandling";
 
 import { NodeViewerState } from "../Context/NodeViewer/NodeViewerContext";
 import { ProjectFilesState } from "../Context/ProjectFiles/ProjectFilesContext";
-import { Elements } from "react-flow-renderer";
 import { InputZone, ProjectFile, Scene } from "../ProjectFile";
 
-export async function New(nodeViewerState: NodeViewerState) {
-    var projectName = await prompt("Please enter the projects name", "Narrative");
-
-    var dirHandle = await OpenFolder();
-
-    var projectStructure = [];
-
-    if (projectName !== null || projectName !== "") {
-        projectStructure.push(await CreateFolder(dirHandle, projectName));
-        projectStructure.push(await CreateFolder(projectStructure[0], "images"));
-        projectStructure.push(await CreateFolder(projectStructure[0], "node_views"));
-    } else {
-        return [];
-    }
-
-    nodeViewerState.model = new DiagramModel();
-    nodeViewerState.engine.setModel(nodeViewerState.model);
-
-    projectStructure.push(
-        await projectStructure[2].getFileHandle("main_root.json", {
-            create: true,
-        })
-    );
-
-    return projectStructure;
-}
-
-export async function CreateProject(nodeViewerState: any, projectFilesState: any) {
-    let projectStructure = await New(nodeViewerState);
-
-    projectFilesState.files = projectStructure;
-    projectFilesState.activeRoot = projectStructure[2];
-}
+export async function New(nodeViewerState: NodeViewerState) {}
 
 export async function Save(projectFilesState: ProjectFilesState, flow: any) {
     if (!projectFilesState.projectHandle) projectFilesState.projectHandle = await OpenFolder();
@@ -61,8 +26,8 @@ export async function SaveAs(nodeViewerState: NodeViewerState) {
     await WriteFile(nodeViewerState.projectFile, serializedModel);
 }
 
-export async function Load(projectFilesState: ProjectFilesState, fileName: string) {
-    if (!projectFilesState.projectHandle) projectFilesState.projectHandle = await OpenFolder();
+export async function Load(projectFilesState: any, fileName: string) {
+    if (!projectFilesState) projectFilesState = await OpenFolder();
 
     let fileHandle = await FindFile(projectFilesState, fileName);
     let file = await fileHandle.getFile();
@@ -71,9 +36,19 @@ export async function Load(projectFilesState: ProjectFilesState, fileName: strin
     return JSON.parse(json);
 }
 
-export async function FindFile(projectFileState: ProjectFilesState, fileName: string) {
-    for await (const entry of projectFileState.projectHandle.values()) {
-        if (entry.name === fileName) return entry;
+export async function FindFile(dirHandle: any, fileName: string) {
+    for await (const entry of dirHandle.values()) {
+        if (entry.name === fileName && entry.kind === "file") {
+            return entry;
+        }
+    }
+}
+
+export async function FindDir(dirHandle: any, dirName: string) {
+    for await (const entry of dirHandle.values()) {
+        if (entry.name === dirName && entry.kind === "directory") {
+            return entry;
+        }
     }
 }
 

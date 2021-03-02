@@ -1,4 +1,4 @@
-import { Save, SaveAs, Load, CreateProject } from "../../Utilities/MenuBarFunctions";
+import { Save, SaveAs, Load } from "../../Utilities/MenuBarFunctions";
 import { useNodeViewerState } from "../../Context/NodeViewer/NodeViewerContext";
 import { useProjectFilesState } from "../../Context/ProjectFiles/ProjectFilesContext";
 import { MenuItem } from "./MenuItem";
@@ -16,7 +16,6 @@ export function FileMenuItems(props: any) {
 
     const NewProject = () => {
         console.log("NewProject");
-        CreateProject(nodeViewerState, projectFilesState);
         setProjectFilesState(projectFilesState);
         setNodeViewerState(nodeViewerState);
     };

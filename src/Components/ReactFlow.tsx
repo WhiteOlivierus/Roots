@@ -4,17 +4,14 @@ import Sidebar from "./Sidebar";
 
 import "./ReactFlow.css";
 import { NodeTypes } from "./Nodes/NodeTypes";
-import { GetImage, GetImageBlobPath, LoadImages } from "../Utilities/FileHandling";
-import { useProjectFilesState } from "../Context/ProjectFiles/ProjectFilesContext";
-import { getId } from "./NodeIDTracker";
+import { GetImage, GetImageBlobPath } from "../Utilities/FileHandling";
+import { ProjectFilesState, useProjectFilesState } from "../Context/ProjectFiles/ProjectFilesContext";
 
 import { transform } from "lodash";
 import { Export, Load, Save } from "../Utilities/MenuBarFunctions";
 
 import { v4 as uuidv4 } from "uuid";
 import { MenuBar } from "./MenuBar/MenuBar";
-
-const flowKey = "example-flow";
 
 const initialElements = [
     {
@@ -69,19 +66,6 @@ const DnDFlow = () => {
         }
     }, [reactFlowInstance]);
 
-    const onRestore = useCallback(() => {
-        const restoreFlow = async () => {
-            const flow: any = await Load(projectFilesState, "test.json");
-            if (flow) {
-                const [x = 0, y = 0] = flow.position;
-                await LoadImages(projectFilesState, flow.elements);
-                setElements(flow.elements || []);
-                transform({ x, y, zoom: flow.zoom || 0 });
-            }
-        };
-        restoreFlow();
-    }, [setElements, transform]);
-
     const onExport = useCallback(() => {
         if (reactFlowInstance) {
             const flow = reactFlowInstance.toObject();
@@ -110,31 +94,28 @@ const DnDFlow = () => {
         }
     };
     return (
-        <div className="dndflow">
+        <div>
             <MenuBar />
-            <ReactFlowProvider>
-                <div className="reactflow-wrapper">
-                    <ReactFlow
-                        elements={elements}
-                        nodeTypes={NodeTypes}
-                        onConnect={onConnect}
-                        onElementsRemove={onElementsRemove}
-                        onLoad={onLoad}
-                        onDrop={onDrop}
-                        onDragOver={onDragOver}
-                        deleteKeyCode={46}
-                    >
-                        <Controls />
-                        <MiniMap nodeColor={MinimapSettings} nodeStrokeWidth={3} />
-                    </ReactFlow>
-                    <div style={{ float: "left", width: 300, bottom: 0, position: "absolute", zIndex: 9 }}>
-                        <button onClick={onSave}>save</button>
-                        <button onClick={onRestore}>restore</button>
-                        <button onClick={onExport}>export</button>
-                    </div>
+            <div className="dndflow">
+                <ReactFlow
+                    elements={elements}
+                    nodeTypes={NodeTypes}
+                    onConnect={onConnect}
+                    onElementsRemove={onElementsRemove}
+                    onLoad={onLoad}
+                    onDrop={onDrop}
+                    onDragOver={onDragOver}
+                    deleteKeyCode={46}
+                >
+                    <Controls />
+                    <MiniMap nodeColor={MinimapSettings} nodeStrokeWidth={3} />
+                </ReactFlow>
+                <div style={{ float: "left", width: 300, bottom: 0, position: "absolute", zIndex: 9 }}>
+                    <button onClick={onSave}>save</button>
+                    <button onClick={onExport}>export</button>
                 </div>
                 <Sidebar />
-            </ReactFlowProvider>
+            </div>
         </div>
     );
 };

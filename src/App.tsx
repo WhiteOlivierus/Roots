@@ -17,29 +17,27 @@ import { theme } from "./Theme";
 const App = () => {
     return (
         <Router>
-            <ThemeProvider theme={theme}>
-                <ReactFlowProvider>
+            <ReactFlowProvider>
+                <ProjectFilesProvider>
                     <ContextMenu />
-                    <ProjectFilesProvider>
-                        <Switch>
-                            <Route exact={true} path="/">
+                    <Switch>
+                        <Route exact={true} path="/">
+                            <ThemeProvider theme={theme}>
                                 <StartMenu />
-                            </Route>
-                            <Route path="/flow">
-                                <ReactFlow />
-                            </Route>
-                            <Route path="/preview">
-                                <Link to="/flow">
-                                    <button style={{ position: "absolute", left: 0, top: 0, zIndex: 1000 }}>
-                                        toFlow
-                                    </button>
-                                </Link>
-                                <Game />
-                            </Route>
-                        </Switch>
-                    </ProjectFilesProvider>
-                </ReactFlowProvider>
-            </ThemeProvider>
+                            </ThemeProvider>
+                        </Route>
+                        <Route path="/flow">
+                            <ReactFlow />
+                        </Route>
+                        <Route path="/preview">
+                            <Link to="/flow">
+                                <button style={{ position: "absolute", left: 0, top: 0, zIndex: 1000 }}>toFlow</button>
+                            </Link>
+                            <Game />
+                        </Route>
+                    </Switch>
+                </ProjectFilesProvider>
+            </ReactFlowProvider>
         </Router>
     );
 };

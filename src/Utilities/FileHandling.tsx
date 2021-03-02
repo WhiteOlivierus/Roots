@@ -1,6 +1,4 @@
-import { Elements } from "react-flow-renderer";
 import { ProjectFilesState } from "../Context/ProjectFiles/ProjectFilesContext";
-import { FindFile } from "./MenuBarFunctions";
 
 export declare const window: any;
 
@@ -52,23 +50,13 @@ export async function GetImageBlobPath(projectFilesState: ProjectFilesState, fil
     return path;
 }
 
-export async function LoadImages(projectFilesState: ProjectFilesState, elements: Elements<any>) {
-    for (let index = 0; index < elements.length; index++) {
-        const element: any = elements[index];
-        if ("data" in element && "imageName" in element.data) {
-            let fileHandle = await FindFile(projectFilesState, element.data.imageName);
-            element.data.image = URL.createObjectURL(await fileHandle.getFile());
-        }
-    }
-}
-
 export async function HandleHoverFile(fileHandle: any) {
     const entry = await fileHandle.getAsFileSystemHandle();
     if (entry.kind === "directory") {
         ReadProject(entry);
     } else {
         var s = await entry.getFile();
-        if (s.type === "image/jpeg") {
+        if (s.type.includes("image/")) {
             console.log("thats a image");
         } else {
             console.log(s.type);
@@ -99,6 +87,7 @@ export async function WriteFile(fileHandle: any, contents: any) {
     await writable.write(contents);
     await writable.close();
 }
+
 export async function WriteNewFile() {
     const options = {
         types: [

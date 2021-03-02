@@ -7,7 +7,7 @@ export function Logo(props) {
     const classes = useStyles();
     return (
         <Box p={5}>
-            <Grid container direction="row" justify="center" alignItems="center" spacing={5} xs={12}>
+            <Grid container direction="row" justify="center" alignItems="center" spacing={5}>
                 <Grid item>
                     <img src={logo} width="200px" />
                 </Grid>

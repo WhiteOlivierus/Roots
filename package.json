@@ -20,6 +20,7 @@
     "closest": "^0.0.1",
     "dagre": "^0.8.5",
     "firebase-tools": "^9.4.0",
+    "idb-keyval": "^5.0.4",
     "localforage": "^1.9.0",
     "lodash": "^4.17.20",
     "pathfinding": "^0.4.18",
