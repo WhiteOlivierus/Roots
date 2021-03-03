@@ -116,12 +116,6 @@ img[usemap] {
     width: 100vw;
 }
 
-svg {
-    position: absolute;
-    left: 0;
-    right: 0;
-}
-
 .object-fit_cover {
     object-fit: cover;
 }

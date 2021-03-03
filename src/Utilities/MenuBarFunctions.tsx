@@ -1,7 +1,7 @@
 import { WriteFile, WriteNewFile, ReadFile, CreateFolder, OpenFolder } from "./FileHandling";
 
-import { NodeViewerState } from "../Context/NodeViewer/NodeViewerContext";
-import { ProjectFilesState } from "../Context/ProjectFiles/ProjectFilesContext";
+import { NodeViewerState } from "../Components/FlowEditor/Context/NodeViewerContext";
+import { ProjectFilesState } from "../Components/ProjectFilesContext/ProjectFilesContext";
 import { InputZone, ProjectFile, Scene } from "../ProjectFile";
 
 export async function New(nodeViewerState: NodeViewerState) {}

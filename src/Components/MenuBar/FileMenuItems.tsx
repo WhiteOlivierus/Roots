@@ -1,6 +1,6 @@
 import { Save, SaveAs, Load } from "../../Utilities/MenuBarFunctions";
-import { useNodeViewerState } from "../../Context/NodeViewer/NodeViewerContext";
-import { useProjectFilesState } from "../../Context/ProjectFiles/ProjectFilesContext";
+import { useNodeViewerState } from "../FlowEditor/Context/NodeViewerContext";
+import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 import { MenuItem } from "./MenuItem";
 import { useStoreActions, useStoreState } from "react-flow-renderer";
 import { ReadFile, SaveFileInFolder } from "../../Utilities/FileHandling";

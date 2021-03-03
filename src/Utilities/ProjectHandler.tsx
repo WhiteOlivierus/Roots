@@ -6,7 +6,7 @@ import { transform } from "lodash";
 import { set, get } from "idb-keyval";
 import { DiagramModel } from "@projectstorm/react-diagrams";
 import { Elements } from "react-flow-renderer";
-import { ProjectFilesState } from "../Context/ProjectFiles/ProjectFilesContext";
+import { ProjectFilesState } from "../Components/ProjectFilesContext/ProjectFilesContext";
 
 const defaultFlow = {
     elements: [
@@ -74,6 +74,44 @@ export function NewProject(states: any) {
     );
 }
 
+export function OpenProject(states: any, setElements: any) {
+    const history = useHistory();
+
+    return useCallback(
+        async function restoreFlow() {
+            const root = await OpenFolder();
+
+            if (root === undefined) {
+                return null;
+            }
+
+            await LoadProject(root, setElements, states.projectFilesState);
+
+            states.setProjectFilesState(states.projectFilesState);
+
+            history.push("/flow");
+        },
+        [setElements, transform]
+    );
+}
+
+export function OpenRecentProject(states: any, root: any, setElements: any) {
+    const history = useHistory();
+
+    return useCallback(
+        async function restoreFlow() {
+            await verifyPermission(root, true);
+
+            await LoadProject(root, setElements, states.projectFilesState);
+
+            states.setProjectFilesState(states.projectFilesState);
+
+            history.push("/flow");
+        },
+        [states.projectFilesState]
+    );
+}
+
 async function NewProjectInput() {
     var projectName = prompt("Please enter the projects name", "Narrative");
 
@@ -125,40 +163,6 @@ async function RegisterRecentProject(file: any) {
     }
 }
 
-export function OpenProject(projectFilesState: ProjectFilesState, setElements: any) {
-    const history = useHistory();
-
-    return useCallback(
-        async function restoreFlow() {
-            const root = await OpenFolder();
-
-            if (root === undefined) {
-                return null;
-            }
-
-            await LoadProject(root, setElements, projectFilesState);
-
-            history.push("/flow");
-        },
-        [setElements, transform]
-    );
-}
-
-export function OpenRecentProject(root: any, projectFilesState: ProjectFilesState, setElements: any) {
-    const history = useHistory();
-
-    return useCallback(
-        async function restoreFlow() {
-            await verifyPermission(root, true);
-
-            await LoadProject(root, setElements, projectFilesState);
-
-            history.push("/flow");
-        },
-        [projectFilesState]
-    );
-}
-
 async function LoadProject(root: any, setElements: any, projectFilesState: ProjectFilesState) {
     const { obj: config, handle: configHandle } = await GetObjectFromFile(root, "config");
 
@@ -188,7 +192,7 @@ async function GetObjectFromFile(root: any, fileName: any) {
     return { obj, handle };
 }
 
-export async function LoadElementImages(dirHandle: any, elements: Elements<any>) {
+async function LoadElementImages(dirHandle: any, elements: Elements<any>) {
     elements.forEach(async (element, index) => {
         const containsKeys = "data" in element && "imageName" in element.data;
 

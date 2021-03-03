@@ -3,7 +3,7 @@ import * as lodash from "lodash";
 import { MenuItem } from "./MenuItem";
 import { BaseModel } from "@projectstorm/react-canvas-core";
 import { DefaultNodeModel, LinkModel, NodeModel } from "@projectstorm/react-diagrams";
-import { useNodeViewerState } from "../../Context/NodeViewer/NodeViewerContext";
+import { useNodeViewerState } from "../FlowEditor/Context/NodeViewerContext";
 
 const nodesToCopy: any[] = [];
 

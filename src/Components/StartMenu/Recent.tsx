@@ -4,8 +4,9 @@ import { Card, CardContent, Grid, List, ListItem, ListItemText, Paper, Typograph
 import { get } from "idb-keyval";
 import { useStoreActions } from "react-flow-renderer";
 
-import { useProjectFilesState } from "../../Context/ProjectFiles/ProjectFilesContext";
+import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 import { OpenRecentProject } from "../../Utilities/ProjectHandler";
+import { useNodeViewerState } from "../FlowEditor/Context/NodeViewerContext";
 
 export class Recent extends Component {
     state = {
@@ -42,13 +43,22 @@ export class Recent extends Component {
 }
 
 export function Test(props) {
+    const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
+
     const setElements = useStoreActions((actions) => actions.setElements);
+
+    const states = {
+        nodeViewerState,
+        projectFilesState,
+        setNodeViewerState,
+        setProjectFilesState,
+    };
 
     return (
         <div>
             {props.files.map((file, index) => (
-                <ListItem key={index} button onClick={OpenRecentProject(file, projectFilesState, setElements)}>
+                <ListItem key={index} button onClick={OpenRecentProject(states, file, setElements)}>
                     <ListItemText primary={file.name} />
                 </ListItem>
             ))}

@@ -1,6 +1,6 @@
 import { CanvasWidget } from "@projectstorm/react-canvas-core";
 
-import { useNodeViewerState } from "../Context/NodeViewer/NodeViewerContext";
+import { useNodeViewerState } from "./FlowEditor/Context/NodeViewerContext";
 
 import { PortModelAlignment } from "@projectstorm/react-diagrams";
 

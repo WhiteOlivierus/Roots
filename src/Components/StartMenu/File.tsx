@@ -4,8 +4,8 @@ import { Box, Button, Card, CardContent, Grid, Typography } from "@material-ui/c
 
 import { useStoreActions } from "react-flow-renderer";
 
-import { useNodeViewerState } from "../../Context/NodeViewer/NodeViewerContext";
-import { useProjectFilesState } from "../../Context/ProjectFiles/ProjectFilesContext";
+import { useNodeViewerState } from "../FlowEditor/Context/NodeViewerContext";
+import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 
 import { NewProject, OpenProject } from "../../Utilities/ProjectHandler";
 
@@ -18,8 +18,8 @@ export function File(props) {
     const states = {
         nodeViewerState,
         projectFilesState,
-        setProjectFilesState,
         setNodeViewerState,
+        setProjectFilesState,
     };
 
     return (
@@ -37,11 +37,7 @@ export function File(props) {
                                 </Button>
                             </Grid>
                             <Grid item>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={OpenProject(projectFilesState, setElements)}
-                                >
+                                <Button variant="contained" color="primary" onClick={OpenProject(states, setElements)}>
                                     Open Project
                                 </Button>
                             </Grid>

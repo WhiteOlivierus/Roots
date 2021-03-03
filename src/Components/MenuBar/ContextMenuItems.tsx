@@ -1,7 +1,7 @@
-import { useNodeViewerState } from "../../Context/NodeViewer/NodeViewerContext";
+import { useNodeViewerState } from "../FlowEditor/Context/NodeViewerContext";
 import { MenuItem } from "./MenuItem";
 import { ReadFile, SaveFileInFolder } from "../../Utilities/FileHandling";
-import { useProjectFilesState } from "../../Context/ProjectFiles/ProjectFilesContext";
+import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 import { Elements } from "react-flow-renderer";
 import { setElements } from "react-flow-renderer/dist/store/actions";
 import { useState } from "react";

@@ -1,4 +1,4 @@
-import { ProjectFilesState } from "../Context/ProjectFiles/ProjectFilesContext";
+import { ProjectFilesState } from "../Components/ProjectFilesContext/ProjectFilesContext";
 
 export declare const window: any;
 
