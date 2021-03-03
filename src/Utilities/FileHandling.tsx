@@ -1,5 +1,3 @@
-import { ProjectFilesState } from "../Components/ProjectFilesContext/ProjectFilesContext";
-
 export declare const window: any;
 
 export async function CreateFolder(fileHandle: any, directoryName: String) {
@@ -37,14 +35,8 @@ export async function ReadProject(dirHandle: any) {
     if (dirHandle.values().contains()) console.log("It's a project");
 }
 
-export async function GetImage(projectFilesState: ProjectFilesState) {
-    if (!projectFilesState.projectHandle) projectFilesState.projectHandle = await OpenFolder();
-
-    return await ReadFile();
-}
-
-export async function GetImageBlobPath(projectFilesState: ProjectFilesState, fileHandle: any) {
-    fileHandle = await SaveFileInFolder(projectFilesState.projectHandle, fileHandle);
+export async function GetImageBlobPath(projectFilesState: any, fileHandle: any) {
+    fileHandle = await SaveFileInFolder(projectFilesState, fileHandle);
 
     var path = URL.createObjectURL(await fileHandle.getFile());
     return path;

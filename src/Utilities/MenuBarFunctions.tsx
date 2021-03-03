@@ -1,19 +1,15 @@
-import { WriteFile, WriteNewFile, ReadFile, CreateFolder, OpenFolder } from "./FileHandling";
+import { WriteFile, WriteNewFile, OpenFolder } from "./FileHandling";
 
 import { NodeViewerState } from "../Components/FlowEditor/Context/NodeViewerContext";
 import { ProjectFilesState } from "../Components/ProjectFilesContext/ProjectFilesContext";
 import { InputZone, ProjectFile, Scene } from "../ProjectFile";
 
-export async function New(nodeViewerState: NodeViewerState) {}
-
 export async function Save(projectFilesState: ProjectFilesState, flow: any) {
-    if (!projectFilesState.projectHandle) projectFilesState.projectHandle = await OpenFolder();
-
     var serializedModel = JSON.stringify(flow, null, 2);
-
+    /* 
     const newFileHandle = await projectFilesState.projectHandle.getFileHandle("test.json", { create: true });
 
-    WriteFile(newFileHandle, serializedModel);
+    WriteFile(newFileHandle, serializedModel); */
 }
 
 export async function SaveAs(nodeViewerState: NodeViewerState) {
@@ -53,9 +49,7 @@ export async function FindDir(dirHandle: any, dirName: string) {
 }
 
 export async function Export(projectFileState: ProjectFilesState, nodes: any, edges: any) {
-    if (!projectFileState.projectHandle) projectFileState.projectHandle = await OpenFolder();
-
-    let projectFile: ProjectFile = new ProjectFile(projectFileState.projectHandle.name);
+    let projectFile: ProjectFile = new ProjectFile(projectFileState.activeRoot.name);
 
     let images = [];
 
@@ -101,7 +95,7 @@ export async function Export(projectFileState: ProjectFilesState, nodes: any, ed
         projectFile.scenes.push(newScene);
     }
 
-    const buildHandle = await projectFileState.projectHandle.getDirectoryHandle("Build", {
+    const buildHandle = await projectFileState.activeRoot.getDirectoryHandle("Build", {
         create: true,
     });
 

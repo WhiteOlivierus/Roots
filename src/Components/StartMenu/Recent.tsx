@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import { Card, CardContent, Grid, List, ListItem, ListItemText, Paper, Typography } from "@material-ui/core";
 
 import { get } from "idb-keyval";
@@ -7,12 +7,14 @@ import { useStoreActions } from "react-flow-renderer";
 import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 import { OpenRecentProject } from "../../Utilities/ProjectHandler";
 import { useNodeViewerState } from "../FlowEditor/Context/NodeViewerContext";
+import { authStore } from "../../Context/AppState";
 
 export class Recent extends Component {
     state = {
         files: [],
         loading: true,
     };
+
     constructor(props) {
         super(props);
     }

@@ -11,7 +11,7 @@ import { ContextMenu } from "./Components/ContextMenu";
 import { FlowEditor } from "./Components/FlowEditor/FlowEditor";
 import StartMenu from "./Components/StartMenu/StartMenu";
 import { Game } from "./Preview/components/Game";
-import { Fade, ThemeProvider } from "@material-ui/core";
+import { ThemeProvider } from "@material-ui/core";
 import { theme } from "./Theme";
 
 const App = () => {

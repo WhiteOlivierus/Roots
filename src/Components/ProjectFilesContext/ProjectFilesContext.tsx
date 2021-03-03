@@ -3,7 +3,7 @@ import { createContext, useContext } from "react";
 export class ProjectFilesState {
     files: any = [];
     activeRoot: any = undefined;
-    projectHandle: any = undefined;
+    activeFlow: any = undefined;
 }
 
 export type ProjectFilesType = {

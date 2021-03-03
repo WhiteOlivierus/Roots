@@ -20,36 +20,6 @@ export class ContextMenu extends React.Component {
 
     _handleContextMenu = (event: any) => {
         event.preventDefault();
-
-        /*   this.setState({ visible: true });
-
-        const clickX = event.clientX;
-        const clickY = event.clientY;
-        const screenW = window.innerWidth;
-        const screenH = window.innerHeight;
-        const rootW = this.root.offsetWidth;
-        const rootH = this.root.offsetHeight;
-
-        const right = screenW - clickX > rootW;
-        const left = !right;
-        const top = screenH - clickY > rootH;
-        const bottom = !top;
-
-        if (right) {
-            this.root.style.left = `${clickX + 5}px`;
-        }
-
-        if (left) {
-            this.root.style.left = `${clickX - rootW - 5}px`;
-        }
-
-        if (top) {
-            this.root.style.top = `${clickY + 5}px`;
-        }
-
-        if (bottom) {
-            this.root.style.top = `${clickY - rootH - 5}px`;
-        } */
     };
 
     _handleClick = (event: any) => {

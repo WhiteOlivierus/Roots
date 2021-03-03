@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { Box, Button, Card, CardContent, Grid, Typography } from "@material-ui/core";
 
@@ -8,12 +8,15 @@ import { useNodeViewerState } from "../FlowEditor/Context/NodeViewerContext";
 import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 
 import { NewProject, OpenProject } from "../../Utilities/ProjectHandler";
+import { authStore } from "../../Context/AppState";
 
 export function File(props) {
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
 
     const setElements = useStoreActions((actions) => actions.setElements);
+
+    const authState = useContext(authStore);
 
     const states = {
         nodeViewerState,

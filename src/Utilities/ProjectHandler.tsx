@@ -1,12 +1,13 @@
 import { useHistory } from "react-router-dom";
 import { useCallback } from "react";
-import { CreateFolder, OpenFolder, WriteFile } from "./FileHandling";
+import { CreateFolder, OpenFolder, SaveFileInFolder, WriteFile } from "./FileHandling";
 import { FindDir, FindFile } from "./MenuBarFunctions";
 import { transform } from "lodash";
 import { set, get } from "idb-keyval";
 import { DiagramModel } from "@projectstorm/react-diagrams";
 import { Elements } from "react-flow-renderer";
-import { ProjectFilesState } from "../Components/ProjectFilesContext/ProjectFilesContext";
+
+export declare const window: any;
 
 const defaultFlow = {
     elements: [
@@ -40,14 +41,9 @@ export function NewProject(states: any) {
 
             var root = await CreateFolder(input.dirHandle, input.projectName);
 
-            var flowDirHandle = await CreateFolder(root, input.flowName);
+            states.projectFilesState.activeRoot = root;
 
-            // Create default flow
-            const flow = await flowDirHandle.getFileHandle(`${input.flowName}.json`, {
-                create: true,
-            });
-
-            await WriteFile(flow, JSON.stringify(defaultFlow));
+            var { flow, flowDirHandle } = await CreateFlow(states);
 
             // Create project config
             const config = await root.getFileHandle("config.json", {
@@ -58,7 +54,6 @@ export function NewProject(states: any) {
 
             // Cache the created files
             states.projectFilesState.files = [root, config, flow, flowDirHandle];
-            states.projectFilesState.activeRoot = root;
 
             await RegisterRecentProject(root);
 
@@ -69,6 +64,21 @@ export function NewProject(states: any) {
             states.setNodeViewerState(states.nodeViewerState);
 
             history.push("/flow");
+        },
+        [states.nodeViewerState, states.projectFilesState]
+    );
+}
+
+export function NewFlow(states: any) {
+    return useCallback(
+        async function createFlow() {
+            var { flow, flowDirHandle } = await CreateFlow(states);
+
+            states.nodeViewerState.model = new DiagramModel();
+            states.nodeViewerState.engine.setModel(states.nodeViewerState.model);
+
+            states.projectFilesState.files.push([flow, flowDirHandle]);
+            states.setProjectFilesState(states.projectFilesState);
         },
         [states.nodeViewerState, states.projectFilesState]
     );
@@ -85,7 +95,43 @@ export function OpenProject(states: any, setElements: any) {
                 return null;
             }
 
-            await LoadProject(root, setElements, states.projectFilesState);
+            const { obj: config, handle: configHandle } = await GetObjectFromFile(root, "config");
+
+            const flowDirHandle: any = await FindDir(root, config.lastOpened);
+
+            var { flow, flowHandle } = await LoadFlow(flowDirHandle, setElements, config.lastOpened);
+
+            // Cache the created files
+            states.projectFilesState.files = [root, configHandle, flowHandle, flowDirHandle];
+            states.projectFilesState.activeRoot = root;
+            states.projectFilesState.activeFlow = flowHandle;
+
+            states.setProjectFilesState(states.projectFilesState);
+
+            await RegisterRecentProject(root);
+
+            history.push("/flow");
+        },
+        [setElements, transform]
+    );
+}
+
+export function OpenFlow(states: any, setElements: any) {
+    const history = useHistory();
+
+    return useCallback(
+        async function restoreFlow() {
+            var flow = await window.showDirectoryPicker();
+
+            if (flow === undefined) {
+                return null;
+            }
+
+            const flowDirHandle: any = await FindDir(states.projectFilesState.activeRoot, flow.name);
+
+            var { flow, flowHandle } = await LoadFlow(flowDirHandle, setElements, flow.name);
+
+            states.projectFilesState.activeFlow = flowHandle;
 
             states.setProjectFilesState(states.projectFilesState);
 
@@ -102,7 +148,7 @@ export function OpenRecentProject(states: any, root: any, setElements: any) {
         async function restoreFlow() {
             await verifyPermission(root, true);
 
-            await LoadProject(root, setElements, states.projectFilesState);
+            await LoadFlow(root, setElements, states.projectFilesState);
 
             states.setProjectFilesState(states.projectFilesState);
 
@@ -110,6 +156,39 @@ export function OpenRecentProject(states: any, root: any, setElements: any) {
         },
         [states.projectFilesState]
     );
+}
+
+export function SaveFlow(states: any, rfInstance: any) {
+    return useCallback(
+        async function restoreFlow() {
+            const flow = rfInstance.toObject();
+            const file = await JSON.stringify(flow);
+
+            const writable = await states.projectFilesState.activeFlow.createWritable();
+            await writable.write(file);
+            await writable.close();
+        },
+        [rfInstance]
+    );
+}
+
+async function CreateFlow(states: any) {
+    var flowName = prompt("Please enter your first root name", "Root");
+
+    const isFlowName = flowName === "" || flowName === null;
+    if (isFlowName) {
+        return null;
+    }
+
+    var flowDirHandle = await CreateFolder(states.projectFilesState.activeRoot, flowName);
+
+    // Create default flow
+    const flow = await flowDirHandle.getFileHandle(`${flowName}.json`, {
+        create: true,
+    });
+
+    await WriteFile(flow, JSON.stringify(defaultFlow));
+    return { flow, flowDirHandle };
 }
 
 async function NewProjectInput() {
@@ -163,12 +242,8 @@ async function RegisterRecentProject(file: any) {
     }
 }
 
-async function LoadProject(root: any, setElements: any, projectFilesState: ProjectFilesState) {
-    const { obj: config, handle: configHandle } = await GetObjectFromFile(root, "config");
-
-    const flowDirHandle: any = await FindDir(root, config.lastOpened);
-
-    const { obj: flow, handle: flowHandle } = await GetObjectFromFile(flowDirHandle, config.lastOpened);
+async function LoadFlow(flowDirHandle: any, setElements: any, flowFileName: any) {
+    const { obj: flow, handle: flowHandle } = await GetObjectFromFile(flowDirHandle, flowFileName);
 
     if (flow) {
         const [x = 0, y = 0] = flow.position;
@@ -177,11 +252,7 @@ async function LoadProject(root: any, setElements: any, projectFilesState: Proje
         transform({ x, y, zoom: flow.zoom || 0 });
     }
 
-    // Cache the created files
-    projectFilesState.files = [root, configHandle, flowHandle, flowDirHandle];
-    projectFilesState.activeRoot = root;
-
-    await RegisterRecentProject(root);
+    return { flow, flowHandle };
 }
 
 async function GetObjectFromFile(root: any, fileName: any) {

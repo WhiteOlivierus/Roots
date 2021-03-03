@@ -3,11 +3,12 @@ import ReactFlow, { removeElements, addEdge, Controls, MiniMap } from "react-flo
 import NodeBar from "./NodeBar";
 
 import { NodeTypes } from "./Nodes/NodeTypes";
-import { GetImage, GetImageBlobPath } from "../../Utilities/FileHandling";
+import { GetImageBlobPath } from "../../Utilities/FileHandling";
 import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 
 import { v4 as uuidv4 } from "uuid";
 import { MenuBar } from "./MenuBar";
+export declare const window: any;
 
 const initialElements = [
     {
@@ -17,6 +18,8 @@ const initialElements = [
         data: { label: "Start" },
     },
 ];
+
+export let rfInstance = undefined;
 
 export const FlowEditor = () => {
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -38,9 +41,9 @@ export const FlowEditor = () => {
         const type = event.dataTransfer.getData("application/reactflow");
         const position = reactFlowInstance.project({ x: event.clientX, y: event.clientY - 40 });
 
-        const fileHandle = await GetImage(projectFilesState);
+        const fileHandle = await window.showOpenFilePicker();
 
-        const newLocal = await GetImageBlobPath(projectFilesState, fileHandle);
+        const newLocal = await GetImageBlobPath(projectFilesState.activeRoot, fileHandle[0]);
         const newNode = {
             id: uuidv4(),
             type,
@@ -49,6 +52,8 @@ export const FlowEditor = () => {
         };
 
         setProjectFilesState(projectFilesState);
+
+        rfInstance = reactFlowInstance;
 
         setElements((es) => es.concat(newNode));
     };

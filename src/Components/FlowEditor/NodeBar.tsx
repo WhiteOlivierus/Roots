@@ -41,7 +41,7 @@ export default () => {
                             return (
                                 <Grid item xs={12} key={index}>
                                     <Paper
-                                        onDragStart={(event) => onDragStart(event, "output")}
+                                        onDragStart={(event) => onDragStart(event, node.name.toLowerCase())}
                                         draggable
                                         style={{ backgroundColor: node.color }}
                                     >
