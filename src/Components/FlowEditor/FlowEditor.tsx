@@ -1,9 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactFlow, { removeElements, addEdge, Controls, MiniMap } from "react-flow-renderer";
 import NodeBar from "./NodeBar";
 
 import { NodeTypes } from "./Nodes/NodeTypes";
-import { GetImageBlobPath } from "../../Utilities/FileHandling";
+import { GetImageBlobPath, SaveFileInFolder } from "../../Utilities/FileHandling";
 import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 
 import { v4 as uuidv4 } from "uuid";
@@ -13,9 +13,11 @@ export declare const window: any;
 const initialElements = [
     {
         id: uuidv4(),
-        type: "input",
-        position: { x: 100, y: 100 },
+        type: "start",
         data: { label: "Start" },
+        style: { width: 160, height: 90 },
+        position: { x: 100, y: 100 },
+        selectable: false,
     },
 ];
 
@@ -30,6 +32,13 @@ export const FlowEditor = () => {
 
     const onLoad = (_reactFlowInstance) => setReactFlowInstance(_reactFlowInstance);
 
+    useEffect(() => {
+        window.addEventListener("beforeunload", function (e) {
+            e.preventDefault();
+            e.returnValue = "";
+        });
+    });
+
     const onDragOver = (event) => {
         event.preventDefault();
         event.dataTransfer.dropEffect = "move";
@@ -41,15 +50,40 @@ export const FlowEditor = () => {
         const type = event.dataTransfer.getData("application/reactflow");
         const position = reactFlowInstance.project({ x: event.clientX, y: event.clientY - 40 });
 
-        const fileHandle = await window.showOpenFilePicker();
+        let fileHandle = await window.showOpenFilePicker();
+        fileHandle = fileHandle[0];
 
-        const newLocal = await GetImageBlobPath(projectFilesState.activeRoot, fileHandle[0]);
-        const newNode = {
-            id: uuidv4(),
-            type,
-            position,
-            data: { label: `${type} node`, image: newLocal, imageName: fileHandle.name },
-        };
+        fileHandle = await SaveFileInFolder(projectFilesState.activeRoot, fileHandle);
+
+        const blobURL = await GetImageBlobPath(projectFilesState.activeRoot, fileHandle);
+
+        let newNode = undefined;
+        switch (type) {
+            case "scene":
+                newNode = {
+                    id: uuidv4(),
+                    type,
+                    position,
+                    style: { width: 160, height: 90 },
+                    data: {
+                        label: `${type} node`,
+                        image: blobURL,
+                        imageName: fileHandle.name,
+                        outHandles: [{ text: "Left" }, { text: "Right" }],
+                    },
+                };
+                break;
+
+            default:
+                newNode = {
+                    id: uuidv4(),
+                    type,
+                    position,
+                    style: { width: 160, height: 90 },
+                    data: { label: `${type} node`, image: blobURL, imageName: fileHandle.name },
+                };
+                break;
+        }
 
         setProjectFilesState(projectFilesState);
 

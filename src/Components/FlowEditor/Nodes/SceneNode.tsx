@@ -1,22 +1,37 @@
+import { Paper } from "@material-ui/core";
 import React from "react";
 import { Handle, Position } from "react-flow-renderer";
 import { NodeContent } from "./NodeContent";
+import { nodeStyle } from "./NodeStyle";
 
-const customNodeStyles = {
-    background: "#9CA8B3",
-    color: "#FFF",
-    padding: 10,
-    width: 160,
-    height: 90,
-};
+const handlePadding = 25;
 
 export const SceneNode = ({ data }) => {
+    const classes = nodeStyle();
+    const length = data.outHandles.length - 1;
+
     return (
-        <div style={customNodeStyles}>
-            <Handle type="target" position={Position.Left} style={{ borderRadius: 0 }} />
+        <Paper className={classes.root}>
             <NodeContent data={data} />
-            <Handle type="source" position={Position.Right} id="a" style={{ top: "30%", borderRadius: 0 }} />
-            <Handle type="source" position={Position.Right} id="b" style={{ top: "70%", borderRadius: 0 }} />
-        </div>
+            <Handle type="target" position={Position.Left} className={classes.handleRoot} />
+            {data.outHandles.map((handle, index) => {
+                return (
+                    <Handle
+                        key={index}
+                        type="source"
+                        position={Position.Right}
+                        className={classes.handleRoot}
+                        id="a"
+                        style={{ top: `${handlePosition(length, index)}%` }}
+                    >
+                        <p className={classes.handleText}>{handle.text}</p>
+                    </Handle>
+                );
+            })}
+        </Paper>
     );
 };
+
+function handlePosition(length, index) {
+    return handlePadding + (100 - (handlePadding * 2) / length) * index;
+}

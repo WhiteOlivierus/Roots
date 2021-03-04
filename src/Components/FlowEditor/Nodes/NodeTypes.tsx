@@ -4,6 +4,6 @@ import { OutputNode } from "./OutputNode";
 
 export const NodeTypes = {
     scene: SceneNode,
-    input: InputNode,
-    output: OutputNode,
+    start: InputNode,
+    end: OutputNode,
 };

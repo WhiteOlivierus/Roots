@@ -1,20 +1,15 @@
+import { Paper } from "@material-ui/core";
 import React from "react";
 import { Handle, Position } from "react-flow-renderer";
 import { NodeContent } from "./NodeContent";
-
-const customNodeStyles = {
-    background: "red",
-    color: "#FFF",
-    padding: 10,
-    width: 160,
-    height: 90,
-};
+import { nodeStyle } from "./NodeStyle";
 
 export const OutputNode = ({ data }) => {
+    const classes = nodeStyle();
     return (
-        <div style={customNodeStyles}>
-            <Handle type="target" position={Position.Left} style={{ borderRadius: 0 }} />
+        <Paper className={classes.root}>
             <NodeContent data={data} />
-        </div>
+            <Handle type="target" position={Position.Left} />
+        </Paper>
     );
 };

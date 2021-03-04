@@ -25,7 +25,7 @@ import { useStoreActions } from "react-flow-renderer";
 
 import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 import { useNodeViewerState } from "./Context/NodeViewerContext";
-import { NewFlow, NewProject, OpenFlow, OpenProject, SaveFlow } from "../../Utilities/ProjectHandler";
+import { NewFlow, NewProject, OpenFlow, OpenProject, SaveFlow, SaveFlowAs } from "../../Utilities/ProjectHandler";
 import { rfInstance } from "./FlowEditor";
 
 const drawerWidth = 240;
@@ -121,7 +121,7 @@ export function MenuBar(props) {
         { divide: "" },
         {
             name: "Open Flow",
-            action: OpenFlow(states, setElements),
+            action: OpenFlow(states, projectFilesState.activeRoot, setElements),
             icon: <FolderIcon />,
         },
         {
@@ -137,7 +137,7 @@ export function MenuBar(props) {
         },
         {
             name: "Save Flow As",
-            action: () => null,
+            action: SaveFlowAs(states, rfInstance),
             icon: <SaveIcon />,
         },
     ];
@@ -190,7 +190,10 @@ export function MenuBar(props) {
                         ${
                             projectFilesState.activeRoot === undefined
                                 ? "No project loaded"
-                                : projectFilesState.activeRoot.name
+                                : `${projectFilesState.activeRoot.name} - ${projectFilesState.activeFlow.name.replace(
+                                      ".json",
+                                      ""
+                                  )}`
                         }`}
                     </Typography>
                 </Toolbar>

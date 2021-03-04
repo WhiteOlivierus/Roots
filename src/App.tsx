@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
 
 import { ProjectFilesProvider } from "./Components/ProjectFilesContext/ProjectFilesProvider";
 import { ReactFlowProvider } from "react-flow-renderer";
@@ -13,14 +13,15 @@ import StartMenu from "./Components/StartMenu/StartMenu";
 import { Game } from "./Preview/components/Game";
 import { ThemeProvider } from "@material-ui/core";
 import { theme } from "./Theme";
+import { useProjectFilesState } from "./Components/ProjectFilesContext/ProjectFilesContext";
 
 const App = () => {
     return (
-        <Router>
-            <ReactFlowProvider>
-                <ProjectFilesProvider>
-                    <ThemeProvider theme={theme}>
-                        <ContextMenu />
+        <ReactFlowProvider>
+            <ProjectFilesProvider>
+                <ThemeProvider theme={theme}>
+                    <ContextMenu />
+                    <Router>
                         <Switch>
                             <Route exact={true} path="/">
                                 <StartMenu />
@@ -37,10 +38,10 @@ const App = () => {
                                 <Game />
                             </Route>
                         </Switch>
-                    </ThemeProvider>
-                </ProjectFilesProvider>
-            </ReactFlowProvider>
-        </Router>
+                    </Router>
+                </ThemeProvider>
+            </ProjectFilesProvider>
+        </ReactFlowProvider>
     );
 };
 

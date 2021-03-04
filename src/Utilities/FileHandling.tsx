@@ -36,8 +36,6 @@ export async function ReadProject(dirHandle: any) {
 }
 
 export async function GetImageBlobPath(projectFilesState: any, fileHandle: any) {
-    fileHandle = await SaveFileInFolder(projectFilesState, fileHandle);
-
     var path = URL.createObjectURL(await fileHandle.getFile());
     return path;
 }
