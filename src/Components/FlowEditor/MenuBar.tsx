@@ -1,6 +1,7 @@
-import React, { useContext, useState } from "react";
+import React from "react";
 import {
     AppBar,
+    Badge,
     createStyles,
     Divider,
     Drawer,
@@ -19,6 +20,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
 import FolderIcon from "@material-ui/icons/Folder";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import clsx from "clsx";
 
 import { useStoreActions } from "react-flow-renderer";
@@ -28,12 +30,14 @@ import { useNodeViewerState } from "./Context/NodeViewerContext";
 import { NewFlow, NewProject, OpenFlow, OpenProject, SaveFlow, SaveFlowAs } from "../../Utilities/ProjectHandler";
 import { rfInstance } from "./FlowEditor";
 
+import { Link } from "react-router-dom";
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            display: "flex",
+            flexGrow: 1,
         },
         appBar: {
             zIndex: theme.zIndex.drawer + 1,
@@ -42,6 +46,13 @@ const useStyles = makeStyles((theme: Theme) =>
                 duration: theme.transitions.duration.leavingScreen,
             }),
         },
+        menuButton: {
+            marginRight: theme.spacing(2),
+        },
+        title: {
+            flexGrow: 1,
+            textAlign: "left",
+        },
         appBarShift: {
             marginLeft: drawerWidth,
             width: `calc(100% - ${drawerWidth}px)`,
@@ -49,9 +60,6 @@ const useStyles = makeStyles((theme: Theme) =>
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen,
             }),
-        },
-        menuButton: {
-            marginRight: 36,
         },
         hide: {
             display: "none",
@@ -126,7 +134,7 @@ export function MenuBar(props) {
         },
         {
             name: "Open Project",
-            action: OpenProject(states, setElements),
+            action: OpenProject(states, undefined, setElements),
             icon: <FolderIcon />,
         },
         { divide: "" },
@@ -185,7 +193,7 @@ export function MenuBar(props) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" color="inherit" noWrap>
+                    <Typography variant="h6" color="inherit" noWrap className={classes.title}>
                         {`Roots - 
                         ${
                             projectFilesState.activeRoot === undefined
@@ -196,6 +204,11 @@ export function MenuBar(props) {
                                   )}`
                         }`}
                     </Typography>
+                    <IconButton color="inherit">
+                        <Link to="/preview">
+                            <PlayCircleFilledIcon />
+                        </Link>
+                    </IconButton>
                 </Toolbar>
             </AppBar>
             <Drawer variant="persistent" anchor="left" open={open}>
@@ -205,7 +218,6 @@ export function MenuBar(props) {
                 >
                     <ChevronLeftIcon />
                 </IconButton>
-                <Divider />
                 <List>{newLocal}</List>
             </Drawer>
         </div>

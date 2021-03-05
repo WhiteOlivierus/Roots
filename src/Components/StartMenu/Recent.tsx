@@ -7,7 +7,6 @@ import { useStoreActions } from "react-flow-renderer";
 import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 import { OpenRecentProject } from "../../Utilities/ProjectHandler";
 import { useNodeViewerState } from "../FlowEditor/Context/NodeViewerContext";
-import { authStore } from "../../Context/AppState";
 
 export class Recent extends Component {
     state = {
@@ -59,11 +58,12 @@ export function Test(props) {
 
     return (
         <div>
-            {props.files.map((file, index) => (
-                <ListItem key={index} button onClick={OpenRecentProject(states, file, setElements)}>
-                    <ListItemText primary={file.name} />
-                </ListItem>
-            ))}
+            {props.files &&
+                props.files.map((file, index) => (
+                    <ListItem key={index} button onClick={OpenRecentProject(states, file, setElements)}>
+                        <ListItemText primary={file.name} />
+                    </ListItem>
+                ))}
         </div>
     );
 }

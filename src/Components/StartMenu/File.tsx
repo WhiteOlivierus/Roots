@@ -40,7 +40,11 @@ export function File(props) {
                                 </Button>
                             </Grid>
                             <Grid item>
-                                <Button variant="contained" color="primary" onClick={OpenProject(states, setElements)}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={OpenProject(states, authState, setElements)}
+                                >
                                     Open Project
                                 </Button>
                             </Grid>

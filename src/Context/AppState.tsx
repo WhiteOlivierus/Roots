@@ -4,9 +4,11 @@ import { getInitialState, persistState } from "../Utilities/PresistState";
 export const STORAGE_KEY = "appState";
 
 interface AppState {
+    flow: any;
     activeFlow: any;
 }
 const defaultState: AppState = {
+    flow: {},
     activeFlow: undefined,
 };
 

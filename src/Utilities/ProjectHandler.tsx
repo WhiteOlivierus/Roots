@@ -1,31 +1,14 @@
 import { useHistory } from "react-router-dom";
 import { useCallback } from "react";
-import { CreateFolder, OpenFolder, SaveFileInFolder, WriteFile } from "./FileHandling";
+import { CreateFolder, OpenFolder, WriteFile } from "./FileHandling";
 import { FindDir, FindFile } from "./MenuBarFunctions";
 import { transform } from "lodash";
 import { set, get } from "idb-keyval";
 import { DiagramModel } from "@projectstorm/react-diagrams";
 import { Elements } from "react-flow-renderer";
+import { defaultFlow } from "./defaultFlow";
 
 export declare const window: any;
-
-const defaultFlow = {
-    elements: [
-        {
-            id: "8a62b31a-657d-47b4-9ca8-a8867bd8c703",
-            type: "input",
-            position: {
-                x: 537,
-                y: 116,
-            },
-            data: {
-                label: "Start",
-            },
-        },
-    ],
-    position: [0, 0],
-    zoom: 1,
-};
 
 export function NewProject(states: any) {
     const history = useHistory();
@@ -74,7 +57,7 @@ export function NewProject(states: any) {
     );
 }
 
-export function OpenProject(states: any, setElements: any) {
+export function OpenProject(states: any, auth: any, setElements: any) {
     const history = useHistory();
 
     return useCallback(
@@ -90,6 +73,11 @@ export function OpenProject(states: any, setElements: any) {
             const flowDirHandle: any = await FindDir(root, config.lastOpened);
 
             var { flow, flowHandle } = await LoadFlow(root, flowDirHandle, setElements, config.lastOpened);
+
+            states.nodeViewerState.flow = flow;
+
+            const { dispatch } = auth;
+            await dispatch({ flow: flow });
 
             // Cache the created files
             states.projectFilesState.files = [root, configHandle, flowHandle, flowDirHandle];
