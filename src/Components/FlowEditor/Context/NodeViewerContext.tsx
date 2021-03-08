@@ -4,6 +4,7 @@ import createEngine, { DiagramEngine, DiagramModel, DiagramModelGenerics } from 
 
 export class NodeViewerState {
     setElements: any;
+    rfInstance: any;
 }
 
 export type NodeViewerContextType = {
@@ -13,7 +14,7 @@ export type NodeViewerContextType = {
 
 export const NodeViewerContext = createContext<NodeViewerContextType>({
     nodeViewerState: new NodeViewerState(),
-    setNodeViewerState: (nodeViewerState) => console.warn("no node viewer"),
+    setNodeViewerState: (nodeViewerState) => {},
 });
 
 export const useNodeViewerState = () => useContext(NodeViewerContext);

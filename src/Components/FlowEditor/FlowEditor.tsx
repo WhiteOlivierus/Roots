@@ -10,24 +10,33 @@ import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext
 import { v4 as uuidv4 } from "uuid";
 import { MenuBar } from "./MenuBar";
 import { defaultFlow } from "../../Utilities/defaultFlow";
-import { LoadFlow } from "../../Utilities/FlowHandler";
 import { useNodeViewerState } from "./Context/NodeViewerContext";
+
+import { useZoomPanHelper } from "react-flow-renderer";
+import { LoadFlow } from "../../Utilities/ProjectHandler";
 
 export declare const window: any;
 
-export var rfInstance = undefined;
+export var rfi = undefined;
+
+var initialElements = defaultFlow.elements;
 
 export function FlowEditor(props) {
+    const { fitView } = useZoomPanHelper();
+
     const history = useHistory();
 
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
 
-    var initialElements = defaultFlow.elements;
+    const [elements, setElements] = useState(initialElements);
 
+    const [rfInstance, setRfInstance] = useState(null);
+
+    // On first load
     useEffect(() => {
         async function Action() {
-            var flow = await LoadFlow(projectFilesState.activeFlow);
+            var flow = await LoadFlow(projectFilesState.activeRoot, projectFilesState.activeFlow);
             if (flow) {
                 initialElements = flow.elements;
             } else {
@@ -40,13 +49,12 @@ export function FlowEditor(props) {
         Action();
 
         nodeViewerState.setElements = setElements;
+        nodeViewerState.rfInstance = rfInstance;
 
         setNodeViewerState(nodeViewerState);
+
+        fitView();
     }, []);
-
-    const [elements, setElements] = useState(initialElements);
-
-    const [rfInstance, setRfInstance] = useState(null);
 
     function onConnect(params) {
         return setElements(function (els): any {
@@ -100,9 +108,11 @@ export function FlowEditor(props) {
         <ReactFlow
             elements={elements}
             nodeTypes={NodeTypes}
+            onLoad={setRfInstance}
             onConnect={onConnect}
             onElementsRemove={onElementsRemove}
             onDrop={onDrop}
+            onMove={() => (rfi = rfInstance)}
             onDragOver={onDragOver}
             deleteKeyCode={46}
         >

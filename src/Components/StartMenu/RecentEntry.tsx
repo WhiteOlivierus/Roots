@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { ListItem, ListItemText } from "@material-ui/core";
 import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 import { useHistory } from "react-router-dom";
@@ -9,26 +8,20 @@ export function RecentEntry(props) {
 
     const history = useHistory();
 
-    const onOpenRecentProject = useCallback(
-        (fileHandle) => {
-            async function Action() {
-                try {
-                    var { activeRoot, activeFlow } = await OpenRecentProject(fileHandle);
-                } catch {
-                    return;
-                }
+    async function onOpenRecentProject(fileHandle) {
+        try {
+            var { activeRoot, activeFlow } = await OpenRecentProject(fileHandle);
+        } catch {
+            return;
+        }
 
-                projectFilesState.activeRoot = activeRoot;
-                projectFilesState.activeFlow = activeFlow;
+        projectFilesState.activeRoot = activeRoot;
+        projectFilesState.activeFlow = activeFlow;
 
-                setProjectFilesState(projectFilesState);
+        setProjectFilesState(projectFilesState);
 
-                history.push("/flow");
-            }
-            Action();
-        },
-        [projectFilesState, history]
-    );
+        history.push("/flow");
+    }
 
     return (
         <div>

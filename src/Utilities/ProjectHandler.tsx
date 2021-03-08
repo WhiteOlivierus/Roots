@@ -1,8 +1,5 @@
-import { useHistory } from "react-router-dom";
-import { useCallback } from "react";
 import { CreateFolder, OpenFolder, WriteFile } from "./FileHandling";
 import { FindDir, FindFile } from "./MenuBarFunctions";
-import { transform } from "lodash";
 import { set, get } from "idb-keyval";
 import { Elements } from "react-flow-renderer";
 import { defaultFlow } from "./defaultFlow";
@@ -69,70 +66,46 @@ export async function NewFlow(activeRoot: any) {
     return { activeFlow };
 }
 
-export function OpenFlow(states: any, root: any, setElements: any) {
-    const history = useHistory();
+export async function OpenFlow(activeRoot: any) {
+    var flowDirHandle = await window.showDirectoryPicker();
 
-    return useCallback(
-        async function restoreFlow() {
-            var flow = await window.showDirectoryPicker();
+    const activeFlow: any = await FindFile(flowDirHandle, `${flowDirHandle.name}.json`);
 
-            if (flow === undefined) {
-                return null;
-            }
+    var flow = await LoadFlow(activeRoot, activeFlow);
 
-            const flowDirHandle: any = await FindDir(states.projectFilesState.activeRoot, flow.name);
+    await SetActiveFlowInConfig(activeRoot, flowDirHandle.name);
 
-            var { flow, flowHandle } = await LoadFlow(root, flowDirHandle, flow.name);
-
-            states.projectFilesState.activeFlow = flowHandle;
-
-            states.setProjectFilesState(states.projectFilesState);
-            states.setNodeViewerState(states.nodeViewerState);
-
-            const { handle: configHandle } = await GetObjectFromFile(root, "config");
-            await WriteFile(configHandle, JSON.stringify({ lastOpened: flow.name }));
-
-            history.push("/flow");
-        },
-        [setElements, transform]
-    );
+    return { activeFlow, flow };
 }
 
-export function SaveFlow(states: any, rfInstance: any) {
-    return useCallback(
-        async function restoreFlow() {
-            const flow = rfInstance.toObject();
-            const file = await JSON.stringify(flow);
+export async function SaveFlow(activeFlow: any, rfInstance: any) {
+    const flow = rfInstance.toObject();
+    const file = await JSON.stringify(flow);
 
-            const writable = await states.projectFilesState.activeFlow.createWritable();
-            await writable.write(file);
-            await writable.close();
-        },
-        [rfInstance]
-    );
+    const writable = await activeFlow.createWritable();
+    await writable.write(file);
+    await writable.close();
 }
 
-export function SaveFlowAs(states: any, rfInstance: any) {
-    return useCallback(
-        async function restoreFlow() {
-            var { flowFileHandle, flowDirHandle } = await CreateFlow(states.projectFilesState.activeRoot);
+export async function SaveFlowAs(activeRoot: any, rfInstance: any) {
+    var { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(activeRoot);
 
-            await SetActiveFlowInConfig(states.projectFilesState.activeRoot, flowDirHandle.name);
+    SaveFlow(activeFlow, rfInstance);
 
-            const flow = rfInstance.toObject();
-            const file = await JSON.stringify(flow);
+    await SetActiveFlowInConfig(activeRoot, flowDirHandle.name);
 
-            const writable = await flowFileHandle.createWritable();
-            await writable.write(file);
-            await writable.close();
+    return activeFlow;
+}
 
-            states.projectFilesState.activeFlow = flowFileHandle;
+export async function LoadFlow(root: any, flowHandle: any) {
+    const { obj: flow } = await GetObjectFromFileHandle(flowHandle);
 
-            states.setProjectFilesState(states.projectFilesState);
-            states.setNodeViewerState(states.nodeViewerState);
-        },
-        [rfInstance]
-    );
+    if (flow) {
+        await LoadElementImages(root, flow.elements);
+        return flow;
+    } else {
+        return null;
+    }
 }
 
 async function CreateFlow(root: any) {
@@ -211,19 +184,12 @@ async function RegisterRecentProject(file: any) {
     }
 }
 
-async function LoadFlow(root: any, flowDirHandle: any, flowFileName: any) {
-    const { obj: flow, handle: flowHandle } = await GetObjectFromFile(flowDirHandle, flowFileName);
-
-    if (flow) {
-        await LoadElementImages(root, flow.elements);
-        return { flow, flowHandle };
-    } else {
-        return null;
-    }
-}
-
 async function GetObjectFromFile(root: any, fileName: any) {
     const handle: any = await FindFile(root, `${fileName}.json`);
+    return await GetObjectFromFileHandle(handle);
+}
+
+async function GetObjectFromFileHandle(handle: any) {
     const file = await handle.getFile();
     const json = await file.text();
     const obj = await JSON.parse(json);

@@ -12,43 +12,27 @@ export function File(props) {
 
     const history = useHistory();
 
-    const onNewProject = useCallback(() => {
-        async function Action() {
-            try {
-                var { activeRoot, activeFlow } = await NewProject();
-            } catch {
-                return;
-            }
+    async function onNewProject() {
+        await SetProjectContext(NewProject);
+    }
 
-            projectFilesState.activeRoot = activeRoot;
-            projectFilesState.activeFlow = activeFlow;
+    async function onOpenProject() {
+        await SetProjectContext(OpenProject);
+    }
 
-            setProjectFilesState(projectFilesState);
-
-            history.push("/flow");
+    async function SetProjectContext(action: any) {
+        try {
+            var { activeRoot, activeFlow } = await action();
+        } catch {
+            return;
         }
+        projectFilesState.activeRoot = activeRoot;
+        projectFilesState.activeFlow = activeFlow;
 
-        Action();
-    }, [projectFilesState, history]);
+        setProjectFilesState(projectFilesState);
 
-    const onOpenProject = useCallback(() => {
-        async function Action() {
-            try {
-                var { activeRoot, activeFlow } = await OpenProject();
-            } catch {
-                return;
-            }
-
-            projectFilesState.activeRoot = activeRoot;
-            projectFilesState.activeFlow = activeFlow;
-
-            setProjectFilesState(projectFilesState);
-
-            history.push("/flow");
-        }
-
-        Action();
-    }, [projectFilesState, history]);
+        history.push("/flow");
+    }
 
     return (
         <Grid item xs={6}>

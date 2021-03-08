@@ -155,9 +155,7 @@ export function MenuBar(props) {
                 >
                     <ChevronLeftIcon />
                 </IconButton>
-                <List>
-                    <MenuButtons />
-                </List>
+                <List>{open && <MenuButtons />}</List>
             </Drawer>
         </div>
     );
