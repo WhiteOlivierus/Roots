@@ -1,29 +1,54 @@
-import React, { useContext } from "react";
+import { useCallback } from "react";
+import { useHistory } from "react-router-dom";
 
 import { Box, Button, Card, CardContent, Grid, Typography } from "@material-ui/core";
 
-import { useStoreActions } from "react-flow-renderer";
-
-import { useNodeViewerState } from "../FlowEditor/Context/NodeViewerContext";
 import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 
 import { NewProject, OpenProject } from "../../Utilities/ProjectHandler";
-import { authStore } from "../../Context/AppState";
 
 export function File(props) {
-    const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
 
-    const setElements = useStoreActions((actions) => actions.setElements);
+    const history = useHistory();
 
-    const authState = useContext(authStore);
+    const onNewProject = useCallback(() => {
+        async function Action() {
+            try {
+                var { activeRoot, activeFlow } = await NewProject();
+            } catch {
+                return;
+            }
 
-    const states = {
-        nodeViewerState,
-        projectFilesState,
-        setNodeViewerState,
-        setProjectFilesState,
-    };
+            projectFilesState.activeRoot = activeRoot;
+            projectFilesState.activeFlow = activeFlow;
+
+            setProjectFilesState(projectFilesState);
+
+            history.push("/flow");
+        }
+
+        Action();
+    }, [projectFilesState, history]);
+
+    const onOpenProject = useCallback(() => {
+        async function Action() {
+            try {
+                var { activeRoot, activeFlow } = await OpenProject();
+            } catch {
+                return;
+            }
+
+            projectFilesState.activeRoot = activeRoot;
+            projectFilesState.activeFlow = activeFlow;
+
+            setProjectFilesState(projectFilesState);
+
+            history.push("/flow");
+        }
+
+        Action();
+    }, [projectFilesState, history]);
 
     return (
         <Grid item xs={6}>
@@ -35,16 +60,12 @@ export function File(props) {
                     <Box p={2.5}>
                         <Grid container justify="center" spacing={2}>
                             <Grid item>
-                                <Button variant="contained" color="primary" onClick={NewProject(states)}>
+                                <Button variant="contained" color="primary" onClick={onNewProject}>
                                     New Project
                                 </Button>
                             </Grid>
                             <Grid item>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={OpenProject(states, authState, setElements)}
-                                >
+                                <Button variant="contained" color="primary" onClick={onOpenProject}>
                                     Open Project
                                 </Button>
                             </Grid>

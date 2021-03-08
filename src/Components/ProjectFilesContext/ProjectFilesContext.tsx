@@ -1,7 +1,6 @@
 import { createContext, useContext } from "react";
 
 export class ProjectFilesState {
-    files: any = [];
     activeRoot: any = undefined;
     activeFlow: any = undefined;
 }

@@ -1,12 +1,9 @@
-import React, { Component, useContext } from "react";
-import { Card, CardContent, Grid, List, ListItem, ListItemText, Paper, Typography } from "@material-ui/core";
+import { Component } from "react";
+import { Card, CardContent, Grid, List, Typography } from "@material-ui/core";
 
 import { get } from "idb-keyval";
-import { useStoreActions } from "react-flow-renderer";
 
-import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
-import { OpenRecentProject } from "../../Utilities/ProjectHandler";
-import { useNodeViewerState } from "../FlowEditor/Context/NodeViewerContext";
+import { RecentEntry } from "./RecentEntry";
 
 export class Recent extends Component {
     state = {
@@ -33,7 +30,7 @@ export class Recent extends Component {
                             {this.state.loading ? (
                                 <Typography variant="h3">Loading...</Typography>
                             ) : (
-                                <Test files={this.state.files} />
+                                <RecentEntry files={this.state.files} />
                             )}
                         </List>
                     </CardContent>
@@ -41,29 +38,4 @@ export class Recent extends Component {
             </Grid>
         );
     }
-}
-
-export function Test(props) {
-    const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
-    const { projectFilesState, setProjectFilesState } = useProjectFilesState();
-
-    const setElements = useStoreActions((actions) => actions.setElements);
-
-    const states = {
-        nodeViewerState,
-        projectFilesState,
-        setNodeViewerState,
-        setProjectFilesState,
-    };
-
-    return (
-        <div>
-            {props.files &&
-                props.files.map((file, index) => (
-                    <ListItem key={index} button onClick={OpenRecentProject(states, file, setElements)}>
-                        <ListItemText primary={file.name} />
-                    </ListItem>
-                ))}
-        </div>
-    );
 }

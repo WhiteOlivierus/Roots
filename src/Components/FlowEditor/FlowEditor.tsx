@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactFlow, { removeElements, addEdge, Controls, MiniMap } from "react-flow-renderer";
 import NodeBar from "./NodeBar";
+import { useHistory } from "react-router-dom";
 
 import { NodeTypes } from "./Nodes/NodeTypes";
 import { GetImageBlobPath, SaveFileInFolder } from "../../Utilities/FileHandling";
@@ -8,30 +9,55 @@ import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext
 
 import { v4 as uuidv4 } from "uuid";
 import { MenuBar } from "./MenuBar";
+import { defaultFlow } from "../../Utilities/defaultFlow";
+import { LoadFlow } from "../../Utilities/FlowHandler";
+import { useNodeViewerState } from "./Context/NodeViewerContext";
 
 export declare const window: any;
 
-export let rfInstance = undefined;
+export var rfInstance = undefined;
 
 export function FlowEditor(props) {
-    const [elements, setElements] = useState([]);
+    const history = useHistory();
 
-    const [reactFlowInstance, setReactFlowInstance] = useState(null);
-    const onConnect = (params) => setElements((els): any => addEdge(params, els));
-    const onElementsRemove = (elementsToRemove) => setElements((els): any => removeElements(elementsToRemove, els));
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
+    const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
 
-    const onLoad = (_reactFlowInstance) => {
-        setReactFlowInstance(_reactFlowInstance);
-        _reactFlowInstance.fitView();
-    };
+    var initialElements = defaultFlow.elements;
 
     useEffect(() => {
-        window.addEventListener("beforeunload", function (e) {
-            e.preventDefault();
-            e.returnValue = "";
+        async function Action() {
+            var flow = await LoadFlow(projectFilesState.activeFlow);
+            if (flow) {
+                initialElements = flow.elements;
+            } else {
+                history.push("/");
+            }
+
+            setElements(elements);
+            setElements(initialElements);
+        }
+        Action();
+
+        nodeViewerState.setElements = setElements;
+
+        setNodeViewerState(nodeViewerState);
+    }, []);
+
+    const [elements, setElements] = useState(initialElements);
+
+    const [rfInstance, setRfInstance] = useState(null);
+
+    function onConnect(params) {
+        return setElements(function (els): any {
+            return addEdge(params, els);
         });
-    });
+    }
+    function onElementsRemove(elementsToRemove) {
+        return setElements((els): any => {
+            return removeElements(elementsToRemove, els);
+        });
+    }
 
     function onDragOver(event) {
         event.preventDefault();
@@ -42,7 +68,7 @@ export function FlowEditor(props) {
         event.preventDefault();
 
         const type = event.dataTransfer.getData("application/reactflow");
-        const position = reactFlowInstance.project({ x: event.clientX, y: event.clientY - 40 });
+        const position = rfInstance.project({ x: event.clientX, y: event.clientY - 40 });
 
         let fileHandle = await window.showOpenFilePicker();
         fileHandle = fileHandle[0];
@@ -55,8 +81,6 @@ export function FlowEditor(props) {
         newNode = CreateNode(type, newNode, position, blobURL, fileHandle);
 
         setProjectFilesState(projectFilesState);
-
-        rfInstance = reactFlowInstance;
 
         setElements((es) => es.concat(newNode));
     }
@@ -78,7 +102,6 @@ export function FlowEditor(props) {
             nodeTypes={NodeTypes}
             onConnect={onConnect}
             onElementsRemove={onElementsRemove}
-            onLoad={onLoad}
             onDrop={onDrop}
             onDragOver={onDragOver}
             deleteKeyCode={46}

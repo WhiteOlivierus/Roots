@@ -3,10 +3,7 @@ import { createContext, useContext } from "react";
 import createEngine, { DiagramEngine, DiagramModel, DiagramModelGenerics } from "@projectstorm/react-diagrams";
 
 export class NodeViewerState {
-    flow: any = {};
-    model: DiagramModel<DiagramModelGenerics> = new DiagramModel();
-    engine: DiagramEngine = createEngine();
-    projectFile: any = undefined;
+    setElements: any;
 }
 
 export type NodeViewerContextType = {

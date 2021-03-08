@@ -1,36 +1,26 @@
 import React from "react";
 import {
     AppBar,
-    Badge,
     createStyles,
-    Divider,
     Drawer,
     IconButton,
     List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
     makeStyles,
     Theme,
     Toolbar,
     Typography,
 } from "@material-ui/core";
-import SaveIcon from "@material-ui/icons/Save";
 import MenuIcon from "@material-ui/icons/Menu";
-import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
-import FolderIcon from "@material-ui/icons/Folder";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import clsx from "clsx";
 
-import { useStoreActions } from "react-flow-renderer";
-
-import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
-import { useNodeViewerState } from "./Context/NodeViewerContext";
-import { NewFlow, NewProject, OpenFlow, OpenProject, SaveFlow, SaveFlowAs } from "../../Utilities/ProjectHandler";
-import { rfInstance } from "./FlowEditor";
+import { useStoreState } from "react-flow-renderer";
 
 import { Link } from "react-router-dom";
+import { Export } from "../../Utilities/MenuBarFunctions";
+import { MenuButtons } from "./MenuButtons";
+import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 
 const drawerWidth = 240;
 
@@ -103,52 +93,11 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export function MenuBar(props) {
-    const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
+    const nodes = useStoreState((store) => store.nodes);
+    const edges = useStoreState((store) => store.edges);
+
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
 
-    const setElements = useStoreActions((actions) => actions.setElements);
-
-    const states = {
-        nodeViewerState,
-        projectFilesState,
-        setNodeViewerState,
-        setProjectFilesState,
-    };
-
-    const buttons = [
-        {
-            name: "New Flow",
-            action: NewFlow(states),
-            icon: <InsertDriveFileIcon />,
-        },
-        {
-            name: "New Project",
-            action: NewProject(states),
-            icon: <InsertDriveFileIcon />,
-        },
-        { divide: "" },
-        {
-            name: "Open Flow",
-            action: OpenFlow(states, projectFilesState.activeRoot, setElements),
-            icon: <FolderIcon />,
-        },
-        {
-            name: "Open Project",
-            action: OpenProject(states, undefined, setElements),
-            icon: <FolderIcon />,
-        },
-        { divide: "" },
-        {
-            name: "Save Flow",
-            action: SaveFlow(states, rfInstance),
-            icon: <SaveIcon />,
-        },
-        {
-            name: "Save Flow As",
-            action: SaveFlowAs(states, rfInstance),
-            icon: <SaveIcon />,
-        },
-    ];
     const classes = useStyles();
 
     const [open, setOpen] = React.useState(false);
@@ -161,18 +110,6 @@ export function MenuBar(props) {
         setOpen(false);
     };
 
-    const newLocal = buttons.map(function (button: any, index) {
-        if ("divide" in button) {
-            return <Divider key={index} />;
-        } else {
-            return (
-                <ListItem button key={index} onClick={button.action}>
-                    <ListItemIcon>{button.icon}</ListItemIcon>
-                    <ListItemText primary={button.name} />
-                </ListItem>
-            );
-        }
-    });
     return (
         <div className={classes.root}>
             <AppBar position="static">
@@ -204,11 +141,11 @@ export function MenuBar(props) {
                                   )}`
                         }`}
                     </Typography>
-                    <IconButton color="inherit">
-                        <Link to="/preview">
+                    <Link onClick={() => Export(projectFilesState, nodes, edges)} to="/preview">
+                        <IconButton color="secondary">
                             <PlayCircleFilledIcon />
-                        </Link>
-                    </IconButton>
+                        </IconButton>
+                    </Link>
                 </Toolbar>
             </AppBar>
             <Drawer variant="persistent" anchor="left" open={open}>
@@ -218,7 +155,9 @@ export function MenuBar(props) {
                 >
                     <ChevronLeftIcon />
                 </IconButton>
-                <List>{newLocal}</List>
+                <List>
+                    <MenuButtons />
+                </List>
             </Drawer>
         </div>
     );

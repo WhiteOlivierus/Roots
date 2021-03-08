@@ -13,38 +13,35 @@ import { Game } from "./Components/Preview/Game";
 import { ThemeProvider } from "@material-ui/core";
 import { theme } from "./Theme";
 import { NodeViewerProvider } from "./Components/FlowEditor/Context/NodeViewerProvider";
-import { AuthStateProvider } from "./Context/AppState";
 
 export function App() {
     return (
         <ReactFlowProvider>
-            <AuthStateProvider>
-                <ProjectFilesProvider>
-                    <NodeViewerProvider>
-                        <ThemeProvider theme={theme}>
-                            <ContextMenu />
-                            <Router>
-                                <Switch>
-                                    <Route exact={true} path="/">
-                                        <StartMenu />
-                                    </Route>
-                                    <Route path="/flow">
-                                        <FlowEditor />
-                                    </Route>
-                                    <Route path="/preview">
-                                        <Link to="/flow">
-                                            <button style={{ position: "absolute", left: 0, top: 0, zIndex: 1000 }}>
-                                                toFlow
-                                            </button>
-                                        </Link>
-                                        <Game />
-                                    </Route>
-                                </Switch>
-                            </Router>
-                        </ThemeProvider>
-                    </NodeViewerProvider>
-                </ProjectFilesProvider>
-            </AuthStateProvider>
+            <ProjectFilesProvider>
+                <NodeViewerProvider>
+                    <ThemeProvider theme={theme}>
+                        <ContextMenu />
+                        <Router>
+                            <Switch>
+                                <Route exact={true} path="/">
+                                    <StartMenu />
+                                </Route>
+                                <Route path="/flow">
+                                    <FlowEditor />
+                                </Route>
+                                <Route path="/preview">
+                                    <Link to="/flow">
+                                        <button style={{ position: "absolute", left: 0, top: 0, zIndex: 1000 }}>
+                                            toFlow
+                                        </button>
+                                    </Link>
+                                    <Game />
+                                </Route>
+                            </Switch>
+                        </Router>
+                    </ThemeProvider>
+                </NodeViewerProvider>
+            </ProjectFilesProvider>
         </ReactFlowProvider>
     );
 }

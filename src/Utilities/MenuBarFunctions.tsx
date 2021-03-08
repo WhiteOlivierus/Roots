@@ -1,26 +1,7 @@
-import { WriteFile, WriteNewFile, OpenFolder } from "./FileHandling";
+import { WriteFile, OpenFolder } from "./FileHandling";
 
-import { NodeViewerState } from "../Components/FlowEditor/Context/NodeViewerContext";
 import { ProjectFilesState } from "../Components/ProjectFilesContext/ProjectFilesContext";
 import { InputZone, ProjectFile, Scene } from "../ProjectFile";
-
-export async function Save(projectFilesState: ProjectFilesState, flow: any) {
-    var serializedModel = JSON.stringify(flow, null, 2);
-    /* 
-    const newFileHandle = await projectFilesState.projectHandle.getFileHandle("test.json", { create: true });
-
-    WriteFile(newFileHandle, serializedModel); */
-}
-
-export async function SaveAs(nodeViewerState: NodeViewerState) {
-    nodeViewerState.projectFile = await WriteNewFile();
-
-    if (!nodeViewerState.projectFile) return;
-
-    var serializedModel = JSON.stringify(nodeViewerState.model.serialize(), null, 2);
-
-    await WriteFile(nodeViewerState.projectFile, serializedModel);
-}
 
 export async function Load(projectFilesState: any, fileName: string) {
     if (!projectFilesState) projectFilesState = await OpenFolder();
@@ -33,18 +14,22 @@ export async function Load(projectFilesState: any, fileName: string) {
 }
 
 export async function FindFile(dirHandle: any, fileName: string) {
-    for await (const entry of dirHandle.values()) {
-        if (entry.name === fileName && entry.kind === "file") {
-            return entry;
-        }
-    }
+    return await Find(dirHandle, fileName, "file");
 }
 
 export async function FindDir(dirHandle: any, dirName: string) {
-    for await (const entry of dirHandle.values()) {
-        if (entry.name === dirName && entry.kind === "directory") {
-            return entry;
+    return await Find(dirHandle, dirName, "directory");
+}
+
+async function Find(dirHandle: any, fileName: string, type: any) {
+    try {
+        for await (const entry of dirHandle.values()) {
+            if (entry.name === fileName && entry.kind === type) {
+                return entry;
+            }
         }
+    } catch {
+        return null;
     }
 }
 
@@ -110,7 +95,7 @@ export async function Export(projectFileState: ProjectFilesState, nodes: any, ed
 
     const newFileHandle = await buildHandle.getFileHandle("game.json", { create: true });
 
-    WriteFile(newFileHandle, JSON.stringify(projectFile, null, 2));
+    await WriteFile(newFileHandle, JSON.stringify(projectFile, null, 2));
 }
 
 async function Move(folderHandle: any, fileHandle: any) {
