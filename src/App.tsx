@@ -1,19 +1,16 @@
-import "./App.css";
-
 import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
 
-import { ProjectFilesProvider } from "./Components/ProjectFilesContext/ProjectFilesProvider";
+import { ProjectFilesProvider } from "./Context/ProjectFilesContext/ProjectFilesProvider";
 import { ReactFlowProvider } from "react-flow-renderer";
 
-import { ContextMenu } from "./Components/ContextMenu";
+import { ContextMenu } from "./Utilities/ContextMenu";
 
 import { FlowEditor } from "./Components/FlowEditor/FlowEditor";
 import StartMenu from "./Components/StartMenu/StartMenu";
-import { Game } from "./Components/Preview/Game";
 import { ThemeProvider } from "@material-ui/core";
-import { theme } from "./Theme";
-import { NodeViewerProvider } from "./Components/FlowEditor/Context/NodeViewerProvider";
-import { useProjectFilesState } from "./Components/ProjectFilesContext/ProjectFilesContext";
+import { theme } from "./Resources/Theme";
+import { NodeViewerProvider } from "./Context/NodeViewerContext/NodeViewerProvider";
+import { Preview } from "./Components/Preview/Preview";
 
 export function App() {
     return (
@@ -36,7 +33,7 @@ export function App() {
                                             toFlow
                                         </button>
                                     </Link>
-                                    <Bla />
+                                    <Preview />
                                 </Route>
                             </Switch>
                         </Router>
@@ -45,10 +42,4 @@ export function App() {
             </ProjectFilesProvider>
         </ReactFlowProvider>
     );
-}
-
-function Bla(props) {
-    const { projectFilesState } = useProjectFilesState();
-
-    return <Game game={projectFilesState.build} />;
 }

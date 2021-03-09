@@ -1,5 +1,5 @@
 import { WriteFile, FindFile, Move } from "./FileHandler";
-import { InputZone, ProjectFile, Scene } from "../ProjectFile";
+import { InputZone, ProjectFile, Scene } from "../Resources/ProjectFile";
 
 export async function Build(activeRoot: any, nodes: any, edges: any) {
     let projectFile: ProjectFile = new ProjectFile(activeRoot.name);
@@ -14,7 +14,7 @@ export async function Build(activeRoot: any, nodes: any, edges: any) {
         newScene.id = node.id;
 
         if ("imageName" in node.data) {
-            newScene.img = node.data.imageName;
+            newScene.img = node.data.image;
 
             images.push(await FindFile(activeRoot, node.data.imageName));
         }

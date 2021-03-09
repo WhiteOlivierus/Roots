@@ -1,8 +1,18 @@
 import { SwitchTransition, CSSTransition } from "react-transition-group";
 import { Switch, Route, useLocation } from "react-router-dom";
 import { Scene } from "./Scene";
+import { useHistory } from "react-router-dom";
+import { useEffect } from "react";
 
 export function Game(props) {
+    const history = useHistory();
+
+    useEffect(() => {
+        if (game === undefined) {
+            history.push("/");
+        }
+    }, []);
+
     let game = props.game;
 
     let location = useLocation();

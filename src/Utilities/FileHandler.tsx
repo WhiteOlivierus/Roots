@@ -35,7 +35,7 @@ export async function ReadProject(dirHandle: any) {
     if (dirHandle.values().contains()) console.log("It's a project");
 }
 
-export async function GetImageBlobPath(projectFilesState: any, fileHandle: any) {
+export async function GetImageBlobPath(fileHandle: any) {
     var path = URL.createObjectURL(await fileHandle.getFile());
     return path;
 }
@@ -116,11 +116,11 @@ export async function LoadElementImages(dirHandle: any, elements: any) {
 
         if (containsKeys) {
             let imageHandle = await FindFile(dirHandle, element.data.imageName);
-            const imageFile = await imageHandle.getFile();
-            element.data.image = await URL.createObjectURL(imageFile);
-            elements[index] = element;
+            elements[index] = await GetImageBlobPath(imageHandle);
         }
     });
+
+    return elements;
 }
 
 export async function verifyPermission(fileHandle, readWrite) {

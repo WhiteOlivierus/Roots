@@ -56,7 +56,7 @@ export async function LoadFlow(root: any, flowHandle: any) {
     }
 
     if (flow) {
-        await LoadElementImages(root, flow.elements);
+        flow.elements = await LoadElementImages(root, flow.elements);
         return flow;
     } else {
         return null;

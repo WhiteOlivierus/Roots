@@ -18,10 +18,9 @@ import clsx from "clsx";
 
 import { useStoreState } from "react-flow-renderer";
 
-import { Link } from "react-router-dom";
 import { Build } from "../../Utilities/BuildHandler";
 import { MenuButtons } from "./MenuButtons";
-import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
+import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
 
 const drawerWidth = 240;
 
@@ -121,7 +120,7 @@ function MenuBarC(props) {
             history.push("/preview");
         }
         Action();
-    }, [projectFilesState, setProjectFilesState]);
+    }, [projectFilesState, setProjectFilesState, nodes, edges]);
 
     return (
         <div className={classes.root}>

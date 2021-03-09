@@ -2,7 +2,7 @@ import { useHistory } from "react-router-dom";
 
 import { Box, Button, Card, CardContent, Grid, Typography } from "@material-ui/core";
 
-import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
+import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
 
 import { NewProject, OpenProject } from "../../Utilities/ProjectHandler";
 

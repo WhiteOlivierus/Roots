@@ -1,19 +1,20 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ReactFlow, { removeElements, addEdge, Controls, MiniMap } from "react-flow-renderer";
 import NodeBar from "./NodeBar";
 import { useHistory } from "react-router-dom";
 
 import { NodeTypes } from "./Nodes/NodeTypes";
-import { GetImageBlobPath, SaveFileInFolder } from "../../Utilities/FileHandler";
-import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
+import { SaveFileInFolder } from "../../Utilities/FileHandler";
+import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
 
-import { v4 as uuidv4 } from "uuid";
 import { MenuBar } from "./MenuBar";
 import { defaultFlow } from "../../Utilities/DefaultFlow";
-import { useNodeViewerState } from "./Context/NodeViewerContext";
+import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
 
 import { useZoomPanHelper } from "react-flow-renderer";
 import { LoadFlow } from "../../Utilities/FlowHandler";
+import { CreateNode } from "./Nodes/NodeFactory";
+import React from "react";
 
 export declare const window: any;
 
@@ -21,7 +22,7 @@ export var rfi = undefined;
 
 var initialElements = defaultFlow.elements;
 
-export function FlowEditor(props) {
+export const FlowEditor = React.memo(function (props) {
     const { fitView } = useZoomPanHelper();
 
     const history = useHistory();
@@ -33,29 +34,21 @@ export function FlowEditor(props) {
 
     const [rfInstance, setRfInstance] = useState(null);
 
-    // On first load
-    useEffect(() => {
-        async function Action() {
-            if (projectFilesState.activeRoot === undefined || projectFilesState.activeFlow == undefined) {
-                history.push("/");
-            }
-
-            var flow = await LoadFlow(projectFilesState.activeRoot, projectFilesState.activeFlow);
-
-            if (flow) {
-                initialElements = flow.elements;
-            } else {
-                history.push("/");
-            }
-
-            setElements(elements);
-            setElements(initialElements);
-        }
-        try {
-            Action();
-        } catch {
+    const InitialLoad = useCallback(async () => {
+        if (projectFilesState.activeRoot === undefined || projectFilesState.activeFlow == undefined) {
             history.push("/");
         }
+
+        var flow = await LoadFlow(projectFilesState.activeRoot, projectFilesState.activeFlow);
+
+        if (flow) {
+            initialElements = flow.elements;
+        } else {
+            history.push("/");
+        }
+
+        setElements(elements);
+        setElements(initialElements);
 
         nodeViewerState.setElements = setElements;
         nodeViewerState.rfInstance = rfInstance;
@@ -63,6 +56,15 @@ export function FlowEditor(props) {
         setNodeViewerState(nodeViewerState);
 
         fitView();
+    }, []);
+
+    // On first load
+    useEffect(() => {
+        try {
+            InitialLoad();
+        } catch {
+            history.push("/");
+        }
     }, []);
 
     function onConnect(params) {
@@ -85,17 +87,15 @@ export function FlowEditor(props) {
         event.preventDefault();
 
         const type = event.dataTransfer.getData("application/reactflow");
-        const position = rfInstance.project({ x: event.clientX, y: event.clientY - 40 });
+        const position = rfInstance.project({ x: event.clientX, y: event.clientY });
 
-        let fileHandle = await window.showOpenFilePicker();
+        var fileHandle = await window.showOpenFilePicker();
         fileHandle = fileHandle[0];
 
         fileHandle = await SaveFileInFolder(projectFilesState.activeRoot, fileHandle);
 
-        const blobURL = await GetImageBlobPath(projectFilesState.activeRoot, fileHandle);
-
-        let newNode = undefined;
-        newNode = CreateNode(type, newNode, position, blobURL, fileHandle);
+        var newNode = await CreateNode(type, fileHandle);
+        newNode.position = position;
 
         setProjectFilesState(projectFilesState);
 
@@ -113,6 +113,8 @@ export function FlowEditor(props) {
         }
     }
 
+    const updateRFInstance = useCallback(() => (rfi = rfInstance), [rfi, rfInstance]);
+
     return (
         <ReactFlow
             elements={elements}
@@ -121,7 +123,7 @@ export function FlowEditor(props) {
             onConnect={onConnect}
             onElementsRemove={onElementsRemove}
             onDrop={onDrop}
-            onMove={() => (rfi = rfInstance)}
+            onMove={updateRFInstance}
             onDragOver={onDragOver}
             deleteKeyCode={46}
         >
@@ -131,34 +133,4 @@ export function FlowEditor(props) {
             <MiniMap nodeColor={MinimapSettings} />
         </ReactFlow>
     );
-}
-
-function CreateNode(type: any, newNode: any, position: any, blobURL: string, fileHandle: any) {
-    switch (type) {
-        case "scene":
-            newNode = {
-                id: uuidv4(),
-                type,
-                position,
-                style: { width: 160, height: 90 },
-                data: {
-                    label: `${type} node`,
-                    image: blobURL,
-                    imageName: fileHandle.name,
-                    outHandles: [{ text: "Left" }, { text: "Right" }],
-                },
-            };
-            break;
-
-        default:
-            newNode = {
-                id: uuidv4(),
-                type,
-                position,
-                style: { width: 160, height: 90 },
-                data: { label: `${type} node`, image: blobURL, imageName: fileHandle.name },
-            };
-            break;
-    }
-    return newNode;
-}
+});

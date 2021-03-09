@@ -2,8 +2,8 @@ import { Divider, ListItem, ListItemIcon, ListItemText } from "@material-ui/core
 import SaveIcon from "@material-ui/icons/Save";
 import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
 import FolderIcon from "@material-ui/icons/Folder";
-import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
-import { useNodeViewerState } from "./Context/NodeViewerContext";
+import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
+import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
 import { NewProject, OpenProject } from "../../Utilities/ProjectHandler";
 import { NewFlow, OpenFlow, SaveFlow, SaveFlowAs } from "../../Utilities/FlowHandler";
 import { removeElements } from "react-flow-renderer";
