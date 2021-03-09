@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
+import { useHistory } from "react-router-dom";
 import {
     AppBar,
     createStyles,
@@ -18,7 +19,7 @@ import clsx from "clsx";
 import { useStoreState } from "react-flow-renderer";
 
 import { Link } from "react-router-dom";
-import { Export } from "../../Utilities/MenuBarFunctions";
+import { Build } from "../../Utilities/BuildHandler";
 import { MenuButtons } from "./MenuButtons";
 import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 
@@ -92,23 +93,35 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export function MenuBar(props) {
+function MenuBarC(props) {
     const nodes = useStoreState((store) => store.nodes);
     const edges = useStoreState((store) => store.edges);
+
+    const history = useHistory();
 
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
 
     const classes = useStyles();
 
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
 
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
+    const handleDrawerOpen = useCallback(() => {
+        setOpen((o) => (o = true));
+    }, [setOpen]);
 
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
+    const handleDrawerClose = useCallback(() => {
+        setOpen((o) => (o = false));
+    }, [setOpen]);
+
+    const onBuild = useCallback(() => {
+        async function Action() {
+            var build = await Build(projectFilesState.activeRoot, nodes, edges);
+            projectFilesState.build = build;
+            setProjectFilesState(projectFilesState);
+            history.push("/preview");
+        }
+        Action();
+    }, [projectFilesState, setProjectFilesState]);
 
     return (
         <div className={classes.root}>
@@ -141,11 +154,11 @@ export function MenuBar(props) {
                                   )}`
                         }`}
                     </Typography>
-                    <Link onClick={() => Export(projectFilesState, nodes, edges)} to="/preview">
+                    <div onClick={onBuild}>
                         <IconButton color="secondary">
                             <PlayCircleFilledIcon />
                         </IconButton>
-                    </Link>
+                    </div>
                 </Toolbar>
             </AppBar>
             <Drawer variant="persistent" anchor="left" open={open}>
@@ -160,3 +173,5 @@ export function MenuBar(props) {
         </div>
     );
 }
+
+export const MenuBar = React.memo(MenuBarC);

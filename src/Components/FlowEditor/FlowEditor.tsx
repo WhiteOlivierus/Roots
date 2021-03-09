@@ -4,16 +4,16 @@ import NodeBar from "./NodeBar";
 import { useHistory } from "react-router-dom";
 
 import { NodeTypes } from "./Nodes/NodeTypes";
-import { GetImageBlobPath, SaveFileInFolder } from "../../Utilities/FileHandling";
+import { GetImageBlobPath, SaveFileInFolder } from "../../Utilities/FileHandler";
 import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 
 import { v4 as uuidv4 } from "uuid";
 import { MenuBar } from "./MenuBar";
-import { defaultFlow } from "../../Utilities/defaultFlow";
+import { defaultFlow } from "../../Utilities/DefaultFlow";
 import { useNodeViewerState } from "./Context/NodeViewerContext";
 
 import { useZoomPanHelper } from "react-flow-renderer";
-import { LoadFlow } from "../../Utilities/ProjectHandler";
+import { LoadFlow } from "../../Utilities/FlowHandler";
 
 export declare const window: any;
 
@@ -36,7 +36,12 @@ export function FlowEditor(props) {
     // On first load
     useEffect(() => {
         async function Action() {
+            if (projectFilesState.activeRoot === undefined || projectFilesState.activeFlow == undefined) {
+                history.push("/");
+            }
+
             var flow = await LoadFlow(projectFilesState.activeRoot, projectFilesState.activeFlow);
+
             if (flow) {
                 initialElements = flow.elements;
             } else {
@@ -46,7 +51,11 @@ export function FlowEditor(props) {
             setElements(elements);
             setElements(initialElements);
         }
-        Action();
+        try {
+            Action();
+        } catch {
+            history.push("/");
+        }
 
         nodeViewerState.setElements = setElements;
         nodeViewerState.rfInstance = rfInstance;

@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
 import { Box, Button, Card, CardContent, Grid, Typography } from "@material-ui/core";

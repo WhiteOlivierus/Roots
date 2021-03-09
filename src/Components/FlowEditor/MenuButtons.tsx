@@ -4,100 +4,121 @@ import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
 import FolderIcon from "@material-ui/icons/Folder";
 import { useProjectFilesState } from "../ProjectFilesContext/ProjectFilesContext";
 import { useNodeViewerState } from "./Context/NodeViewerContext";
-import { NewFlow, NewProject, OpenProject, OpenFlow, SaveFlow, SaveFlowAs } from "../../Utilities/ProjectHandler";
+import { NewProject, OpenProject } from "../../Utilities/ProjectHandler";
+import { NewFlow, OpenFlow, SaveFlow, SaveFlowAs } from "../../Utilities/FlowHandler";
 import { removeElements } from "react-flow-renderer";
-import { defaultFlow } from "../../Utilities/defaultFlow";
+import { defaultFlow } from "../../Utilities/DefaultFlow";
 import { useZoomPanHelper } from "react-flow-renderer";
 import { rfi } from "./FlowEditor";
+import { memo, useCallback } from "react";
 
 export function MenuButtons(props) {
     const { fitView } = useZoomPanHelper();
-    const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
+
+    const { nodeViewerState } = useNodeViewerState();
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
 
-    async function onNewFlow() {
-        try {
-            var { activeFlow } = await NewFlow(projectFilesState.activeRoot);
-        } catch {
-            return;
+    const onNewFlow = useCallback(() => {
+        async function onNewFlow() {
+            try {
+                var { activeFlow } = await NewFlow(projectFilesState.activeRoot);
+            } catch {
+                return;
+            }
+
+            projectFilesState.activeFlow = activeFlow;
+
+            setProjectFilesState(projectFilesState);
+
+            nodeViewerState.setElements((els) => removeElements(els, els));
+            nodeViewerState.setElements(defaultFlow.elements);
+
+            fitView();
         }
+        onNewFlow();
+    }, [projectFilesState, setProjectFilesState, nodeViewerState]);
 
-        projectFilesState.activeFlow = activeFlow;
+    const onNewProject = useCallback(() => {
+        async function onNewProject() {
+            try {
+                var { activeRoot, activeFlow } = await NewProject();
+            } catch {
+                return;
+            }
 
-        setProjectFilesState(projectFilesState);
+            projectFilesState.activeRoot = activeRoot;
+            projectFilesState.activeFlow = activeFlow;
 
-        nodeViewerState.setElements((els) => removeElements(els, els));
-        nodeViewerState.setElements(defaultFlow.elements);
+            setProjectFilesState(projectFilesState);
 
-        fitView();
-    }
-
-    async function onNewProject() {
-        try {
-            var { activeRoot, activeFlow } = await NewProject();
-        } catch {
-            return;
+            fitView();
         }
+        onNewProject();
+    }, [projectFilesState, setProjectFilesState]);
 
-        projectFilesState.activeRoot = activeRoot;
-        projectFilesState.activeFlow = activeFlow;
+    const onOpenFlow = useCallback(() => {
+        async function onOpenFlow() {
+            try {
+                var { activeFlow, flow } = await OpenFlow(projectFilesState.activeRoot);
+            } catch {
+                return;
+            }
 
-        setProjectFilesState(projectFilesState);
+            projectFilesState.activeFlow = activeFlow;
 
-        fitView();
-    }
+            setProjectFilesState(projectFilesState);
 
-    async function onOpenFlow() {
-        try {
-            var { activeFlow, flow } = await OpenFlow(projectFilesState.activeRoot);
-        } catch {
-            return;
+            nodeViewerState.setElements((els) => removeElements(els, els));
+            nodeViewerState.setElements(flow.elements);
+
+            fitView();
         }
+        onOpenFlow();
+    }, [projectFilesState, setProjectFilesState, nodeViewerState]);
 
-        projectFilesState.activeFlow = activeFlow;
+    const onOpenProject = useCallback(() => {
+        async function onOpenProject() {
+            try {
+                var { activeRoot, activeFlow } = await OpenProject();
+            } catch {
+                return;
+            }
 
-        setProjectFilesState(projectFilesState);
+            projectFilesState.activeRoot = activeRoot;
+            projectFilesState.activeFlow = activeFlow;
 
-        nodeViewerState.setElements((els) => removeElements(els, els));
-        nodeViewerState.setElements(flow.elements);
+            setProjectFilesState(projectFilesState);
 
-        fitView();
-    }
-
-    async function onOpenProject() {
-        try {
-            var { activeRoot, activeFlow } = await OpenProject();
-        } catch {
-            return;
+            fitView();
         }
+        onOpenProject();
+    }, [projectFilesState, setProjectFilesState]);
 
-        projectFilesState.activeRoot = activeRoot;
-        projectFilesState.activeFlow = activeFlow;
-
-        setProjectFilesState(projectFilesState);
-
-        fitView();
-    }
-
-    async function onSaveFlow() {
-        try {
-            await SaveFlow(projectFilesState.activeFlow, rfi);
-        } catch {
-            return;
+    const onSaveFlow = useCallback(() => {
+        async function onSaveFlow() {
+            try {
+                await SaveFlow(projectFilesState.activeFlow, rfi);
+            } catch {
+                return;
+            }
         }
-    }
+        onSaveFlow();
+    }, [projectFilesState]);
 
-    async function onSaveFlowAs() {
-        try {
-            var activeFlow = await SaveFlowAs(projectFilesState.activeRoot, rfi);
-        } catch {
-            return;
+    const onSaveFlowAs = useCallback(() => {
+        async function onSaveFlowAs() {
+            try {
+                var activeFlow = await SaveFlowAs(projectFilesState.activeRoot, rfi);
+            } catch {
+                return;
+            }
+
+            projectFilesState.activeFlow = activeFlow;
+
+            setProjectFilesState(projectFilesState);
         }
-
-        projectFilesState.activeFlow = activeFlow;
-
-        setProjectFilesState(projectFilesState);
-    }
+        onSaveFlowAs();
+    }, [projectFilesState, setProjectFilesState]);
 
     const buttons = [
         {
@@ -140,14 +161,20 @@ export function MenuButtons(props) {
                 if ("divide" in button) {
                     return <Divider key={index} />;
                 } else {
-                    return (
-                        <ListItem button key={index} onClick={button.action}>
-                            <ListItemIcon>{button.icon}</ListItemIcon>
-                            <ListItemText primary={button.name} />
-                        </ListItem>
-                    );
+                    return <MemoizedMenuButton key={index} button={button} />;
                 }
             })}
         </div>
     );
 }
+
+function MenuButton(props) {
+    return (
+        <ListItem button onClick={props.button.action}>
+            <ListItemIcon>{props.button.icon}</ListItemIcon>
+            <ListItemText primary={props.button.name} />
+        </ListItem>
+    );
+}
+
+const MemoizedMenuButton = memo(MenuButton);

@@ -13,6 +13,7 @@ import { Game } from "./Components/Preview/Game";
 import { ThemeProvider } from "@material-ui/core";
 import { theme } from "./Theme";
 import { NodeViewerProvider } from "./Components/FlowEditor/Context/NodeViewerProvider";
+import { useProjectFilesState } from "./Components/ProjectFilesContext/ProjectFilesContext";
 
 export function App() {
     return (
@@ -35,7 +36,7 @@ export function App() {
                                             toFlow
                                         </button>
                                     </Link>
-                                    <Game />
+                                    <Bla />
                                 </Route>
                             </Switch>
                         </Router>
@@ -44,4 +45,10 @@ export function App() {
             </ProjectFilesProvider>
         </ReactFlowProvider>
     );
+}
+
+function Bla(props) {
+    const { projectFilesState } = useProjectFilesState();
+
+    return <Game game={projectFilesState.build} />;
 }

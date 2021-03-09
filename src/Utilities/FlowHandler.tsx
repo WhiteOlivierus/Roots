@@ -1,91 +1,90 @@
-import { get, set } from "idb-keyval";
-import { removeElements } from "react-flow-renderer";
-
-import { verifyPermission, LoadObjectFromFile, SaveObjectToFile } from "./FileHandler";
-
-export const flowKey = "example-flow";
+import { CreateFolder, WriteFile } from "./FileHandler";
+import { FindDir, FindFile, GetObjectFromFileHandle, LoadElementImages } from "./FileHandler";
+import { defaultFlow } from "./DefaultFlow";
+import { SetActiveFlowInConfig } from "./ProjectHandler";
 
 export declare const window: any;
 
-export const filePickerOptions = {
-    types: [
-        {
-            description: "Flow files",
-            accept: {
-                "text/plain": [".json"],
-            },
-        },
-    ],
-};
+export async function NewFlow(activeRoot: any) {
+    var { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(activeRoot);
 
-export async function NewFlow(setElements, elements) {
-    var fileHandle = await VerifyFileHandle(undefined, ShowSaveFilePicker);
+    await WriteFile(activeFlow, JSON.stringify(defaultFlow));
 
-    await SaveObjectToFile({}, fileHandle);
+    await SetActiveFlowInConfig(activeRoot, flowDirHandle.name);
 
-    await set(flowKey, fileHandle);
-
-    setElements((els) => removeElements(elements, els));
+    return { activeFlow };
 }
 
-export async function SaveFlow(rfInstance) {
-    var fileHandle = await get(flowKey);
+export async function OpenFlow(activeRoot: any) {
+    var flowDirHandle = await window.showDirectoryPicker();
 
-    fileHandle = await VerifyFileHandle(fileHandle, ShowSaveFilePicker);
+    const activeFlow: any = await FindFile(flowDirHandle, `${flowDirHandle.name}.json`);
 
-    await SaveElements(rfInstance, fileHandle);
+    var flow = await LoadFlow(activeRoot, activeFlow);
+
+    await SetActiveFlowInConfig(activeRoot, flowDirHandle.name);
+
+    return { activeFlow, flow };
 }
 
-export async function SaveFlowAs(rfInstance) {
-    var fileHandle = await VerifyFileHandle(undefined, ShowSaveFilePicker);
+export async function SaveFlow(activeFlow: any, rfInstance: any) {
+    const flow = rfInstance.toObject();
+    const file = await JSON.stringify(flow);
 
-    await SaveElements(rfInstance, fileHandle);
-
-    await set(flowKey, fileHandle);
+    const writable = await activeFlow.createWritable();
+    await writable.write(file);
+    await writable.close();
 }
 
-export async function OpenFlow() {
-    var fileHandle = await VerifyFileHandle(undefined, ShowOpenFilePicker);
-    fileHandle = fileHandle[0];
+export async function SaveFlowAs(activeRoot: any, rfInstance: any) {
+    var { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(activeRoot);
 
-    await set(flowKey, fileHandle);
+    SaveFlow(activeFlow, rfInstance);
 
-    return await LoadObjectFromFile(fileHandle);
+    await SetActiveFlowInConfig(activeRoot, flowDirHandle.name);
+
+    return activeFlow;
 }
 
-export async function LoadFlow(fileHandle) {
+export async function LoadFlow(root: any, flowHandle: any) {
+    var flow = undefined;
     try {
-        await verifyPermission(fileHandle, true);
-        return await LoadObjectFromFile(fileHandle);
+        const { obj } = await GetObjectFromFileHandle(flowHandle);
+        flow = obj;
     } catch {
         return null;
     }
-}
 
-async function ShowOpenFilePicker() {
-    return await window.showOpenFilePicker(filePickerOptions);
-}
-
-async function ShowSaveFilePicker() {
-    return await window.showSaveFilePicker(filePickerOptions);
-}
-
-async function VerifyFileHandle(fileHandle, action) {
-    try {
-        await verifyPermission(fileHandle, true);
-    } catch {
-        fileHandle = await action();
-    }
-
-    return fileHandle;
-}
-
-async function SaveElements(rfInstance, fileHandle) {
-    if (rfInstance) {
-        const flow = rfInstance.toObject();
-
-        await SaveObjectToFile(flow, fileHandle);
+    if (flow) {
+        await LoadElementImages(root, flow.elements);
+        return flow;
     } else {
-        console.log("Something went horrible wrong");
+        return null;
     }
+}
+export async function CreateFlow(root: any) {
+    var flowName = prompt("Please enter your first root name", "Root");
+
+    const isFlowName = flowName === "" || flowName === null;
+    if (isFlowName) {
+        return null;
+    }
+
+    if ((await FindDir(root, flowName)) !== null) {
+        const overwrite = window.confirm(
+            `You are going to overwrite a existing flow with the name ${flowName}. Are you sure you want to do this?`
+        );
+
+        if (!overwrite) {
+            return;
+        }
+    }
+    var flowDirHandle = await CreateFolder(root, flowName);
+
+    // Create default flow
+    const flowFileHandle = await flowDirHandle.getFileHandle(`${flowName}.json`, {
+        create: true,
+    });
+
+    return { flowFileHandle, flowDirHandle };
 }

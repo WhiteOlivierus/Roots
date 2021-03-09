@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import React from "react";
+import { useCallback } from "react";
 
 const contentStyle = makeStyles({
     img: { width: "100%", height: "100%", borderRadius: 4 },
@@ -8,9 +8,9 @@ const contentStyle = makeStyles({
 export const NodeContent = ({ data }) => {
     const classes = contentStyle();
 
-    const preventDragHandler = (e) => {
+    const preventDragHandler = useCallback((e) => {
         e.preventDefault();
-    };
+    }, []);
 
     return (
         <div style={{ position: "relative", width: "100%", height: "100%" }}>

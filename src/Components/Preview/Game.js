@@ -14,7 +14,11 @@ export function Game(props) {
                     {game.scenes.map((scene, index) => {
                         const isFirst = index === 0 ? true : false;
                         return (
-                            <Route key={index} exact path={isFirst ? "/" : `/${scene.id}`}>
+                            <Route
+                                key={index}
+                                exact
+                                path={isFirst ? `${location.path}/0` : `${location.path}/${scene.id}`}
+                            >
                                 <Scene scene={scene} />
                             </Route>
                         );
