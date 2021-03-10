@@ -116,21 +116,22 @@ export const FlowEditor = React.memo(function (props) {
     const updateRFInstance = useCallback(() => (rfi = rfInstance), [rfi, rfInstance]);
 
     return (
-        <ReactFlow
-            elements={elements}
-            nodeTypes={NodeTypes}
-            onLoad={setRfInstance}
-            onConnect={onConnect}
-            onElementsRemove={onElementsRemove}
-            onDrop={onDrop}
-            onMove={updateRFInstance}
-            onDragOver={onDragOver}
-            deleteKeyCode={46}
-        >
-            <MenuBar />
-            <Controls />
-            <NodeBar />
-            <MiniMap nodeColor={MinimapSettings} />
-        </ReactFlow>
+        <MenuBar>
+            <ReactFlow
+                elements={elements}
+                nodeTypes={NodeTypes}
+                onLoad={setRfInstance}
+                onConnect={onConnect}
+                onElementsRemove={onElementsRemove}
+                onDrop={onDrop}
+                onMove={updateRFInstance}
+                onDragOver={onDragOver}
+                deleteKeyCode={46}
+            >
+                <Controls />
+                <NodeBar />
+                <MiniMap nodeColor={MinimapSettings} />
+            </ReactFlow>
+        </MenuBar>
     );
 });

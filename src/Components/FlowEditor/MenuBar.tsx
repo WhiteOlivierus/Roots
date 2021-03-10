@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { Children, useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 import {
     AppBar,
@@ -21,6 +21,7 @@ import { useStoreState } from "react-flow-renderer";
 import { Build } from "../../Utilities/BuildHandler";
 import { MenuButtons } from "./MenuButtons";
 import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
+import styled from "styled-components";
 
 const drawerWidth = 240;
 
@@ -91,6 +92,15 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     })
 );
+
+const Content = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -10;
+    width: 100vw;
+    height: 100vh;
+`;
 
 function MenuBarC(props) {
     const nodes = useStoreState((store) => store.nodes);
@@ -169,6 +179,7 @@ function MenuBarC(props) {
                 </IconButton>
                 <List>{open && <MenuButtons />}</List>
             </Drawer>
+            {props.children}
         </div>
     );
 }

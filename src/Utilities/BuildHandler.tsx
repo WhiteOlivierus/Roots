@@ -1,5 +1,5 @@
 import { WriteFile, FindFile, Move } from "./FileHandler";
-import { InputZone, ProjectFile, Scene } from "../Resources/ProjectFile";
+import { InputZone, ProjectFile, Scene } from "./ProjectFile";
 
 export async function Build(activeRoot: any, nodes: any, edges: any) {
     let projectFile: ProjectFile = new ProjectFile(activeRoot.name);

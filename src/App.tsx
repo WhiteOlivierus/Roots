@@ -8,7 +8,7 @@ import { ContextMenu } from "./Utilities/ContextMenu";
 import { FlowEditor } from "./Components/FlowEditor/FlowEditor";
 import StartMenu from "./Components/StartMenu/StartMenu";
 import { ThemeProvider } from "@material-ui/core";
-import { theme } from "./Resources/Theme";
+import { theme } from "./Utilities/Theme";
 import { NodeViewerProvider } from "./Context/NodeViewerContext/NodeViewerProvider";
 import { Preview } from "./Components/Preview/Preview";
 
