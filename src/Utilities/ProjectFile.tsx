@@ -1,6 +1,6 @@
 export class InputZone {
     sceneId: string;
-    svg: string;
+    svg: any[];
     text: string;
     img: string;
 }

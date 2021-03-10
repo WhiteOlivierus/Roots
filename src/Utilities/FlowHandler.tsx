@@ -47,18 +47,16 @@ export async function SaveFlowAs(activeRoot: any, rfInstance: any) {
 }
 
 export async function LoadFlow(root: any, flowHandle: any) {
-    var flow = undefined;
     try {
-        const { obj } = await GetObjectFromFileHandle(flowHandle);
-        flow = obj;
-    } catch {
-        return null;
-    }
+        const { obj: flow } = await GetObjectFromFileHandle(flowHandle);
 
-    if (flow) {
-        flow.elements = await LoadElementImages(root, flow.elements);
-        return flow;
-    } else {
+        if (flow) {
+            flow.elements = await LoadElementImages(root, flow.elements);
+            return flow;
+        } else {
+            return null;
+        }
+    } catch {
         return null;
     }
 }

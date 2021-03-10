@@ -7,7 +7,9 @@ export async function CreateFolder(fileHandle: any, directoryName: String) {
 }
 
 export async function SaveFileInFolder(dirHandle: any, fileHandle: any) {
-    let newFileHandle = await dirHandle.getFileHandle(fileHandle.name, { create: true });
+    let newFileHandle = await dirHandle.getFileHandle(fileHandle.name, {
+        create: true,
+    });
     let file = await fileHandle.getFile();
 
     const writable = await newFileHandle.createWritable();
@@ -15,55 +17,6 @@ export async function SaveFileInFolder(dirHandle: any, fileHandle: any) {
     await writable.close();
 
     return newFileHandle;
-}
-
-export async function OpenFolder() {
-    return await window.showDirectoryPicker();
-}
-
-export async function ReadFolder(dirHandle: any) {
-    var fileHandles = [];
-
-    for await (const fileHandle of dirHandle.values()) {
-        fileHandles.push(fileHandle);
-    }
-
-    return fileHandles;
-}
-
-export async function ReadProject(dirHandle: any) {
-    if (dirHandle.values().contains()) console.log("It's a project");
-}
-
-export async function GetImageBlobPath(fileHandle: any) {
-    var path = URL.createObjectURL(await fileHandle.getFile());
-    return path;
-}
-
-export async function HandleHoverFile(fileHandle: any) {
-    const entry = await fileHandle.getAsFileSystemHandle();
-    if (entry.kind === "directory") {
-        ReadProject(entry);
-    } else {
-        var s = await entry.getFile();
-        if (s.type.includes("image/")) {
-            console.log("thats a image");
-        } else {
-            console.log(s.type);
-        }
-        console.log("Got a file ");
-    }
-}
-
-export async function ReadFile(): Promise<any> {
-    try {
-        let [fileHandle] = await window.showOpenFilePicker();
-        return fileHandle;
-    } catch (ex) {
-        if (ex.name === "AbortError") {
-            return;
-        }
-    }
 }
 
 export async function WriteFile(fileHandle: any, contents: any) {
@@ -76,31 +29,6 @@ export async function WriteFile(fileHandle: any, contents: any) {
     const writable = await fileHandle.createWritable();
     await writable.write(contents);
     await writable.close();
-}
-
-export async function WriteNewFile() {
-    const options = {
-        types: [
-            {
-                description: "Json file",
-                accept: {
-                    "application/json": [".json"],
-                },
-            },
-        ],
-    };
-    try {
-        return await window.showSaveFilePicker(options);
-    } catch (ex) {
-        if (ex.name === "AbortError") {
-            return;
-        }
-    }
-}
-
-export async function GetObjectFromFile(root: any, fileName: any) {
-    const handle: any = await FindFile(root, `${fileName}.json`);
-    return await GetObjectFromFileHandle(handle);
 }
 
 export async function GetObjectFromFileHandle(handle: any) {
@@ -116,11 +44,17 @@ export async function LoadElementImages(dirHandle: any, elements: any) {
 
         if (containsKeys) {
             let imageHandle = await FindFile(dirHandle, element.data.imageName);
-            elements[index] = await GetImageBlobPath(imageHandle);
+            elements[index].data.image = await GetImageBlobPath(imageHandle);
         }
     });
 
     return elements;
+}
+
+export async function GetImageBlobPath(fileHandle: any) {
+    const file = await fileHandle.getFile();
+    var path = (window.URL ? URL : webkitURL).createObjectURL(file);
+    return path;
 }
 
 export async function verifyPermission(fileHandle, readWrite) {
@@ -160,7 +94,9 @@ async function Find(dirHandle: any, fileName: string, type: any) {
 export async function Move(folderHandle: any, fileHandle: any) {
     let file = await fileHandle.getFile();
 
-    const newFileHandle = await folderHandle.getFileHandle(fileHandle.name, { create: true });
+    const newFileHandle = await folderHandle.getFileHandle(fileHandle.name, {
+        create: true,
+    });
 
     const writable = await newFileHandle.createWritable();
     await writable.write(file);

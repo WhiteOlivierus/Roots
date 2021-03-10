@@ -28,7 +28,9 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            flexGrow: 1,
+            width: "100vw",
+            height: "100vh",
+            overflow: "hidden",
         },
         appBar: {
             zIndex: theme.zIndex.drawer + 1,
@@ -127,7 +129,10 @@ function MenuBarC(props) {
             var build = await Build(projectFilesState.activeRoot, nodes, edges);
             projectFilesState.build = build;
             setProjectFilesState(projectFilesState);
-            history.push("/preview");
+            if (build.scenes.length <= 0) {
+                return;
+            }
+            history.push(`/preview/${build.scenes[0].id}`);
         }
         Action();
     }, [projectFilesState, setProjectFilesState, nodes, edges]);
@@ -152,12 +157,19 @@ function MenuBarC(props) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" color="inherit" noWrap className={classes.title}>
+                    <Typography
+                        variant="h6"
+                        color="inherit"
+                        noWrap
+                        className={classes.title}
+                    >
                         {`Roots - 
                         ${
                             projectFilesState.activeRoot === undefined
                                 ? "No project loaded"
-                                : `${projectFilesState.activeRoot.name} - ${projectFilesState.activeFlow.name.replace(
+                                : `${
+                                      projectFilesState.activeRoot.name
+                                  } - ${projectFilesState.activeFlow.name.replace(
                                       ".json",
                                       ""
                                   )}`
@@ -173,7 +185,11 @@ function MenuBarC(props) {
             <Drawer variant="persistent" anchor="left" open={open}>
                 <IconButton
                     onClick={handleDrawerClose}
-                    style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                    }}
                 >
                     <ChevronLeftIcon />
                 </IconButton>

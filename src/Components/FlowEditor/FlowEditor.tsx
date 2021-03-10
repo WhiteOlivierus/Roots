@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import ReactFlow, { removeElements, addEdge, Controls, MiniMap } from "react-flow-renderer";
+import ReactFlow, {
+    removeElements,
+    addEdge,
+    Controls,
+    MiniMap,
+} from "react-flow-renderer";
 import NodeBar from "./NodeBar";
 import { useHistory } from "react-router-dom";
 
@@ -11,7 +16,6 @@ import { MenuBar } from "./MenuBar";
 import { defaultFlow } from "../../Utilities/DefaultFlow";
 import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
 
-import { useZoomPanHelper } from "react-flow-renderer";
 import { LoadFlow } from "../../Utilities/FlowHandler";
 import { CreateNode } from "./Nodes/NodeFactory";
 import React from "react";
@@ -20,48 +24,41 @@ export declare const window: any;
 
 export var rfi = undefined;
 
-var initialElements = defaultFlow.elements;
-
 export const FlowEditor = React.memo(function (props) {
-    const { fitView } = useZoomPanHelper();
-
     const history = useHistory();
 
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
 
-    const [elements, setElements] = useState(initialElements);
+    const [elements, setElements] = useState(defaultFlow.elements);
 
     const [rfInstance, setRfInstance] = useState(null);
-
-    const InitialLoad = useCallback(async () => {
-        if (projectFilesState.activeRoot === undefined || projectFilesState.activeFlow == undefined) {
-            history.push("/");
-        }
-
-        var flow = await LoadFlow(projectFilesState.activeRoot, projectFilesState.activeFlow);
-
-        if (flow) {
-            initialElements = flow.elements;
-        } else {
-            history.push("/");
-        }
-
-        setElements(elements);
-        setElements(initialElements);
-
-        nodeViewerState.setElements = setElements;
-        nodeViewerState.rfInstance = rfInstance;
-
-        setNodeViewerState(nodeViewerState);
-
-        fitView();
-    }, []);
 
     // On first load
     useEffect(() => {
         try {
-            InitialLoad();
+            if (
+                projectFilesState.activeRoot === undefined ||
+                projectFilesState.activeFlow == undefined
+            ) {
+                throw "No project loaded";
+            }
+
+            LoadFlow(
+                projectFilesState.activeRoot,
+                projectFilesState.activeFlow
+            ).then((flow) => {
+                if (flow) {
+                    setElements(flow.elements);
+
+                    nodeViewerState.setElements = setElements;
+                    nodeViewerState.rfInstance = rfInstance;
+
+                    setNodeViewerState(nodeViewerState);
+                } else {
+                    throw "No flow initialized";
+                }
+            });
         } catch {
             history.push("/");
         }
@@ -87,18 +84,21 @@ export const FlowEditor = React.memo(function (props) {
         event.preventDefault();
 
         const type = event.dataTransfer.getData("application/reactflow");
-        const position = rfInstance.project({ x: event.clientX, y: event.clientY });
+        const position = rfInstance.project({
+            x: event.clientX,
+            y: event.clientY,
+        });
 
         var fileHandle = await window.showOpenFilePicker();
         fileHandle = fileHandle[0];
 
-        fileHandle = await SaveFileInFolder(projectFilesState.activeRoot, fileHandle);
+        fileHandle = await SaveFileInFolder(
+            projectFilesState.activeRoot,
+            fileHandle
+        );
 
         var newNode = await CreateNode(type, fileHandle);
         newNode.position = position;
-
-        setProjectFilesState(projectFilesState);
-
         setElements((es) => es.concat(newNode));
     }
 
@@ -113,7 +113,10 @@ export const FlowEditor = React.memo(function (props) {
         }
     }
 
-    const updateRFInstance = useCallback(() => (rfi = rfInstance), [rfi, rfInstance]);
+    const updateRFInstance = useCallback(() => (rfi = rfInstance), [
+        rfi,
+        rfInstance,
+    ]);
 
     return (
         <MenuBar>

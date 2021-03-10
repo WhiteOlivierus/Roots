@@ -13,7 +13,7 @@ export type ProjectFilesType = {
 
 export const ProjectFilesContext = createContext<ProjectFilesType>({
     projectFilesState: new ProjectFilesState(),
-    setProjectFilesState: (projectFilesState) => console.warn("no node viewer"),
+    setProjectFilesState: (projectFilesState) => {},
 });
 
 export const useProjectFilesState = () => useContext(ProjectFilesContext);

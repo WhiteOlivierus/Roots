@@ -6,8 +6,12 @@ export async function Build(activeRoot: any, nodes: any, edges: any) {
 
     let images = [];
 
-    for (let index = 0; index < nodes.length; index++) {
-        const node: any = nodes[index];
+    let copiedNodes = [...nodes];
+
+    copiedNodes.splice(0, 1);
+
+    for (let index = 0; index < copiedNodes.length; index++) {
+        const node: any = copiedNodes[index];
 
         const newScene = new Scene();
 
@@ -32,17 +36,16 @@ export async function Build(activeRoot: any, nodes: any, edges: any) {
 
             newInputZone.sceneId = edge.target;
 
-            if ((times = 0)) {
-                newInputZone.svg = "0,0 , 0.5,0 , 0.5,1 , 0,1";
+            if (times === 0) {
+                newInputZone.svg = [0, 0, 0.5, 0, 0.5, 1, 0, 1];
                 newInputZone.text = "Left";
+                times++;
             } else {
-                newInputZone.svg = "0.5,0 , 1,0 , 1,1 , 0.5,1";
+                newInputZone.svg = [0.5, 0, 1, 0, 1, 1, 0.5, 1];
                 newInputZone.text = "Right";
             }
 
             newScene.inputZones.push(newInputZone);
-
-            times++;
         }
 
         projectFile.scenes.push(newScene);
@@ -61,7 +64,9 @@ export async function Build(activeRoot: any, nodes: any, edges: any) {
         await Move(imagesHandle, image);
     }
 
-    const newFileHandle = await buildHandle.getFileHandle("game.json", { create: true });
+    const newFileHandle = await buildHandle.getFileHandle("game.json", {
+        create: true,
+    });
 
     await WriteFile(newFileHandle, JSON.stringify(projectFile, null, 2));
 

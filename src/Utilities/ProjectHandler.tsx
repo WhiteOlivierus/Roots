@@ -1,12 +1,4 @@
-import {
-    CreateFolder,
-    OpenFolder,
-    WriteFile,
-    FindDir,
-    FindFile,
-    GetObjectFromFile,
-    verifyPermission,
-} from "./FileHandler";
+import { CreateFolder, WriteFile, FindDir, FindFile, verifyPermission, GetObjectFromFileHandle } from "./FileHandler";
 import { set, get } from "idb-keyval";
 import { defaultFlow } from "./DefaultFlow";
 import { CreateFlow } from "./FlowHandler";
@@ -36,9 +28,11 @@ export async function NewProject() {
 }
 
 export async function OpenProject() {
-    const activeRoot = await OpenFolder();
+    const activeRoot = await window.showDirectoryPicker();
 
-    const { obj: config } = await GetObjectFromFile(activeRoot, "config");
+    const handle: any = await FindFile(activeRoot, `config.json`);
+
+    const { obj: config } = await GetObjectFromFileHandle(handle);
 
     const flowDirHandle: any = await FindDir(activeRoot, config.lastOpened);
 
@@ -52,7 +46,9 @@ export async function OpenProject() {
 export async function OpenRecentProject(activeRoot: any) {
     await verifyPermission(activeRoot, true);
 
-    const { obj: config } = await GetObjectFromFile(activeRoot, "config");
+    const handle: any = await FindFile(activeRoot, `config.json`);
+
+    const { obj: config } = await GetObjectFromFileHandle(handle);
 
     const flowDirHandle: any = await FindDir(activeRoot, config.lastOpened);
 
@@ -63,8 +59,9 @@ export async function OpenRecentProject(activeRoot: any) {
     return { activeRoot, activeFlow };
 }
 
-export async function SetActiveFlowInConfig(root: any, flowName: any) {
-    const { handle: configHandle } = await GetObjectFromFile(root, "config");
+export async function SetActiveFlowInConfig(activeRoot: any, flowName: any) {
+    const configHandle: any = await FindFile(activeRoot, `config.json`);
+
     await WriteFile(configHandle, JSON.stringify({ lastOpened: flowName }));
 }
 
@@ -76,7 +73,7 @@ async function NewProjectInput() {
         return null;
     }
 
-    var dirHandle = await OpenFolder();
+    var dirHandle = await window.showDirectoryPicker();
 
     if (dirHandle === undefined) {
         return null;

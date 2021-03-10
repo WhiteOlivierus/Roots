@@ -25,7 +25,7 @@ export function ScaledSVG(props) {
     const zone = props.zone;
     return (
         <G id="button">
-            <Link to={`/${zone.sceneId}`}>
+            <Link to={`/preview/${zone.sceneId}`}>
                 <polygon points={zone.svg} />
             </Link>
             <Text

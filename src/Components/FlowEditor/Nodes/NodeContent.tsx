@@ -1,8 +1,10 @@
 import { makeStyles } from "@material-ui/core";
-import { useCallback } from "react";
+import { createElement, useCallback, useEffect } from "react";
 
 const contentStyle = makeStyles({
     img: { width: "100%", height: "100%", borderRadius: 4 },
+    root: { position: "relative", width: "100%", height: "100%" },
+    tag: { position: "absolute", width: "100%" },
 });
 
 export const NodeContent = ({ data }) => {
@@ -12,10 +14,16 @@ export const NodeContent = ({ data }) => {
         e.preventDefault();
     }, []);
 
+    const nodeImage = createElement("img", {
+        src: data.image ? data.image : "",
+        className: classes.img,
+        onDragStart: preventDragHandler,
+    });
+
     return (
-        <div style={{ position: "relative", width: "100%", height: "100%" }}>
-            <p style={{ position: "absolute", width: "100%" }}>{data.label}</p>
-            {data.image && <img onDragStart={preventDragHandler} src={data.image} className={classes.img} alt="" />}
+        <div className={classes.root}>
+            <p className={classes.tag}>{data.label}</p>
+            {data.image && nodeImage}
         </div>
     );
 };

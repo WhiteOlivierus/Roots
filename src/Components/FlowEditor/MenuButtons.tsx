@@ -1,27 +1,36 @@
-import { Divider, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import {
+    Divider,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+} from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
 import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
 import FolderIcon from "@material-ui/icons/Folder";
 import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
 import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
 import { NewProject, OpenProject } from "../../Utilities/ProjectHandler";
-import { NewFlow, OpenFlow, SaveFlow, SaveFlowAs } from "../../Utilities/FlowHandler";
+import {
+    NewFlow,
+    OpenFlow,
+    SaveFlow,
+    SaveFlowAs,
+} from "../../Utilities/FlowHandler";
 import { removeElements } from "react-flow-renderer";
 import { defaultFlow } from "../../Utilities/DefaultFlow";
-import { useZoomPanHelper } from "react-flow-renderer";
 import { rfi } from "./FlowEditor";
 import { memo, useCallback } from "react";
 
 export function MenuButtons(props) {
-    const { fitView } = useZoomPanHelper();
-
     const { nodeViewerState } = useNodeViewerState();
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
 
     const onNewFlow = useCallback(() => {
         async function onNewFlow() {
             try {
-                var { activeFlow } = await NewFlow(projectFilesState.activeRoot);
+                var { activeFlow } = await NewFlow(
+                    projectFilesState.activeRoot
+                );
             } catch {
                 return;
             }
@@ -32,8 +41,6 @@ export function MenuButtons(props) {
 
             nodeViewerState.setElements((els) => removeElements(els, els));
             nodeViewerState.setElements(defaultFlow.elements);
-
-            fitView();
         }
         onNewFlow();
     }, [projectFilesState, setProjectFilesState, nodeViewerState]);
@@ -50,8 +57,6 @@ export function MenuButtons(props) {
             projectFilesState.activeFlow = activeFlow;
 
             setProjectFilesState(projectFilesState);
-
-            fitView();
         }
         onNewProject();
     }, [projectFilesState, setProjectFilesState]);
@@ -59,7 +64,9 @@ export function MenuButtons(props) {
     const onOpenFlow = useCallback(() => {
         async function onOpenFlow() {
             try {
-                var { activeFlow, flow } = await OpenFlow(projectFilesState.activeRoot);
+                var { activeFlow, flow } = await OpenFlow(
+                    projectFilesState.activeRoot
+                );
             } catch {
                 return;
             }
@@ -70,8 +77,6 @@ export function MenuButtons(props) {
 
             nodeViewerState.setElements((els) => removeElements(els, els));
             nodeViewerState.setElements(flow.elements);
-
-            fitView();
         }
         onOpenFlow();
     }, [projectFilesState, setProjectFilesState, nodeViewerState]);
@@ -88,8 +93,6 @@ export function MenuButtons(props) {
             projectFilesState.activeFlow = activeFlow;
 
             setProjectFilesState(projectFilesState);
-
-            fitView();
         }
         onOpenProject();
     }, [projectFilesState, setProjectFilesState]);
@@ -108,7 +111,10 @@ export function MenuButtons(props) {
     const onSaveFlowAs = useCallback(() => {
         async function onSaveFlowAs() {
             try {
-                var activeFlow = await SaveFlowAs(projectFilesState.activeRoot, rfi);
+                var activeFlow = await SaveFlowAs(
+                    projectFilesState.activeRoot,
+                    rfi
+                );
             } catch {
                 return;
             }
