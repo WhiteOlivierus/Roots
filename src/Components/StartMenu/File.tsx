@@ -1,6 +1,15 @@
 import { useHistory } from "react-router-dom";
 
-import { Box, Button, Card, CardContent, Grid, Typography } from "@material-ui/core";
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Grid,
+    Typography,
+} from "@material-ui/core";
+
+import { ServiceWorkerWrapper } from "./ServiceWorkerWrapper";
 
 import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
 
@@ -35,27 +44,40 @@ export function File(props) {
 
     return (
         <Grid item xs={6}>
-            <Card>
-                <CardContent>
-                    <Grid item>
-                        <Typography variant="h2">Project</Typography>
-                    </Grid>
-                    <Box p={2.5}>
-                        <Grid container justify="center" spacing={2}>
-                            <Grid item>
-                                <Button variant="contained" color="primary" onClick={onNewProject}>
-                                    New Project
-                                </Button>
-                            </Grid>
-                            <Grid item>
-                                <Button variant="contained" color="primary" onClick={onOpenProject}>
-                                    Open Project
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                </CardContent>
-            </Card>
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h2">Project</Typography>
+                            <Box p={2.5}>
+                                <Grid container justify="center" spacing={2}>
+                                    <Grid item>
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            onClick={onNewProject}
+                                        >
+                                            New Project
+                                        </Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            onClick={onOpenProject}
+                                        >
+                                            Open Project
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item xs={12}>
+                    <ServiceWorkerWrapper />
+                </Grid>
+            </Grid>
         </Grid>
     );
 }

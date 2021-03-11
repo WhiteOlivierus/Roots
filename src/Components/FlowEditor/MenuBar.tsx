@@ -61,6 +61,13 @@ const useStyles = makeStyles((theme: Theme) =>
             flexShrink: 0,
             whiteSpace: "nowrap",
         },
+        drawerHeader: {
+            display: "flex",
+            alignItems: "center",
+            padding: theme.spacing(0, 1),
+            ...theme.mixins.toolbar,
+            justifyContent: "flex-end",
+        },
         drawerOpen: {
             width: drawerWidth,
             transition: theme.transitions.create("width", {
@@ -167,30 +174,28 @@ function MenuBarC(props) {
                                   )}`
                         }`}
                     </Typography>
-                    <div onClick={onBuild}>
-                        <Tooltip title="Preview">
-                            <IconButton>
-                                <PlayCircleFilledIcon
-                                    style={{ fill: "white" }}
-                                />
-                            </IconButton>
-                        </Tooltip>
-                    </div>
+                    <Tooltip title="Preview">
+                        <IconButton onClick={onBuild}>
+                            <PlayCircleFilledIcon style={{ fill: "white" }} />
+                        </IconButton>
+                    </Tooltip>
                 </Toolbar>
             </AppBar>
             <Drawer variant="persistent" anchor="left" open={open}>
-                <Tooltip title="Close Menu">
-                    <IconButton
-                        onClick={handleDrawerClose}
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "flex-end",
-                        }}
-                    >
-                        <ChevronLeftIcon />
-                    </IconButton>
-                </Tooltip>
+                <div className={classes.drawerHeader}>
+                    <Tooltip title="Close Menu">
+                        <IconButton
+                            onClick={handleDrawerClose}
+                            style={{
+                                display: "flex",
+                                alignItems: "right",
+                                justifyContent: "flex-end",
+                            }}
+                        >
+                            <ChevronLeftIcon />
+                        </IconButton>
+                    </Tooltip>
+                </div>
                 <List>{open && <MenuButtons />}</List>
             </Drawer>
         </div>

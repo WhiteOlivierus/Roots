@@ -131,6 +131,7 @@ export function MenuButtons(props) {
     }, [projectFilesState, setProjectFilesState]);
 
     const buttons = [
+        { divide: "" },
         {
             name: "New Flow",
             action: onNewFlow,
