@@ -1,10 +1,4 @@
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link,
-    Redirect,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import { ProjectFilesProvider } from "./Context/ProjectFilesContext/ProjectFilesProvider";
 import { ReactFlowProvider } from "react-flow-renderer";
@@ -21,41 +15,41 @@ import { OnBeforeReload } from "./Utilities/OnBeforeReload";
 
 export function App() {
     return (
-        <ReactFlowProvider>
-            <ProjectFilesProvider>
-                <NodeViewerProvider>
-                    <ThemeProvider theme={theme}>
-                        <ContextMenu />
-                        <Router>
-                            <Switch>
-                                <Route exact={true} path="/">
-                                    <StartMenu />
-                                </Route>
-                                <Route path="/flow">
-                                    <OnBeforeReload />
+        <ProjectFilesProvider>
+            <NodeViewerProvider>
+                <ThemeProvider theme={theme}>
+                    <ContextMenu />
+                    <Router>
+                        <Switch>
+                            <Route exact={true} path="/">
+                                <StartMenu />
+                            </Route>
+                            <Route path="/flow">
+                                <OnBeforeReload />
+                                <ReactFlowProvider>
                                     <FlowEditor />
-                                </Route>
-                                <Route path="/preview">
-                                    <OnBeforeReload />
-                                    <Link to="/flow">
-                                        <button
-                                            style={{
-                                                position: "absolute",
-                                                left: 0,
-                                                top: 0,
-                                                zIndex: 1000,
-                                            }}
-                                        >
-                                            toFlow
-                                        </button>
-                                    </Link>
-                                    <Preview />
-                                </Route>
-                            </Switch>
-                        </Router>
-                    </ThemeProvider>
-                </NodeViewerProvider>
-            </ProjectFilesProvider>
-        </ReactFlowProvider>
+                                </ReactFlowProvider>
+                            </Route>
+                            <Route path="/preview">
+                                <OnBeforeReload />
+                                <Link to="/flow">
+                                    <button
+                                        style={{
+                                            position: "absolute",
+                                            left: 0,
+                                            top: 0,
+                                            zIndex: 1000,
+                                        }}
+                                    >
+                                        toFlow
+                                    </button>
+                                </Link>
+                                <Preview />
+                            </Route>
+                        </Switch>
+                    </Router>
+                </ThemeProvider>
+            </NodeViewerProvider>
+        </ProjectFilesProvider>
     );
 }

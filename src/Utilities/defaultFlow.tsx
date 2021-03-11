@@ -4,14 +4,14 @@ export const defaultFlow = {
             id: "0",
             type: "start",
             position: {
-                x: 537,
-                y: 116,
+                x: 0,
+                y: 0,
             },
             data: {
                 label: "Start",
             },
         },
     ],
-    position: [537, 116],
+    position: [0, 0],
     zoom: 1,
 };

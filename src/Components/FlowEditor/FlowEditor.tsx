@@ -130,6 +130,8 @@ export const FlowEditor = React.memo(function (props) {
                 onMove={updateRFInstance}
                 onDragOver={onDragOver}
                 deleteKeyCode={46}
+                minZoom={0.1}
+                maxZoom={2}
             >
                 <Controls />
                 <NodeBar />

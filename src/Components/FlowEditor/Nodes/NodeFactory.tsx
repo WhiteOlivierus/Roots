@@ -1,13 +1,14 @@
 import { GetImageBlobPath } from "../../../Utilities/FileHandler";
-import { v4 as uuidv4 } from "uuid";
+import short from "short-uuid";
 
 export async function CreateNode(type: any, fileHandle: any) {
     const blobURL = await GetImageBlobPath(fileHandle);
 
+    const uuid = short.generate();
     switch (type) {
         case "scene":
             return {
-                id: uuidv4(),
+                id: uuid,
                 type: type,
                 position: { x: 0, y: 0 },
                 style: { width: 160, height: 90 },
@@ -21,11 +22,15 @@ export async function CreateNode(type: any, fileHandle: any) {
 
         default:
             return {
-                id: uuidv4(),
+                id: uuid,
                 type: type,
                 position: { x: 0, y: 0 },
                 style: { width: 160, height: 90 },
-                data: { label: `${type} node`, image: blobURL, imageName: fileHandle.name },
+                data: {
+                    label: `${type} node`,
+                    image: blobURL,
+                    imageName: fileHandle.name,
+                },
             };
     }
 }
