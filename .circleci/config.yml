@@ -34,10 +34,7 @@ jobs:
 workflows:
     build-and-deploy:
         jobs:
-            - test
             - build:
-                  requires:
-                      - test
             - deploy:
                   requires:
                       - build
