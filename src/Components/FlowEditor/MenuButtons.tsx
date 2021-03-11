@@ -20,10 +20,13 @@ import { removeElements } from "react-flow-renderer";
 import { defaultFlow } from "../../Utilities/DefaultFlow";
 import { rfi } from "./FlowEditor";
 import { memo, useCallback } from "react";
+import { useSnackbar } from "notistack";
 
 export function MenuButtons(props) {
     const { nodeViewerState } = useNodeViewerState();
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
+
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const onNewFlow = useCallback(() => {
         async function onNewFlow() {
@@ -101,6 +104,7 @@ export function MenuButtons(props) {
         async function onSaveFlow() {
             try {
                 await SaveFlow(projectFilesState.activeFlow, rfi);
+                enqueueSnackbar(`${projectFilesState.activeFlow.name} Saved`);
             } catch {
                 return;
             }

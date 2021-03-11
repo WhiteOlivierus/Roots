@@ -9,6 +9,7 @@ import {
     makeStyles,
     Theme,
     Toolbar,
+    Tooltip,
     Typography,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -28,9 +29,7 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            width: "100vw",
-            height: "100vh",
-            overflow: "hidden",
+            flexGrow: 1,
         },
         appBar: {
             zIndex: theme.zIndex.drawer + 1,
@@ -95,15 +94,6 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-const Content = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -10;
-    width: 100vw;
-    height: 100vh;
-`;
-
 function MenuBarC(props) {
     const nodes = useStoreState((store) => store.nodes);
     const edges = useStoreState((store) => store.edges);
@@ -146,17 +136,19 @@ function MenuBarC(props) {
                         [classes.appBarShift]: open,
                     })}
                 >
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        className={clsx(classes.menuButton, {
-                            [classes.hide]: open,
-                        })}
-                    >
-                        <MenuIcon />
-                    </IconButton>
+                    <Tooltip title="Menu">
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={handleDrawerOpen}
+                            edge="start"
+                            className={clsx(classes.menuButton, {
+                                [classes.hide]: open,
+                            })}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                    </Tooltip>
                     <Typography
                         variant="h6"
                         color="inherit"
@@ -176,26 +168,31 @@ function MenuBarC(props) {
                         }`}
                     </Typography>
                     <div onClick={onBuild}>
-                        <IconButton color="secondary">
-                            <PlayCircleFilledIcon />
-                        </IconButton>
+                        <Tooltip title="Preview">
+                            <IconButton>
+                                <PlayCircleFilledIcon
+                                    style={{ fill: "white" }}
+                                />
+                            </IconButton>
+                        </Tooltip>
                     </div>
                 </Toolbar>
             </AppBar>
             <Drawer variant="persistent" anchor="left" open={open}>
-                <IconButton
-                    onClick={handleDrawerClose}
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-end",
-                    }}
-                >
-                    <ChevronLeftIcon />
-                </IconButton>
+                <Tooltip title="Close Menu">
+                    <IconButton
+                        onClick={handleDrawerClose}
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-end",
+                        }}
+                    >
+                        <ChevronLeftIcon />
+                    </IconButton>
+                </Tooltip>
                 <List>{open && <MenuButtons />}</List>
             </Drawer>
-            {props.children}
         </div>
     );
 }

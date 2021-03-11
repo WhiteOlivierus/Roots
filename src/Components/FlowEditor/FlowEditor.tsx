@@ -19,10 +19,18 @@ import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerCo
 import { LoadFlow } from "../../Utilities/FlowHandler";
 import { CreateNode } from "./Nodes/NodeFactory";
 import React from "react";
+import styled from "styled-components";
 
 export declare const window: any;
 
 export var rfi = undefined;
+
+const Wrapper = styled.div`
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    flex-direction: column;
+`;
 
 export const FlowEditor = React.memo(function (props) {
     const history = useHistory();
@@ -119,7 +127,8 @@ export const FlowEditor = React.memo(function (props) {
     ]);
 
     return (
-        <MenuBar>
+        <Wrapper>
+            <MenuBar />
             <ReactFlow
                 elements={elements}
                 nodeTypes={NodeTypes}
@@ -137,6 +146,6 @@ export const FlowEditor = React.memo(function (props) {
                 <NodeBar />
                 <MiniMap nodeColor={MinimapSettings} />
             </ReactFlow>
-        </MenuBar>
+        </Wrapper>
     );
 });
