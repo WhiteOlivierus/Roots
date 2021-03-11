@@ -1,11 +1,27 @@
 import { Paper } from "@material-ui/core";
-import React from "react";
-import { Handle, Position } from "react-flow-renderer";
+import {
+    getConnectedEdges,
+    Handle,
+    Position,
+    useStoreState,
+} from "react-flow-renderer";
 import { NodeContent } from "./NodeContent";
 import { nodeStyle } from "./NodeStyle";
 
 export const InputNode = ({ data }) => {
     const classes = nodeStyle();
+
+    const nodes = useStoreState((state) => state.nodes);
+    const edges = useStoreState((state) => state.edges);
+
+    const hasConnection = (connection) => {
+        var node = nodes.filter((node) => {
+            return node.id === connection.source;
+        });
+
+        var connectedEdges = getConnectedEdges(node, edges);
+        return !(connectedEdges.length > 0);
+    };
 
     return (
         <Paper className={classes.root}>
@@ -14,6 +30,8 @@ export const InputNode = ({ data }) => {
                 type="source"
                 className={classes.handleRoot}
                 position={Position.Right}
+                isValidConnection={hasConnection}
+                onConnect={(params) => console.log("handle onConnect", params)}
                 id="a"
                 style={{ top: "50%" }}
             >
