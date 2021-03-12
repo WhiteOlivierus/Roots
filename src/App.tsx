@@ -34,18 +34,6 @@ export function App() {
                                 </Route>
                                 <Route path="/preview">
                                     <OnBeforeReload />
-                                    <Link to="/flow">
-                                        <button
-                                            style={{
-                                                position: "absolute",
-                                                left: 0,
-                                                top: 0,
-                                                zIndex: 1000,
-                                            }}
-                                        >
-                                            toFlow
-                                        </button>
-                                    </Link>
                                     <Preview />
                                 </Route>
                             </Switch>

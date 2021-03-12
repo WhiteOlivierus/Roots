@@ -1,7 +1,5 @@
 import { createContext, useContext } from "react";
 
-import createEngine, { DiagramEngine, DiagramModel, DiagramModelGenerics } from "@projectstorm/react-diagrams";
-
 export class NodeViewerState {
     setElements: any;
     rfInstance: any;

@@ -1,12 +1,19 @@
 import { CreateFolder, WriteFile } from "./FileHandler";
-import { FindDir, FindFile, GetObjectFromFileHandle, LoadElementImages } from "./FileHandler";
+import {
+    FindDir,
+    FindFile,
+    GetObjectFromFileHandle,
+    LoadElementImages,
+} from "./FileHandler";
 import { defaultFlow } from "./DefaultFlow";
 import { SetActiveFlowInConfig } from "./ProjectHandler";
 
 export declare const window: any;
 
 export async function NewFlow(activeRoot: any) {
-    var { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(activeRoot);
+    var { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(
+        activeRoot
+    );
 
     await WriteFile(activeFlow, JSON.stringify(defaultFlow));
 
@@ -18,7 +25,10 @@ export async function NewFlow(activeRoot: any) {
 export async function OpenFlow(activeRoot: any) {
     var flowDirHandle = await window.showDirectoryPicker();
 
-    const activeFlow: any = await FindFile(flowDirHandle, `${flowDirHandle.name}.json`);
+    const activeFlow: any = await FindFile(
+        flowDirHandle,
+        `${flowDirHandle.name}.json`
+    );
 
     var flow = await LoadFlow(activeRoot, activeFlow);
 
@@ -37,7 +47,9 @@ export async function SaveFlow(activeFlow: any, rfInstance: any) {
 }
 
 export async function SaveFlowAs(activeRoot: any, rfInstance: any) {
-    var { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(activeRoot);
+    var { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(
+        activeRoot
+    );
 
     SaveFlow(activeFlow, rfInstance);
 
@@ -60,6 +72,7 @@ export async function LoadFlow(root: any, flowHandle: any) {
         return null;
     }
 }
+
 export async function CreateFlow(root: any) {
     var flowName = prompt("Please enter your first root name", "Root");
 
@@ -80,9 +93,12 @@ export async function CreateFlow(root: any) {
     var flowDirHandle = await CreateFolder(root, flowName);
 
     // Create default flow
-    const flowFileHandle = await flowDirHandle.getFileHandle(`${flowName}.json`, {
-        create: true,
-    });
+    const flowFileHandle = await flowDirHandle.getFileHandle(
+        `${flowName}.json`,
+        {
+            create: true,
+        }
+    );
 
     return { flowFileHandle, flowDirHandle };
 }

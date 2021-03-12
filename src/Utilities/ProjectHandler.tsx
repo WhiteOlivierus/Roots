@@ -1,4 +1,11 @@
-import { CreateFolder, WriteFile, FindDir, FindFile, verifyPermission, GetObjectFromFileHandle } from "./FileHandler";
+import {
+    CreateFolder,
+    WriteFile,
+    FindDir,
+    FindFile,
+    verifyPermission,
+    GetObjectFromFileHandle,
+} from "./FileHandler";
 import { set, get } from "idb-keyval";
 import { defaultFlow } from "./DefaultFlow";
 import { CreateFlow } from "./FlowHandler";
@@ -6,9 +13,11 @@ import { CreateFlow } from "./FlowHandler";
 export declare const window: any;
 
 export async function NewProject() {
-    var input = await NewProjectInput();
+    var activeRoot = await window.showDirectoryPicker();
 
-    var activeRoot = await CreateFolder(input.dirHandle, input.projectName);
+    if (activeRoot === undefined) {
+        return null;
+    }
 
     const config = await activeRoot.getFileHandle("config.json", {
         create: true,
@@ -16,7 +25,9 @@ export async function NewProject() {
 
     await WriteFile(config, JSON.stringify({ lastOpened: "" }));
 
-    var { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(activeRoot);
+    var { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(
+        activeRoot
+    );
 
     await WriteFile(activeFlow, JSON.stringify(defaultFlow));
 
@@ -36,7 +47,10 @@ export async function OpenProject() {
 
     const flowDirHandle: any = await FindDir(activeRoot, config.lastOpened);
 
-    const activeFlow: any = await FindFile(flowDirHandle, `${config.lastOpened}.json`);
+    const activeFlow: any = await FindFile(
+        flowDirHandle,
+        `${config.lastOpened}.json`
+    );
 
     await RegisterRecentProject(activeRoot);
 
@@ -52,7 +66,10 @@ export async function OpenRecentProject(activeRoot: any) {
 
     const flowDirHandle: any = await FindDir(activeRoot, config.lastOpened);
 
-    const activeFlow: any = await FindFile(flowDirHandle, `${config.lastOpened}.json`);
+    const activeFlow: any = await FindFile(
+        flowDirHandle,
+        `${config.lastOpened}.json`
+    );
 
     await RegisterRecentProject(activeRoot);
 
@@ -63,23 +80,6 @@ export async function SetActiveFlowInConfig(activeRoot: any, flowName: any) {
     const configHandle: any = await FindFile(activeRoot, `config.json`);
 
     await WriteFile(configHandle, JSON.stringify({ lastOpened: flowName }));
-}
-
-async function NewProjectInput() {
-    var projectName = prompt("Please enter the projects name", "Narrative");
-
-    const isProjectName = projectName === "" || projectName === null;
-    if (isProjectName) {
-        return null;
-    }
-
-    var dirHandle = await window.showDirectoryPicker();
-
-    if (dirHandle === undefined) {
-        return null;
-    }
-
-    return { projectName: projectName, dirHandle: dirHandle };
 }
 
 async function RegisterRecentProject(file: any) {

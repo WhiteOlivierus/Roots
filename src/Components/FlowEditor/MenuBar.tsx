@@ -1,11 +1,9 @@
-import React, { Children, useCallback, useState } from "react";
+import React, { Children, useCallback, useState, memo } from "react";
 import { useHistory } from "react-router-dom";
 import {
     AppBar,
     createStyles,
-    Drawer,
     IconButton,
-    List,
     makeStyles,
     Theme,
     Toolbar,
@@ -13,16 +11,19 @@ import {
     Typography,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import clsx from "clsx";
 
 import { useStoreState } from "react-flow-renderer";
 
 import { Build } from "../../Utilities/BuildHandler";
-import { MenuButtons } from "./MenuButtons";
 import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
-import styled from "styled-components";
+import { rfi } from "./FlowEditor";
+import { useSnackbar } from "notistack";
+
+import { SaveFlow } from "../../Utilities/FlowHandler";
+import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
+import { MenuDrawer } from "./MenuDrawer";
 
 const drawerWidth = 240;
 
@@ -61,13 +62,6 @@ const useStyles = makeStyles((theme: Theme) =>
             flexShrink: 0,
             whiteSpace: "nowrap",
         },
-        drawerHeader: {
-            display: "flex",
-            alignItems: "center",
-            padding: theme.spacing(0, 1),
-            ...theme.mixins.toolbar,
-            justifyContent: "flex-end",
-        },
         drawerOpen: {
             width: drawerWidth,
             transition: theme.transitions.create("width", {
@@ -91,7 +85,6 @@ const useStyles = makeStyles((theme: Theme) =>
             alignItems: "center",
             justifyContent: "flex-end",
             padding: theme.spacing(0, 1),
-            // necessary for content to be below app bar
             ...theme.mixins.toolbar,
         },
         content: {
@@ -101,7 +94,9 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-function MenuBarC(props) {
+export const MenuBar = React.memo((props) => {
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
     const nodes = useStoreState((store) => store.nodes);
     const edges = useStoreState((store) => store.edges);
 
@@ -123,6 +118,16 @@ function MenuBarC(props) {
 
     const onBuild = useCallback(() => {
         async function Action() {
+            await SaveFlow(projectFilesState.activeFlow, rfi);
+
+            const FileName = projectFilesState.activeFlow.name.replace(
+                ".json",
+                ""
+            );
+
+            enqueueSnackbar(`${FileName} saved`);
+            enqueueSnackbar(`Building ${FileName}`);
+
             var build = await Build(projectFilesState.activeRoot, nodes, edges);
             projectFilesState.build = build;
             setProjectFilesState(projectFilesState);
@@ -181,25 +186,7 @@ function MenuBarC(props) {
                     </Tooltip>
                 </Toolbar>
             </AppBar>
-            <Drawer variant="persistent" anchor="left" open={open}>
-                <div className={classes.drawerHeader}>
-                    <Tooltip title="Close Menu">
-                        <IconButton
-                            onClick={handleDrawerClose}
-                            style={{
-                                display: "flex",
-                                alignItems: "right",
-                                justifyContent: "flex-end",
-                            }}
-                        >
-                            <ChevronLeftIcon />
-                        </IconButton>
-                    </Tooltip>
-                </div>
-                <List>{open && <MenuButtons />}</List>
-            </Drawer>
+            <MenuDrawer open={open} handleDrawerClose={handleDrawerClose} />
         </div>
     );
-}
-
-export const MenuBar = React.memo(MenuBarC);
+});

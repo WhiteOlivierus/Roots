@@ -1,8 +1,10 @@
 import { Game } from "./Game";
 import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
 import { useEffect } from "react";
-import { useHistory, Redirect } from "react-router-dom";
+import { useHistory, Link, Redirect } from "react-router-dom";
 import styled from "styled-components";
+import { Button, Tooltip } from "@material-ui/core";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,6 +28,22 @@ export function Preview(props) {
 
     return (
         <Wrapper>
+            <Link to="/flow">
+                <Tooltip title="Back to flow editor">
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        style={{
+                            position: "absolute",
+                            left: 20,
+                            top: 20,
+                            zIndex: 1000,
+                        }}
+                    >
+                        <ChevronLeftIcon style={{ fill: "white" }} />
+                    </Button>
+                </Tooltip>
+            </Link>
             {projectFilesState.build ? (
                 <Game game={projectFilesState.build} />
             ) : (

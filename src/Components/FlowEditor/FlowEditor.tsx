@@ -4,6 +4,7 @@ import ReactFlow, {
     addEdge,
     Controls,
     MiniMap,
+    useStoreState,
 } from "react-flow-renderer";
 import NodeBar from "./NodeBar";
 import { useHistory } from "react-router-dom";
@@ -50,6 +51,10 @@ export const FlowEditor = React.memo(function (props) {
                 projectFilesState.activeFlow == undefined
             ) {
                 throw "No project loaded";
+            }
+
+            if (elements.length > 2) {
+                return;
             }
 
             LoadFlow(
@@ -121,6 +126,11 @@ export const FlowEditor = React.memo(function (props) {
         }
     }
 
+    const onLoad = (reactFlowInstance) => {
+        setRfInstance(reactFlowInstance);
+        reactFlowInstance.fitView();
+    };
+
     const updateRFInstance = useCallback(() => (rfi = rfInstance), [
         rfi,
         rfInstance,
@@ -132,7 +142,7 @@ export const FlowEditor = React.memo(function (props) {
             <ReactFlow
                 elements={elements}
                 nodeTypes={NodeTypes}
-                onLoad={setRfInstance}
+                onLoad={onLoad}
                 onConnect={onConnect}
                 onElementsRemove={onElementsRemove}
                 onDrop={onDrop}
@@ -141,6 +151,7 @@ export const FlowEditor = React.memo(function (props) {
                 deleteKeyCode={46}
                 minZoom={0.1}
                 maxZoom={2}
+                multiSelectionKeyCode={17}
             >
                 <Controls />
                 <NodeBar />
