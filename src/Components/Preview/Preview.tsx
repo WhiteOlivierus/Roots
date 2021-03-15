@@ -1,10 +1,11 @@
 import { Game } from "./Game";
 import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useHistory, Link, Redirect } from "react-router-dom";
 import styled from "styled-components";
 import { Button, Tooltip } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import { OnBeforeReload } from "../../Utilities/OnBeforeReload";
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,6 +29,7 @@ export function Preview(props) {
 
     return (
         <Wrapper>
+            <OnBeforeReload />
             <Link to="/flow">
                 <Tooltip title="Back to flow editor">
                     <Button

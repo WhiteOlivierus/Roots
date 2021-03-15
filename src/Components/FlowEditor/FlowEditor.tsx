@@ -4,6 +4,7 @@ import ReactFlow, {
     addEdge,
     Controls,
     MiniMap,
+    ReactFlowProvider,
 } from "react-flow-renderer";
 import NodeBar from "./NodeBar";
 import { useHistory } from "react-router-dom";
@@ -20,6 +21,8 @@ import { LoadFlow } from "../../Utilities/FlowHandler";
 import { CreateNode } from "./Nodes/NodeFactory";
 import React from "react";
 import styled from "styled-components";
+import { OnBeforeReload } from "../../Utilities/OnBeforeReload";
+import { Menu, MenuItem } from "@material-ui/core";
 
 export declare const window: any;
 
@@ -31,6 +34,11 @@ const Wrapper = styled.div`
     width: 100vw;
     flex-direction: column;
 `;
+
+const initialState = {
+    mouseX: null,
+    mouseY: null,
+};
 
 export const FlowEditor = React.memo((props) => {
     const history = useHistory();
@@ -132,27 +140,73 @@ export const FlowEditor = React.memo((props) => {
         rfInstance,
     ]);
 
+    const [state, setState] = React.useState<{
+        mouseX: null | number;
+        mouseY: null | number;
+    }>(initialState);
+
+    const handleClick = (e: any, node: any) => {
+        e.preventDefault();
+
+        setState({
+            mouseX: e.clientX - 2,
+            mouseY: e.clientY - 4,
+        });
+
+        nodeViewerState.activeNode = node;
+        setNodeViewerState(nodeViewerState);
+    };
+
+    const handleClose = (e) => {
+        setState(initialState);
+
+        nodeViewerState.activeNode = undefined;
+        setNodeViewerState(nodeViewerState);
+    };
+
+    const onShowEditor = (e) => {
+        history.push("/editor");
+    };
+
     return (
-        <Wrapper>
-            <MenuBar />
-            <ReactFlow
-                elements={elements}
-                nodeTypes={NodeTypes}
-                onLoad={onLoad}
-                onConnect={onConnect}
-                onElementsRemove={onElementsRemove}
-                onDrop={onDrop}
-                onMove={updateRFInstance}
-                onDragOver={onDragOver}
-                deleteKeyCode={46}
-                minZoom={0.1}
-                maxZoom={2}
-                multiSelectionKeyCode={17}
-            >
-                <Controls />
-                <NodeBar />
-                <MiniMap nodeColor={MinimapSettings} />
-            </ReactFlow>
-        </Wrapper>
+        <ReactFlowProvider>
+            <OnBeforeReload />
+            <Wrapper>
+                <MenuBar />
+                <ReactFlow
+                    elements={elements}
+                    nodeTypes={NodeTypes}
+                    onLoad={onLoad}
+                    onConnect={onConnect}
+                    onElementsRemove={onElementsRemove}
+                    onDrop={onDrop}
+                    onMove={updateRFInstance}
+                    onDragOver={onDragOver}
+                    deleteKeyCode={46}
+                    minZoom={0.1}
+                    maxZoom={2}
+                    multiSelectionKeyCode={17}
+                    onNodeContextMenu={handleClick}
+                    onPaneClick={handleClose}
+                >
+                    <Controls />
+                    <NodeBar />
+                    <MiniMap nodeColor={MinimapSettings} />
+                </ReactFlow>
+                <Menu
+                    keepMounted
+                    open={state.mouseY !== null}
+                    onClose={handleClose}
+                    anchorReference="anchorPosition"
+                    anchorPosition={
+                        state.mouseY !== null && state.mouseX !== null
+                            ? { top: state.mouseY, left: state.mouseX }
+                            : undefined
+                    }
+                >
+                    <MenuItem onClick={onShowEditor}>Edit</MenuItem>
+                </Menu>
+            </Wrapper>
+        </ReactFlowProvider>
     );
 });

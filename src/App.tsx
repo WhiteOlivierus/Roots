@@ -1,7 +1,6 @@
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import { ProjectFilesProvider } from "./Context/ProjectFilesContext/ProjectFilesProvider";
-import { ReactFlowProvider } from "react-flow-renderer";
 
 import { ContextMenu } from "./Utilities/ContextMenu";
 
@@ -11,8 +10,8 @@ import { ThemeProvider } from "@material-ui/core";
 import { theme } from "./Utilities/Theme";
 import { NodeViewerProvider } from "./Context/NodeViewerContext/NodeViewerProvider";
 import { Preview } from "./Components/Preview/Preview";
-import { OnBeforeReload } from "./Utilities/OnBeforeReload";
 import { SnackbarProvider } from "notistack";
+import { SceneEditor } from "./Components/SceneEditor/SceneEditor";
 
 export function App() {
     return (
@@ -27,13 +26,12 @@ export function App() {
                                     <StartMenu />
                                 </Route>
                                 <Route path="/flow">
-                                    <OnBeforeReload />
-                                    <ReactFlowProvider>
-                                        <FlowEditor />
-                                    </ReactFlowProvider>
+                                    <FlowEditor />
+                                </Route>
+                                <Route path="/editor">
+                                    <SceneEditor />
                                 </Route>
                                 <Route path="/preview">
-                                    <OnBeforeReload />
                                     <Preview />
                                 </Route>
                             </Switch>

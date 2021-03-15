@@ -1,8 +1,9 @@
 import { createContext, useContext } from "react";
 
 export class NodeViewerState {
-    setElements: any;
-    rfInstance: any;
+    setElements: any = undefined;
+    rfInstance: any = undefined;
+    activeNode: any = undefined;
 }
 
 export type NodeViewerContextType = {

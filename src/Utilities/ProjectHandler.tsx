@@ -117,7 +117,13 @@ async function RegisterRecentProject(file: any) {
 async function UnRegisterRecentProject(file: any) {
     var files = await get("files");
 
-    files = files.splice(files.indexOf(file), 1);
+    const index = files.findIndex((element) => {
+        return element.name === file.name;
+    });
+
+    if (index === -1) return;
+
+    files.splice(index, 1);
 
     await set("files", files);
 }
