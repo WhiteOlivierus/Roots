@@ -10,23 +10,23 @@ import {
 } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import { MenuButtons } from "./MenuButtons";
-import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
-import { rfi } from "./FlowEditor";
+import { useProjectFilesState } from "../../../Context/ProjectFilesContext/ProjectFilesContext";
+import { rfi } from "../FlowEditor";
 import { useSnackbar } from "notistack";
 import SaveIcon from "@material-ui/icons/Save";
 import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
 import FolderIcon from "@material-ui/icons/Folder";
-import { NewProject, OpenProject } from "../../Utilities/ProjectHandler";
+import { NewProject, OpenProject } from "../../../Utilities/ProjectHandler";
 import {
     NewFlow,
     OpenFlow,
     SaveFlow,
     SaveFlowAs,
-} from "../../Utilities/FlowHandler";
+} from "../../../Utilities/FlowHandler";
 import { removeElements } from "react-flow-renderer";
-import { defaultFlow } from "../../Utilities/DefaultFlow";
-import { RemoveExtension } from "../../Utilities/StringTools";
-import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
+import { defaultFlow } from "../../../Utilities/DefaultFlow";
+import { RemoveExtension } from "../../../Utilities/StringTools";
+import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
 
 const useMenuDrawerStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -201,12 +201,12 @@ export const MenuDrawer = React.memo<{ open: any; handleDrawerClose: any }>(
 
         const onSaveFlow = useCallback(() => {
             async function onSaveFlow() {
+                var fileName = RemoveExtension(
+                    projectFilesState.activeFlow.name
+                );
+
                 try {
                     await SaveFlow(projectFilesState.activeFlow, rfi);
-
-                    var fileName = RemoveExtension(
-                        projectFilesState.activeFlow.name
-                    );
 
                     enqueueSnackbar(`${fileName} saved`);
                 } catch {

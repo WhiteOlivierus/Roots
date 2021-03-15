@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import ReactFlow, {
     removeElements,
     addEdge,
     Controls,
     MiniMap,
-    useStoreState,
 } from "react-flow-renderer";
 import NodeBar from "./NodeBar";
 import { useHistory } from "react-router-dom";
@@ -13,7 +12,7 @@ import { NodeTypes } from "./Nodes/NodeTypes";
 import { SaveFileInFolder } from "../../Utilities/FileHandler";
 import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
 
-import { MenuBar } from "./MenuBar";
+import { MenuBar } from "./MenuBar/MenuBar";
 import { defaultFlow } from "../../Utilities/DefaultFlow";
 import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
 
@@ -33,18 +32,17 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-export const FlowEditor = React.memo(function (props) {
+export const FlowEditor = React.memo((props) => {
     const history = useHistory();
 
-    const { projectFilesState, setProjectFilesState } = useProjectFilesState();
+    const { projectFilesState } = useProjectFilesState();
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
 
     const [elements, setElements] = useState(defaultFlow.elements);
 
     const [rfInstance, setRfInstance] = useState(null);
 
-    // On first load
-    useEffect(() => {
+    const onLoad = (reactFlowInstance) => {
         try {
             if (
                 projectFilesState.activeRoot === undefined ||
@@ -68,6 +66,9 @@ export const FlowEditor = React.memo(function (props) {
                     nodeViewerState.rfInstance = rfInstance;
 
                     setNodeViewerState(nodeViewerState);
+
+                    setRfInstance(reactFlowInstance);
+                    reactFlowInstance.fitView();
                 } else {
                     throw "No flow initialized";
                 }
@@ -75,7 +76,7 @@ export const FlowEditor = React.memo(function (props) {
         } catch {
             history.push("/");
         }
-    }, []);
+    };
 
     function onConnect(params) {
         return setElements(function (els): any {
@@ -125,11 +126,6 @@ export const FlowEditor = React.memo(function (props) {
                 return "red";
         }
     }
-
-    const onLoad = (reactFlowInstance) => {
-        setRfInstance(reactFlowInstance);
-        reactFlowInstance.fitView();
-    };
 
     const updateRFInstance = useCallback(() => (rfi = rfInstance), [
         rfi,

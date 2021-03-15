@@ -58,22 +58,27 @@ export async function OpenProject() {
 }
 
 export async function OpenRecentProject(activeRoot: any) {
-    await verifyPermission(activeRoot, true);
+    try {
+        await verifyPermission(activeRoot, true);
 
-    const handle: any = await FindFile(activeRoot, `config.json`);
+        const handle: any = await FindFile(activeRoot, `config.json`);
 
-    const { obj: config } = await GetObjectFromFileHandle(handle);
+        const { obj: config } = await GetObjectFromFileHandle(handle);
 
-    const flowDirHandle: any = await FindDir(activeRoot, config.lastOpened);
+        const flowDirHandle: any = await FindDir(activeRoot, config.lastOpened);
 
-    const activeFlow: any = await FindFile(
-        flowDirHandle,
-        `${config.lastOpened}.json`
-    );
+        const activeFlow: any = await FindFile(
+            flowDirHandle,
+            `${config.lastOpened}.json`
+        );
 
-    await RegisterRecentProject(activeRoot);
+        await RegisterRecentProject(activeRoot);
 
-    return { activeRoot, activeFlow };
+        return { activeRoot, activeFlow };
+    } catch {
+        await UnRegisterRecentProject(activeRoot);
+        throw `Project ${activeRoot.name} does not exist`;
+    }
 }
 
 export async function SetActiveFlowInConfig(activeRoot: any, flowName: any) {
@@ -107,4 +112,12 @@ async function RegisterRecentProject(file: any) {
             files.length = 10;
         }
     }
+}
+
+async function UnRegisterRecentProject(file: any) {
+    var files = await get("files");
+
+    files = files.splice(files.indexOf(file), 1);
+
+    await set("files", files);
 }

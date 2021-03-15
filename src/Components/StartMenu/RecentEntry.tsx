@@ -3,25 +3,29 @@ import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectF
 import { useHistory } from "react-router-dom";
 import { OpenRecentProject } from "../../Utilities/ProjectHandler";
 import { useCallback } from "react";
+import { useSnackbar } from "notistack";
 
 export function RecentEntry(props) {
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
 
     const history = useHistory();
+    const { enqueueSnackbar } = useSnackbar();
 
     const onOpenRecentProject = useCallback(
         (fileHandle) => {
             try {
-                OpenRecentProject(fileHandle).then(
-                    ({ activeRoot, activeFlow }) => {
+                OpenRecentProject(fileHandle)
+                    .then(({ activeRoot, activeFlow }) => {
                         projectFilesState.activeRoot = activeRoot;
                         projectFilesState.activeFlow = activeFlow;
 
                         setProjectFilesState(projectFilesState);
 
                         history.push("/flow");
-                    }
-                );
+                    })
+                    .catch((e) => {
+                        enqueueSnackbar(e);
+                    });
             } catch {
                 return;
             }

@@ -1,12 +1,8 @@
 import { Paper } from "@material-ui/core";
-import {
-    getConnectedEdges,
-    Handle,
-    Position,
-    useStoreState,
-} from "react-flow-renderer";
+import { Handle, Position, useStoreState } from "react-flow-renderer";
 import { NodeContent } from "./NodeContent";
 import { nodeStyle } from "./NodeStyle";
+import { hasSourceConnection } from "./NodeUtilities";
 
 export const InputNode = ({ data }) => {
     const classes = nodeStyle();
@@ -14,13 +10,8 @@ export const InputNode = ({ data }) => {
     const nodes = useStoreState((state) => state.nodes);
     const edges = useStoreState((state) => state.edges);
 
-    const hasConnection = (connection) => {
-        var node = nodes.filter((node) => {
-            return node.id === connection.source;
-        });
-
-        var connectedEdges = getConnectedEdges(node, edges);
-        return !(connectedEdges.length > 0);
+    const onHasSourceConnection = (connection) => {
+        return hasSourceConnection(connection, nodes, edges);
     };
 
     return (
@@ -30,7 +21,7 @@ export const InputNode = ({ data }) => {
                 type="source"
                 className={classes.handleRoot}
                 position={Position.Right}
-                isValidConnection={hasConnection}
+                isValidConnection={onHasSourceConnection}
                 onConnect={(params) => console.log("handle onConnect", params)}
                 id="a"
                 style={{ top: "50%" }}

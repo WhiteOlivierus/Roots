@@ -1,7 +1,6 @@
 import { Divider } from "@material-ui/core";
 
-import React from "react";
-import { MenuButton } from "./MenuButton";
+import { MenuButton } from "../MenuBar/MenuButton";
 
 export function MenuButtons(props) {
     return (

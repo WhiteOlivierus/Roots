@@ -39,7 +39,17 @@ export async function OpenFlow(activeRoot: any) {
 
 export async function SaveFlow(activeFlow: any, rfInstance: any) {
     const flow = rfInstance.toObject();
-    const file = await JSON.stringify(flow);
+
+    var flowCopy = clone(flow);
+
+    flowCopy.elements.map((element, index) => {
+        if ("data" in element && "image" in element.data) {
+            delete element.data["image"];
+            flowCopy.elements[index] = element;
+        }
+    });
+
+    const file = await JSON.stringify(flowCopy);
 
     const writable = await activeFlow.createWritable();
     await writable.write(file);
@@ -101,4 +111,38 @@ export async function CreateFlow(root: any) {
     );
 
     return { flowFileHandle, flowDirHandle };
+}
+
+function clone(obj) {
+    var copy;
+
+    // Handle the 3 simple types, and null or undefined
+    if (null == obj || "object" != typeof obj) return obj;
+
+    // Handle Date
+    if (obj instanceof Date) {
+        copy = new Date();
+        copy.setTime(obj.getTime());
+        return copy;
+    }
+
+    // Handle Array
+    if (obj instanceof Array) {
+        copy = [];
+        for (var i = 0, len = obj.length; i < len; i++) {
+            copy[i] = clone(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        }
+        return copy;
+    }
+
+    throw new Error("Unable to copy obj! Its type isn't supported.");
 }

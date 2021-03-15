@@ -16,13 +16,12 @@ import clsx from "clsx";
 
 import { useStoreState } from "react-flow-renderer";
 
-import { Build } from "../../Utilities/BuildHandler";
-import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
-import { rfi } from "./FlowEditor";
+import { Build } from "../../../Utilities/BuildHandler";
+import { useProjectFilesState } from "../../../Context/ProjectFilesContext/ProjectFilesContext";
+import { rfi } from "../FlowEditor";
 import { useSnackbar } from "notistack";
 
-import { SaveFlow } from "../../Utilities/FlowHandler";
-import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
+import { SaveFlow } from "../../../Utilities/FlowHandler";
 import { MenuDrawer } from "./MenuDrawer";
 
 const drawerWidth = 240;
@@ -95,16 +94,15 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const MenuBar = React.memo((props) => {
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const classes = useStyles();
+    const history = useHistory();
 
     const nodes = useStoreState((store) => store.nodes);
     const edges = useStoreState((store) => store.edges);
 
-    const history = useHistory();
+    const { enqueueSnackbar } = useSnackbar();
 
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
-
-    const classes = useStyles();
 
     const [open, setOpen] = useState(false);
 
