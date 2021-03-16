@@ -2,13 +2,13 @@ export const defaultFlow = {
     elements: [
         {
             id: "0",
-            type: "start",
+            type: "in",
             position: {
                 x: 0,
                 y: 0,
             },
             data: {
-                label: "Start",
+                label: "in",
             },
         },
     ],

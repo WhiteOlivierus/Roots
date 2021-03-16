@@ -24,7 +24,9 @@ export function RecentEntry(props) {
                         history.push("/flow");
                     })
                     .catch((e) => {
-                        enqueueSnackbar(e);
+                        enqueueSnackbar(e, {
+                            variant: "error",
+                        });
                     });
             } catch {
                 return;

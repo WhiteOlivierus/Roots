@@ -3,11 +3,11 @@ import { Handle, Position, useStoreState } from "react-flow-renderer";
 import { hasSourceConnection } from "./NodeUtilities";
 import { NodeContent } from "./NodeContent";
 import { nodeStyle } from "./NodeStyle";
-import React from "react";
+import { memo } from "react";
 
 const letters = "abcdefghijklmnopqrstuvwxyz";
 
-export const SceneNode = React.memo<{ data: any }>(({ data }) => {
+export const SceneNode = memo<{ data: any }>(({ data }) => {
     const classes = nodeStyle();
 
     const nodes = useStoreState((state) => state.nodes);

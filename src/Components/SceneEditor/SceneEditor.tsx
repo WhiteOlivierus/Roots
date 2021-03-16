@@ -1,12 +1,13 @@
-import * as React from "react";
+import { memo } from "react";
 import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
-import { MenuBar } from "../FlowEditor/MenuBar/MenuBar";
 
-export const SceneEditor = (props) => {
+export const SceneEditor = memo((props) => {
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
+    const node = nodeViewerState.activeNode;
     return (
-        <MenuBar>
-            <h1>{nodeViewerState.activeNode.id}</h1>
-        </MenuBar>
+        <div>
+            <img src={node.data.image} style={{ width: "50vw" }} />
+            <h1>{node.data.label}</h1>
+        </div>
     );
-};
+});

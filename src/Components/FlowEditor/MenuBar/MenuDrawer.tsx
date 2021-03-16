@@ -53,74 +53,51 @@ export const MenuDrawer = React.memo<{ open: any; handleDrawerClose: any }>(
         const { nodeViewerState } = useNodeViewerState();
 
         useEffect(() => {
-            window.addEventListener("keydown", shortCuts());
+            window.addEventListener("keydown", shortCuts, true);
             console.log("Set keydown");
             return () => {
-                window.removeEventListener("keydown", shortCuts());
+                window.removeEventListener("keydown", shortCuts, true);
                 console.log("Remove keydown");
             };
         }, []);
 
-        function shortCuts(): (this: Window, ev: KeyboardEvent) => any {
-            return (e) => {
-                if (
-                    (e.ctrlKey === true || e.metaKey === true) &&
-                    e.key === "s"
-                ) {
-                    e.preventDefault();
-                    onSaveFlow();
-                    return;
-                }
+        const shortCuts = (e) => {
+            if ((e.ctrlKey === true || e.metaKey === true) && e.key === "s") {
+                e.preventDefault();
+                onSaveFlow();
+                return;
+            }
 
-                if (
-                    (e.ctrlKey || e.metaKey) &&
-                    e.shiftKey &&
-                    e.code === "KeyS"
-                ) {
-                    e.preventDefault();
-                    onSaveFlowAs();
-                    return;
-                }
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === "KeyS") {
+                e.preventDefault();
+                onSaveFlowAs();
+                return;
+            }
 
-                if (
-                    (e.ctrlKey === true || e.metaKey === true) &&
-                    e.key === "o"
-                ) {
-                    e.preventDefault();
-                    onOpenFlow();
-                    return;
-                }
+            if ((e.ctrlKey === true || e.metaKey === true) && e.key === "o") {
+                e.preventDefault();
+                onOpenFlow();
+                return;
+            }
 
-                if (
-                    (e.ctrlKey || e.metaKey) &&
-                    e.shiftKey &&
-                    e.code === "KeyO"
-                ) {
-                    e.preventDefault();
-                    onOpenProject();
-                    return;
-                }
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === "KeyO") {
+                e.preventDefault();
+                onOpenProject();
+                return;
+            }
 
-                if (
-                    (e.ctrlKey === true || e.metaKey === true) &&
-                    e.key === "n"
-                ) {
-                    e.preventDefault();
-                    onNewFlow();
-                    return;
-                }
+            if ((e.ctrlKey === true || e.metaKey === true) && e.key === "n") {
+                e.preventDefault();
+                onNewFlow();
+                return;
+            }
 
-                if (
-                    (e.ctrlKey || e.metaKey) &&
-                    e.shiftKey &&
-                    e.code === "KeyN"
-                ) {
-                    e.preventDefault();
-                    onNewFlow();
-                    return;
-                }
-            };
-        }
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === "KeyN") {
+                e.preventDefault();
+                onNewFlow();
+                return;
+            }
+        };
 
         const onNewFlow = useCallback(() => {
             async function onNewFlow() {
@@ -185,9 +162,13 @@ export const MenuDrawer = React.memo<{ open: any; handleDrawerClose: any }>(
 
                     var fileName = RemoveExtension(activeFlow.name);
 
-                    enqueueSnackbar(`Opened ${fileName}`);
+                    enqueueSnackbar(`Opened ${fileName}`, {
+                        variant: "success",
+                    });
                 } catch {
-                    enqueueSnackbar(`${fileName} was not opened`);
+                    enqueueSnackbar(`${fileName} was not opened`, {
+                        variant: "error",
+                    });
                     return;
                 }
 
@@ -208,9 +189,13 @@ export const MenuDrawer = React.memo<{ open: any; handleDrawerClose: any }>(
                 try {
                     await SaveFlow(projectFilesState.activeFlow, rfi);
 
-                    enqueueSnackbar(`${fileName} saved`);
+                    enqueueSnackbar(`${fileName} saved`, {
+                        variant: "success",
+                    });
                 } catch {
-                    enqueueSnackbar(`${fileName} was not saved`);
+                    enqueueSnackbar(`${fileName} was not saved`, {
+                        variant: "error",
+                    });
 
                     return;
                 }
@@ -233,10 +218,15 @@ export const MenuDrawer = React.memo<{ open: any; handleDrawerClose: any }>(
                     enqueueSnackbar(
                         `${fileName} saved as ${RemoveExtension(
                             activeFlow.name
-                        )}`
+                        )}`,
+                        {
+                            variant: "success",
+                        }
                     );
                 } catch {
-                    enqueueSnackbar(`${fileName} was not saved`);
+                    enqueueSnackbar(`${fileName} was not saved`, {
+                        variant: "error",
+                    });
                     return;
                 }
 

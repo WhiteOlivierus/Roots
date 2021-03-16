@@ -5,11 +5,12 @@ import ReactFlow, {
     Controls,
     MiniMap,
     ReactFlowProvider,
+    useStoreState,
 } from "react-flow-renderer";
-import NodeBar from "./NodeBar";
+import { NodeBar } from "./NodeBar";
 import { useHistory } from "react-router-dom";
 
-import { NodeTypes } from "./Nodes/NodeTypes";
+import { MinimapSettings, NodeTypes } from "./Nodes/NodeTypes";
 import { SaveFileInFolder } from "../../Utilities/FileHandler";
 import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
 
@@ -47,7 +48,8 @@ export const FlowEditor = React.memo((props) => {
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
 
     const [elements, setElements] = useState(defaultFlow.elements);
-
+    const nodes = useStoreState((state) => state.nodes);
+    const edges = useStoreState((state) => state.edges);
     const [rfInstance, setRfInstance] = useState(null);
 
     const onLoad = (reactFlowInstance) => {
@@ -59,28 +61,33 @@ export const FlowEditor = React.memo((props) => {
                 throw "No project loaded";
             }
 
-            if (elements.length > 2) {
-                return;
+            const elements = nodes.concat(edges);
+
+            if (elements.length > 1) {
+                setElements(elements);
+                console.log("Elements set from provider");
+            } else {
+                LoadFlow(
+                    projectFilesState.activeRoot,
+                    projectFilesState.activeFlow
+                ).then((flow) => {
+                    if (flow) {
+                        nodeViewerState.setElements = setElements;
+                        nodeViewerState.rfInstance = rfInstance;
+
+                        setNodeViewerState(nodeViewerState);
+
+                        setElements(flow.elements);
+
+                        console.log("Elements set from file");
+                    } else {
+                        throw "No flow initialized";
+                    }
+                });
             }
 
-            LoadFlow(
-                projectFilesState.activeRoot,
-                projectFilesState.activeFlow
-            ).then((flow) => {
-                if (flow) {
-                    setElements(flow.elements);
-
-                    nodeViewerState.setElements = setElements;
-                    nodeViewerState.rfInstance = rfInstance;
-
-                    setNodeViewerState(nodeViewerState);
-
-                    setRfInstance(reactFlowInstance);
-                    reactFlowInstance.fitView();
-                } else {
-                    throw "No flow initialized";
-                }
-            });
+            setRfInstance(reactFlowInstance);
+            reactFlowInstance.fitView();
         } catch {
             history.push("/");
         }
@@ -91,6 +98,7 @@ export const FlowEditor = React.memo((props) => {
             return addEdge(params, els);
         });
     }
+
     function onElementsRemove(elementsToRemove) {
         return setElements((els): any => {
             return removeElements(elementsToRemove, els);
@@ -122,17 +130,6 @@ export const FlowEditor = React.memo((props) => {
         var newNode = await CreateNode(type, fileHandle);
         newNode.position = position;
         setElements((es) => es.concat(newNode));
-    }
-
-    function MinimapSettings(node) {
-        switch (node.type) {
-            case "start":
-                return "green";
-            case "scene":
-                return "grey";
-            case "end":
-                return "red";
-        }
     }
 
     const updateRFInstance = useCallback(() => (rfi = rfInstance), [
@@ -169,44 +166,42 @@ export const FlowEditor = React.memo((props) => {
     };
 
     return (
-        <ReactFlowProvider>
+        <Wrapper>
             <OnBeforeReload />
-            <Wrapper>
-                <MenuBar />
-                <ReactFlow
-                    elements={elements}
-                    nodeTypes={NodeTypes}
-                    onLoad={onLoad}
-                    onConnect={onConnect}
-                    onElementsRemove={onElementsRemove}
-                    onDrop={onDrop}
-                    onMove={updateRFInstance}
-                    onDragOver={onDragOver}
-                    deleteKeyCode={46}
-                    minZoom={0.1}
-                    maxZoom={2}
-                    multiSelectionKeyCode={17}
-                    onNodeContextMenu={handleClick}
-                    onPaneClick={handleClose}
-                >
-                    <Controls />
-                    <NodeBar />
-                    <MiniMap nodeColor={MinimapSettings} />
-                </ReactFlow>
-                <Menu
-                    keepMounted
-                    open={state.mouseY !== null}
-                    onClose={handleClose}
-                    anchorReference="anchorPosition"
-                    anchorPosition={
-                        state.mouseY !== null && state.mouseX !== null
-                            ? { top: state.mouseY, left: state.mouseX }
-                            : undefined
-                    }
-                >
-                    <MenuItem onClick={onShowEditor}>Edit</MenuItem>
-                </Menu>
-            </Wrapper>
-        </ReactFlowProvider>
+            <MenuBar />
+            <ReactFlow
+                elements={elements}
+                nodeTypes={NodeTypes}
+                onLoad={onLoad}
+                onConnect={onConnect}
+                onElementsRemove={onElementsRemove}
+                onDrop={onDrop}
+                onMove={updateRFInstance}
+                onDragOver={onDragOver}
+                deleteKeyCode={46}
+                minZoom={0.1}
+                maxZoom={2}
+                multiSelectionKeyCode={17}
+                onNodeContextMenu={handleClick}
+                onPaneClick={handleClose}
+            >
+                <Controls />
+                <NodeBar />
+                <MiniMap nodeColor={MinimapSettings} />
+            </ReactFlow>
+            <Menu
+                keepMounted
+                open={state.mouseY !== null}
+                onClose={handleClose}
+                anchorReference="anchorPosition"
+                anchorPosition={
+                    state.mouseY !== null && state.mouseX !== null
+                        ? { top: state.mouseY, left: state.mouseX }
+                        : undefined
+                }
+            >
+                <MenuItem onClick={onShowEditor}>Edit</MenuItem>
+            </Menu>
+        </Wrapper>
     );
 });

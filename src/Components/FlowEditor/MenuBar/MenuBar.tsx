@@ -123,8 +123,13 @@ export const MenuBar = React.memo((props) => {
                 ""
             );
 
-            enqueueSnackbar(`${FileName} saved`);
-            enqueueSnackbar(`Building ${FileName}`);
+            enqueueSnackbar(`${FileName} saved`, {
+                variant: "success",
+            });
+
+            enqueueSnackbar(`Building ${FileName}`, {
+                variant: "info",
+            });
 
             var build = await Build(projectFilesState.activeRoot, nodes, edges);
             projectFilesState.build = build;

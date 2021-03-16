@@ -1,10 +1,11 @@
 import { Paper } from "@material-ui/core";
+import { memo } from "react";
 import { Handle, Position, useStoreState } from "react-flow-renderer";
 import { NodeContent } from "./NodeContent";
 import { nodeStyle } from "./NodeStyle";
 import { hasSourceConnection } from "./NodeUtilities";
 
-export const InputNode = ({ data }) => {
+export const InputNode = memo<{ data: any }>(({ data }) => {
     const classes = nodeStyle();
 
     const nodes = useStoreState((state) => state.nodes);
@@ -30,4 +31,4 @@ export const InputNode = ({ data }) => {
             </Handle>
         </Paper>
     );
-};
+});

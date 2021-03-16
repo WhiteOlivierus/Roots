@@ -12,31 +12,34 @@ import { NodeViewerProvider } from "./Context/NodeViewerContext/NodeViewerProvid
 import { Preview } from "./Components/Preview/Preview";
 import { SnackbarProvider } from "notistack";
 import { SceneEditor } from "./Components/SceneEditor/SceneEditor";
+import { ReactFlowProvider } from "react-flow-renderer";
 
 export function App() {
     return (
         <SnackbarProvider maxSnack={3}>
             <ProjectFilesProvider>
                 <NodeViewerProvider>
-                    <ThemeProvider theme={theme}>
-                        <ContextMenu />
-                        <Router>
-                            <Switch>
-                                <Route exact={true} path="/">
-                                    <StartMenu />
-                                </Route>
-                                <Route path="/flow">
-                                    <FlowEditor />
-                                </Route>
-                                <Route path="/editor">
-                                    <SceneEditor />
-                                </Route>
-                                <Route path="/preview">
-                                    <Preview />
-                                </Route>
-                            </Switch>
-                        </Router>
-                    </ThemeProvider>
+                    <ReactFlowProvider>
+                        <ThemeProvider theme={theme}>
+                            <ContextMenu />
+                            <Router>
+                                <Switch>
+                                    <Route exact={true} path="/">
+                                        <StartMenu />
+                                    </Route>
+                                    <Route path="/flow">
+                                        <FlowEditor />
+                                    </Route>
+                                    <Route path="/editor">
+                                        <SceneEditor />
+                                    </Route>
+                                    <Route path="/preview">
+                                        <Preview />
+                                    </Route>
+                                </Switch>
+                            </Router>
+                        </ThemeProvider>
+                    </ReactFlowProvider>
                 </NodeViewerProvider>
             </ProjectFilesProvider>
         </SnackbarProvider>

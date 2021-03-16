@@ -13,6 +13,7 @@ export async function CreateNode(type: any, fileHandle: any) {
                 position: { x: 0, y: 0 },
                 style: { width: 160, height: 90 },
                 data: {
+                    id: uuid,
                     label: `${type} node`,
                     image: blobURL,
                     imageName: fileHandle.name,
@@ -27,6 +28,7 @@ export async function CreateNode(type: any, fileHandle: any) {
                 position: { x: 0, y: 0 },
                 style: { width: 160, height: 90 },
                 data: {
+                    id: uuid,
                     label: `${type} node`,
                     image: blobURL,
                     imageName: fileHandle.name,
