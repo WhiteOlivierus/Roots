@@ -1,9 +1,10 @@
 import { Paper } from "@material-ui/core";
+import { memo } from "react";
 import { Handle, Position } from "react-flow-renderer";
 import { NodeContent } from "./NodeContent";
 import { nodeStyle } from "./NodeStyle";
 
-export const OutputNode = ({ data }) => {
+export const OutputNode = memo<{ data: any }>(({ data }) => {
     const classes = nodeStyle();
     return (
         <Paper className={classes.root}>
@@ -11,4 +12,4 @@ export const OutputNode = ({ data }) => {
             <Handle id="a" type="target" position={Position.Left} />
         </Paper>
     );
-};
+});

@@ -18,11 +18,11 @@ import { useStoreState } from "react-flow-renderer";
 
 import { Build } from "../../../Utilities/BuildHandler";
 import { useProjectFilesState } from "../../../Context/ProjectFilesContext/ProjectFilesContext";
-import { rfi } from "../FlowEditor";
 import { useSnackbar } from "notistack";
 
 import { SaveFlow } from "../../../Utilities/FlowHandler";
 import { MenuDrawer } from "./MenuDrawer";
+import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
 
 const drawerWidth = 240;
 
@@ -103,6 +103,7 @@ export const MenuBar = React.memo((props) => {
     const { enqueueSnackbar } = useSnackbar();
 
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
+    const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
 
     const [open, setOpen] = useState(false);
 
@@ -116,7 +117,10 @@ export const MenuBar = React.memo((props) => {
 
     const onBuild = useCallback(() => {
         async function Action() {
-            await SaveFlow(projectFilesState.activeFlow, rfi);
+            await SaveFlow(
+                projectFilesState.activeFlow,
+                nodeViewerState.rfInstance
+            );
 
             const FileName = projectFilesState.activeFlow.name.replace(
                 ".json",

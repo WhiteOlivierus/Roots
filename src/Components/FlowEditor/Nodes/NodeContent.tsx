@@ -1,7 +1,6 @@
 import { makeStyles } from "@material-ui/core";
-import { createElement, useCallback, useEffect, useState } from "react";
-import { useStoreActions, useStoreState } from "react-flow-renderer";
-import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
+import { createElement, memo, useCallback, useEffect, useRef } from "react";
+import { EditNodeText } from "./EditNodeText";
 
 const contentStyle = makeStyles({
     img: { width: "100%", height: "100%", borderRadius: 4 },
@@ -14,8 +13,14 @@ const contentStyle = makeStyles({
     },
 });
 
-export const NodeContent = ({ data }) => {
+export const NodeContent = memo<{ data: any }>(({ data }) => {
     const classes = contentStyle();
+
+    const renders = useRef(0);
+
+    useEffect(() => {
+        console.log(renders.current++);
+    }, [renders]);
 
     const preventDragHandler = useCallback((e) => {
         e.preventDefault();
@@ -38,63 +43,4 @@ export const NodeContent = ({ data }) => {
             {data.image && nodeImage}
         </div>
     );
-};
-
-export const EditNodeText = (props) => {
-    const [toggle, setToggle] = useState(false);
-    const [nodeName, setNodeName] = useState(props.value);
-
-    const nodes = useStoreState((store) => store.nodes);
-    const setElements = useStoreActions((actions) => actions.setElements);
-
-    useEffect(() => {
-        setElements(
-            nodes.map((el) => {
-                if (el.id === props.nodeId) {
-                    el.data = {
-                        ...el.data,
-                        label: nodeName,
-                    };
-                }
-
-                return el;
-            })
-        );
-    }, [nodeName]);
-
-    const handleDoubleClick = (e) => {
-        setToggle((s) => (s = true));
-    };
-
-    const handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-            if (event.target.value !== "") {
-                setToggle((s) => (s = false));
-                setNodeName((s) => (s = event.target.value));
-            } else {
-                setToggle((s) => (s = false));
-            }
-        }
-    };
-
-    return (
-        <div>
-            {toggle ? (
-                <input
-                    className={props.inputStyle}
-                    type="text"
-                    name="node label"
-                    defaultValue={nodeName}
-                    onKeyDown={handleKeyDown}
-                />
-            ) : (
-                <p
-                    className={props.textStyle}
-                    onDoubleClick={handleDoubleClick}
-                >
-                    {nodeName}
-                </p>
-            )}
-        </div>
-    );
-};
+});

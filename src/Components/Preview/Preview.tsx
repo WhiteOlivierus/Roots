@@ -1,22 +1,13 @@
 import { Game } from "./Game";
 import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
-import React, { useEffect } from "react";
+import { memo, useEffect } from "react";
 import { useHistory, Link, Redirect } from "react-router-dom";
-import styled from "styled-components";
 import { Button, Tooltip } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import { OnBeforeReload } from "../../Utilities/OnBeforeReload";
+import { EditorWrapper } from "../EditorWrapper";
 
-const Wrapper = styled.div`
-    display: flex;
-    height: 100vh;
-    width: 100vw;
-    flex-direction: column;
-    overflow-x: hidden;
-    overflow-y: hidden;
-`;
-
-export function Preview(props) {
+export const Preview = memo((props) => {
     const history = useHistory();
 
     const { projectFilesState } = useProjectFilesState();
@@ -28,7 +19,7 @@ export function Preview(props) {
     }, [projectFilesState]);
 
     return (
-        <Wrapper>
+        <EditorWrapper>
             <OnBeforeReload />
             <Link to="/flow">
                 <Tooltip title="Back to flow editor">
@@ -51,6 +42,6 @@ export function Preview(props) {
             ) : (
                 <Redirect to="/" />
             )}
-        </Wrapper>
+        </EditorWrapper>
     );
-}
+});

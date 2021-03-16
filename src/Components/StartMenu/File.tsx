@@ -34,8 +34,10 @@ export function File(props) {
         } catch {
             return;
         }
+
         projectFilesState.activeRoot = activeRoot;
         projectFilesState.activeFlow = activeFlow;
+        projectFilesState.projectLoaded = false;
 
         setProjectFilesState(projectFilesState);
 

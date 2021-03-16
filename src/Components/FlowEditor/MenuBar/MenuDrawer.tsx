@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { memo, useCallback, useEffect } from "react";
 import {
     createStyles,
     Drawer,
@@ -11,7 +11,6 @@ import {
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import { MenuButtons } from "./MenuButtons";
 import { useProjectFilesState } from "../../../Context/ProjectFilesContext/ProjectFilesContext";
-import { rfi } from "../FlowEditor";
 import { useSnackbar } from "notistack";
 import SaveIcon from "@material-ui/icons/Save";
 import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
@@ -40,7 +39,7 @@ const useMenuDrawerStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export const MenuDrawer = React.memo<{ open: any; handleDrawerClose: any }>(
+export const MenuDrawer = memo<{ open: any; handleDrawerClose: any }>(
     ({ open, handleDrawerClose }) => {
         const classes = useMenuDrawerStyles();
 
@@ -54,10 +53,8 @@ export const MenuDrawer = React.memo<{ open: any; handleDrawerClose: any }>(
 
         useEffect(() => {
             window.addEventListener("keydown", shortCuts, true);
-            console.log("Set keydown");
             return () => {
                 window.removeEventListener("keydown", shortCuts, true);
-                console.log("Remove keydown");
             };
         }, []);
 
@@ -187,7 +184,10 @@ export const MenuDrawer = React.memo<{ open: any; handleDrawerClose: any }>(
                 );
 
                 try {
-                    await SaveFlow(projectFilesState.activeFlow, rfi);
+                    await SaveFlow(
+                        projectFilesState.activeFlow,
+                        nodeViewerState.rfInstance
+                    );
 
                     enqueueSnackbar(`${fileName} saved`, {
                         variant: "success",
@@ -212,7 +212,7 @@ export const MenuDrawer = React.memo<{ open: any; handleDrawerClose: any }>(
                 try {
                     var activeFlow = await SaveFlowAs(
                         projectFilesState.activeRoot,
-                        rfi
+                        nodeViewerState.rfInstance
                     );
 
                     enqueueSnackbar(

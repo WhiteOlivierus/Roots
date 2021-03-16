@@ -32,6 +32,12 @@
 
         <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Martel:wght@900&display=swap"
+            rel="stylesheet"
+        />
+
         <title>Roots</title>
 
         <!-- Jquery -->
@@ -46,8 +52,30 @@
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root">
-            <div>
-                <h1>Starting Roots</h1>
+            <div
+                style="
+                    width: 100vw;
+                    height: 100vh;
+                    background-color: #e040fb;
+                    position: absolute;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                "
+            >
+                <img src="/LogoWhite.png" width="300" height="300" alt="" />
+                <h1
+                    style="
+                        font-family: Martel;
+                        font-weight: 900;
+                        color: white;
+                        font-size: 5rem;
+                        padding-left: 3rem;
+                    "
+                >
+                    Starting Roots
+                </h1>
             </div>
         </div>
     </body>
