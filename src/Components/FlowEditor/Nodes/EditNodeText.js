@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { useStoreActions, useStoreState } from "react-flow-renderer";
 
 export const EditNodeText = memo((props) => {
@@ -7,6 +7,8 @@ export const EditNodeText = memo((props) => {
 
     const nodes = useStoreState((store) => store.nodes);
     const setElements = useStoreActions((actions) => actions.setElements);
+
+    const input = useRef(null);
 
     useEffect(() => {
         setElements(
@@ -22,6 +24,12 @@ export const EditNodeText = memo((props) => {
             })
         );
     }, [nodeName]);
+
+    useEffect(() => {
+        if (toggle) {
+            input.current.focus();
+        }
+    }, [toggle, setToggle]);
 
     const handleDoubleClick = (e) => {
         setToggle((s) => (s = true));
@@ -42,6 +50,7 @@ export const EditNodeText = memo((props) => {
         <div>
             {toggle ? (
                 <input
+                    ref={input}
                     className={props.inputStyle}
                     type="text"
                     name="node label"

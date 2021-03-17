@@ -1,10 +1,9 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useState } from "react";
 import ReactFlow, {
     removeElements,
     addEdge,
     Controls,
     MiniMap,
-    useZoomPanHelper,
 } from "react-flow-renderer";
 import { NodeBar } from "./NodeBar";
 import { useHistory } from "react-router-dom";
@@ -35,10 +34,8 @@ export const FlowEditor = memo(({ flow }) => {
     const [elements, setElements] = useState([]);
     const [instance, setInstance] = useState(null);
 
-    const { transform } = useZoomPanHelper();
-
     const onLoad = (_reactFlowInstance) => {
-        setElements((els) => (els = flow.elements));
+        setElements(flow.elements);
         _reactFlowInstance.setTransform({
             x: flow.position[0],
             y: flow.position[1],
@@ -51,16 +48,6 @@ export const FlowEditor = memo(({ flow }) => {
 
         return setInstance(_reactFlowInstance);
     };
-
-    /* 
-    useEffect(() => {
-        setElements((els) => (els = flow.elements));
-        transform({
-            x: flow.position[0],
-            y: flow.position[1],
-            zoom: flow.zoom || 0,
-        });
-    }, []); */
 
     const onConnect = (params) =>
         nodeViewerState.setElements((els) => addEdge(params, els));
@@ -80,7 +67,7 @@ export const FlowEditor = memo(({ flow }) => {
         event.dataTransfer.dropEffect = "move";
     };
 
-    const onDrop = async (event) => {
+    const onDrop = (event) => {
         event.preventDefault();
 
         const type = event.dataTransfer.getData("application/reactflow");
@@ -89,8 +76,9 @@ export const FlowEditor = memo(({ flow }) => {
             y: event.clientY,
         });
 
-        var newNode = await CreateNode(type, position);
-        nodeViewerState.setElements((els) => els.concat(newNode));
+        CreateNode(type, position).then((node) => {
+            nodeViewerState.setElements((els) => els.concat(node));
+        });
     };
 
     const [state, setState] = useState(initialState);

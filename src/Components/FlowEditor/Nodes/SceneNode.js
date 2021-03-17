@@ -15,9 +15,9 @@ export const SceneNode = memo(({ data }) => {
 
     const length = data.outHandles.length - 1;
 
-    function CalculateHandlePosition(length, index, handlePadding = 25) {
+    const CalculateHandlePosition = (length, index, handlePadding = 25) => {
         return handlePadding + (100 - (handlePadding * 2) / length) * index;
-    }
+    };
 
     const onHasSourceConnection = (connection) => {
         return hasSourceConnection(connection, nodes, edges);
