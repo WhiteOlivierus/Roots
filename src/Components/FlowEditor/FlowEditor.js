@@ -1,15 +1,15 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import ReactFlow, {
     removeElements,
     addEdge,
     Controls,
     MiniMap,
+    useZoomPanHelper,
 } from "react-flow-renderer";
 import { NodeBar } from "./NodeBar";
 import { useHistory } from "react-router-dom";
 
 import { MinimapSettings, NodeTypes } from "./Nodes/NodeTypes";
-import { SaveFileInFolder } from "../../Utilities/FileHandler";
 import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
 
 import { MenuBar } from "./MenuBar/MenuBar";
@@ -19,74 +19,83 @@ import { CreateNode } from "./Nodes/NodeFactory";
 import { OnBeforeReload } from "../../Utilities/OnBeforeReload";
 import { Menu, MenuItem } from "@material-ui/core";
 import { EditorWrapper } from "../EditorWrapper";
-
-export declare const window: any;
+import { SaveFlow } from "../../Utilities/FlowHandler";
 
 const initialState = {
     mouseX: null,
     mouseY: null,
 };
 
-export const FlowEditor = memo<{ flow: any }>(({ flow }) => {
+export const FlowEditor = memo(({ flow }) => {
     const history = useHistory();
 
     const { projectFilesState } = useProjectFilesState();
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
 
-    const [elements, setElements] = useState(flow.elements);
+    const [elements, setElements] = useState([]);
+    const [instance, setInstance] = useState(null);
 
-    const [reactFlowInstance, setReactFlowInstance] = useState(null);
+    const { transform } = useZoomPanHelper();
 
     const onLoad = (_reactFlowInstance) => {
+        setElements((els) => (els = flow.elements));
+        _reactFlowInstance.setTransform({
+            x: flow.position[0],
+            y: flow.position[1],
+            zoom: flow.zoom || 0,
+        });
+
         nodeViewerState.setElements = setElements;
-        nodeViewerState.rfInstance = reactFlowInstance;
+        nodeViewerState.rfInstance = _reactFlowInstance;
         setNodeViewerState(nodeViewerState);
 
-        return setReactFlowInstance(_reactFlowInstance);
+        return setInstance(_reactFlowInstance);
     };
 
-    function onConnect(params) {
-        return setElements(function (els): any {
-            return addEdge(params, els);
+    /* 
+    useEffect(() => {
+        setElements((els) => (els = flow.elements));
+        transform({
+            x: flow.position[0],
+            y: flow.position[1],
+            zoom: flow.zoom || 0,
         });
-    }
+    }, []); */
 
-    function onElementsRemove(elementsToRemove) {
-        return setElements((els): any => {
-            return removeElements(elementsToRemove, els);
+    const onConnect = (params) =>
+        nodeViewerState.setElements((els) => addEdge(params, els));
+
+    const onRemove = (elements) => {
+        elements = elements.filter(function (element) {
+            return element.type !== "in";
         });
-    }
 
-    function onDragOver(event) {
+        return nodeViewerState.setElements((els) =>
+            removeElements(elements, els)
+        );
+    };
+
+    const onDragOver = (event) => {
         event.preventDefault();
         event.dataTransfer.dropEffect = "move";
-    }
+    };
 
-    async function onDrop(event) {
+    const onDrop = async (event) => {
         event.preventDefault();
 
         const type = event.dataTransfer.getData("application/reactflow");
-        const position = reactFlowInstance.project({
+        const position = nodeViewerState.rfInstance.project({
             x: event.clientX,
             y: event.clientY,
         });
 
-        var fileHandle = await window.showOpenFilePicker();
-        fileHandle = fileHandle[0];
-
-        fileHandle = await SaveFileInFolder(
-            projectFilesState.activeRoot,
-            fileHandle
-        );
-
-        var newNode = await CreateNode(type, fileHandle);
-        newNode.position = position;
-        setElements((es) => es.concat(newNode));
-    }
+        var newNode = await CreateNode(type, position);
+        nodeViewerState.setElements((els) => els.concat(newNode));
+    };
 
     const [state, setState] = useState(initialState);
 
-    const handleClick = (e: any, node: any) => {
+    const handleClick = (e, node) => {
         e.preventDefault();
 
         setState({
@@ -106,7 +115,10 @@ export const FlowEditor = memo<{ flow: any }>(({ flow }) => {
     };
 
     const onShowEditor = (e) => {
-        history.push("/editor");
+        SaveFlow(
+            projectFilesState.activeFlow,
+            nodeViewerState.rfInstance
+        ).then(() => history.push("/editor"));
     };
 
     return (
@@ -118,7 +130,7 @@ export const FlowEditor = memo<{ flow: any }>(({ flow }) => {
                 onLoad={onLoad}
                 nodeTypes={NodeTypes}
                 onConnect={onConnect}
-                onElementsRemove={onElementsRemove}
+                onElementsRemove={onRemove}
                 onDrop={onDrop}
                 onDragOver={onDragOver}
                 deleteKeyCode={46}

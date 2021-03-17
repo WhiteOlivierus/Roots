@@ -8,9 +8,7 @@ import {
 import { defaultFlow } from "./DefaultFlow";
 import { SetActiveFlowInConfig } from "./ProjectHandler";
 
-export declare const window: any;
-
-export async function NewFlow(activeRoot: any) {
+export async function NewFlow(activeRoot) {
     var { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(
         activeRoot
     );
@@ -22,10 +20,10 @@ export async function NewFlow(activeRoot: any) {
     return { activeFlow };
 }
 
-export async function OpenFlow(activeRoot: any) {
+export async function OpenFlow(activeRoot) {
     var flowDirHandle = await window.showDirectoryPicker();
 
-    const activeFlow: any = await FindFile(
+    const activeFlow = await FindFile(
         flowDirHandle,
         `${flowDirHandle.name}.json`
     );
@@ -37,7 +35,7 @@ export async function OpenFlow(activeRoot: any) {
     return { activeFlow, flow };
 }
 
-export async function SaveFlow(activeFlow: any, rfInstance: any) {
+export async function SaveFlow(activeFlow, rfInstance) {
     const flow = rfInstance.toObject();
 
     var flowCopy = clone(flow);
@@ -56,7 +54,7 @@ export async function SaveFlow(activeFlow: any, rfInstance: any) {
     await writable.close();
 }
 
-export async function SaveFlowAs(activeRoot: any, rfInstance: any) {
+export async function SaveFlowAs(activeRoot, rfInstance) {
     var { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(
         activeRoot
     );
@@ -68,7 +66,7 @@ export async function SaveFlowAs(activeRoot: any, rfInstance: any) {
     return activeFlow;
 }
 
-export async function LoadFlow(root: any, flowHandle: any) {
+export async function LoadFlow(root, flowHandle) {
     try {
         const { obj: flow } = await GetObjectFromFileHandle(flowHandle);
 
@@ -83,7 +81,7 @@ export async function LoadFlow(root: any, flowHandle: any) {
     }
 }
 
-export async function CreateFlow(root: any) {
+export async function CreateFlow(root) {
     var flowName = prompt("Please enter your first root name", "Root");
 
     const isFlowName = flowName === "" || flowName === null;

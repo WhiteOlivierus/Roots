@@ -13,14 +13,13 @@ const contentStyle = makeStyles({
     },
 });
 
-export const NodeContent = memo<{ data: any }>(({ data }) => {
+export const NodeContent = memo(({ data }) => {
     const classes = contentStyle();
 
-    const renders = useRef(0);
-
     useEffect(() => {
-        console.log(renders.current++);
-    }, [renders]);
+        var image = new Image();
+        image.src = data.image;
+    }, [data.image]);
 
     const preventDragHandler = useCallback((e) => {
         e.preventDefault();

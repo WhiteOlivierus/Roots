@@ -10,14 +10,14 @@ import { set, get } from "idb-keyval";
 import { defaultFlow } from "./DefaultFlow";
 import { CreateFlow } from "./FlowHandler";
 
-export declare const window: any;
-
 export async function NewProject() {
     var activeRoot = await window.showDirectoryPicker();
 
     if (activeRoot === undefined) {
         return null;
     }
+
+    verifyPermission(activeRoot, true);
 
     const config = await activeRoot.getFileHandle("config.json", {
         create: true,
@@ -41,13 +41,13 @@ export async function NewProject() {
 export async function OpenProject() {
     const activeRoot = await window.showDirectoryPicker();
 
-    const handle: any = await FindFile(activeRoot, `config.json`);
+    const handle = await FindFile(activeRoot, `config.json`);
 
     const { obj: config } = await GetObjectFromFileHandle(handle);
 
-    const flowDirHandle: any = await FindDir(activeRoot, config.lastOpened);
+    const flowDirHandle = await FindDir(activeRoot, config.lastOpened);
 
-    const activeFlow: any = await FindFile(
+    const activeFlow = await FindFile(
         flowDirHandle,
         `${config.lastOpened}.json`
     );
@@ -57,17 +57,17 @@ export async function OpenProject() {
     return { activeRoot, activeFlow };
 }
 
-export async function OpenRecentProject(activeRoot: any) {
+export async function OpenRecentProject(activeRoot) {
     try {
         await verifyPermission(activeRoot, true);
 
-        const handle: any = await FindFile(activeRoot, `config.json`);
+        const handle = await FindFile(activeRoot, `config.json`);
 
         const { obj: config } = await GetObjectFromFileHandle(handle);
 
-        const flowDirHandle: any = await FindDir(activeRoot, config.lastOpened);
+        const flowDirHandle = await FindDir(activeRoot, config.lastOpened);
 
-        const activeFlow: any = await FindFile(
+        const activeFlow = await FindFile(
             flowDirHandle,
             `${config.lastOpened}.json`
         );
@@ -81,13 +81,13 @@ export async function OpenRecentProject(activeRoot: any) {
     }
 }
 
-export async function SetActiveFlowInConfig(activeRoot: any, flowName: any) {
-    const configHandle: any = await FindFile(activeRoot, `config.json`);
+export async function SetActiveFlowInConfig(activeRoot, flowName) {
+    const configHandle = await FindFile(activeRoot, `config.json`);
 
     await WriteFile(configHandle, JSON.stringify({ lastOpened: flowName }));
 }
 
-async function RegisterRecentProject(file: any) {
+async function RegisterRecentProject(file) {
     var files = await get("files");
 
     if (files) {
@@ -114,7 +114,7 @@ async function RegisterRecentProject(file: any) {
     }
 }
 
-async function UnRegisterRecentProject(file: any) {
+async function UnRegisterRecentProject(file) {
     var files = await get("files");
 
     const index = files.findIndex((element) => {

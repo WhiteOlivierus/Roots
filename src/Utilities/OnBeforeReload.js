@@ -3,7 +3,7 @@ import { useEffect } from "react";
 // TODO handle back button https://stackoverflow.com/questions/25806608/how-to-detect-browser-back-button-event-cross-browser
 
 export function OnBeforeReload(props) {
-    const onBeforeReload: any = (event) => {
+    const onBeforeReload = (event) => {
         event.returnValue = `Are you sure you want to leave?`;
     };
 

@@ -1,12 +1,10 @@
-export declare const window: any;
-
-export async function CreateFolder(fileHandle: any, directoryName: String) {
+export async function CreateFolder(fileHandle, directoryName) {
     return await fileHandle.getDirectoryHandle(directoryName, {
         create: true,
     });
 }
 
-export async function SaveFileInFolder(dirHandle: any, fileHandle: any) {
+export async function SaveFileInFolder(dirHandle, fileHandle) {
     let newFileHandle = await dirHandle.getFileHandle(fileHandle.name, {
         create: true,
     });
@@ -19,7 +17,7 @@ export async function SaveFileInFolder(dirHandle: any, fileHandle: any) {
     return newFileHandle;
 }
 
-export async function WriteFile(fileHandle: any, contents: any) {
+export async function WriteFile(fileHandle, contents) {
     if (fileHandle.createWriter) {
         const writer = await fileHandle.createWriter();
         await writer.write(0, contents);
@@ -31,14 +29,14 @@ export async function WriteFile(fileHandle: any, contents: any) {
     await writable.close();
 }
 
-export async function GetObjectFromFileHandle(handle: any) {
+export async function GetObjectFromFileHandle(handle) {
     const file = await handle.getFile();
     const json = await file.text();
     const obj = await JSON.parse(json);
     return { obj, handle };
 }
 
-export async function LoadElementImages(dirHandle: any, elements: any) {
+export async function LoadElementImages(dirHandle, elements) {
     elements.forEach(async (element, index) => {
         const containsKeys = "data" in element && "imageName" in element.data;
 
@@ -51,14 +49,14 @@ export async function LoadElementImages(dirHandle: any, elements: any) {
     return elements;
 }
 
-export async function GetImageBlobPath(fileHandle: any) {
+export async function GetImageBlobPath(fileHandle) {
     const file = await fileHandle.getFile();
-    var path = (window.URL ? URL : webkitURL).createObjectURL(file);
+    var path = URL.createObjectURL(file);
     return path;
 }
 
 export async function verifyPermission(fileHandle, readWrite) {
-    const options: any = {};
+    const options = {};
     if (readWrite) {
         options.mode = "readwrite";
     }
@@ -71,17 +69,18 @@ export async function verifyPermission(fileHandle, readWrite) {
     return false;
 }
 
-export async function FindFile(dirHandle: any, fileName: string) {
+export async function FindFile(dirHandle, fileName) {
     return await Find(dirHandle, fileName, "file");
 }
 
-export async function FindDir(dirHandle: any, dirName: string) {
+export async function FindDir(dirHandle, dirName) {
     return await Find(dirHandle, dirName, "directory");
 }
 
-async function Find(dirHandle: any, fileName: string, type: any) {
+async function Find(dirHandle, fileName, type) {
     try {
-        for await (const entry of dirHandle.values()) {
+        const files = dirHandle.values();
+        for await (const entry of files) {
             if (entry.name === fileName && entry.kind === type) {
                 return entry;
             }
@@ -91,7 +90,7 @@ async function Find(dirHandle: any, fileName: string, type: any) {
     }
 }
 
-export async function Move(folderHandle: any, fileHandle: any) {
+export async function Move(folderHandle, fileHandle) {
     let file = await fileHandle.getFile();
 
     const newFileHandle = await folderHandle.getFileHandle(fileHandle.name, {

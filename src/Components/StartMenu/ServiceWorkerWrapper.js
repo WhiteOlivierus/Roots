@@ -1,15 +1,12 @@
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import * as serviceWorkerRegistration from "../../serviceWorkerRegistration";
 import { Box, Button, Card, Grid, Paper, Typography } from "@material-ui/core";
 
-export const ServiceWorkerWrapper: FC = () => {
-    const [showReload, setShowReload] = React.useState(false);
-    const [
-        waitingWorker,
-        setWaitingWorker,
-    ] = React.useState<ServiceWorker | null>(null);
+export const ServiceWorkerWrapper = () => {
+    const [showReload, setShowReload] = useState(false);
+    const [waitingWorker, setWaitingWorker] = useState(null);
 
-    const onSWUpdate = (registration: ServiceWorkerRegistration) => {
+    const onSWUpdate = (registration) => {
         setShowReload(true);
         setWaitingWorker(registration.waiting);
     };

@@ -1,11 +1,10 @@
-import React, { useCallback, useState, memo } from "react";
+import { useCallback, useState, memo } from "react";
 import { useHistory } from "react-router-dom";
 import {
     AppBar,
     createStyles,
     IconButton,
     makeStyles,
-    Theme,
     Toolbar,
     Tooltip,
     Typography,
@@ -26,7 +25,7 @@ import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewe
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme) =>
     createStyles({
         root: {
             flexGrow: 1,
@@ -93,7 +92,7 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export const MenuBar = React.memo((props) => {
+export const MenuBar = memo((props) => {
     const classes = useStyles();
     const history = useHistory();
 

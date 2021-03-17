@@ -1,8 +1,8 @@
 import { WriteFile, FindFile, Move } from "./FileHandler";
 import { InputZone, ProjectFile, Scene } from "./ProjectFile";
 
-export async function Build(activeRoot: any, nodes: any, edges: any) {
-    let projectFile: ProjectFile = new ProjectFile(activeRoot.name);
+export async function Build(activeRoot, nodes, edges) {
+    let projectFile = new ProjectFile(activeRoot.name);
 
     let images = [];
 
@@ -11,7 +11,7 @@ export async function Build(activeRoot: any, nodes: any, edges: any) {
     copiedNodes.splice(0, 1);
 
     for (let index = 0; index < copiedNodes.length; index++) {
-        const node: any = copiedNodes[index];
+        const node = copiedNodes[index];
 
         const newScene = new Scene();
 
@@ -26,7 +26,7 @@ export async function Build(activeRoot: any, nodes: any, edges: any) {
         let times = 0;
 
         for (let index = 0; index < edges.length; index++) {
-            const edge: any = edges[index];
+            const edge = edges[index];
 
             const newInputZone = new InputZone();
 

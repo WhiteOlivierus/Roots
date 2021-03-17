@@ -5,7 +5,7 @@ import { OpenRecentProject } from "../../Utilities/ProjectHandler";
 import { useCallback } from "react";
 import { useSnackbar } from "notistack";
 
-export function RecentEntry(props) {
+export const RecentEntry = (props) => {
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
 
     const history = useHistory();
@@ -13,25 +13,21 @@ export function RecentEntry(props) {
 
     const onOpenRecentProject = useCallback(
         (fileHandle) => {
-            try {
-                OpenRecentProject(fileHandle)
-                    .then(({ activeRoot, activeFlow }) => {
-                        projectFilesState.activeRoot = activeRoot;
-                        projectFilesState.activeFlow = activeFlow;
-                        projectFilesState.projectLoaded = false;
+            OpenRecentProject(fileHandle)
+                .then(({ activeRoot, activeFlow }) => {
+                    projectFilesState.activeRoot = activeRoot;
+                    projectFilesState.activeFlow = activeFlow;
+                    projectFilesState.projectLoaded = false;
 
-                        setProjectFilesState(projectFilesState);
+                    setProjectFilesState(projectFilesState);
 
-                        history.push("/flow");
-                    })
-                    .catch((e) => {
-                        enqueueSnackbar(e, {
-                            variant: "error",
-                        });
+                    history.push("/flow");
+                })
+                .catch((e) => {
+                    enqueueSnackbar(e, {
+                        variant: "error",
                     });
-            } catch {
-                return;
-            }
+                });
         },
         [projectFilesState]
     );
@@ -50,4 +46,4 @@ export function RecentEntry(props) {
                 ))}
         </div>
     );
-}
+};

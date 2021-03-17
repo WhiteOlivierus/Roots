@@ -1,11 +1,11 @@
 import { Divider } from "@material-ui/core";
 
-import { MenuButton } from "../MenuBar/MenuButton";
+import { MenuButton } from "./MenuButton";
 
-export function MenuButtons(props) {
+export const MenuButtons = (props) => {
     return (
         <div>
-            {props.buttons.map(function (button: any, index) {
+            {props.buttons.map((button, index) => {
                 if ("divide" in button) {
                     return <Divider key={index} />;
                 } else {
@@ -14,4 +14,4 @@ export function MenuButtons(props) {
             })}
         </div>
     );
-}
+};

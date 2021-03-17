@@ -3,6 +3,8 @@ export const defaultFlow = {
         {
             id: "0",
             type: "in",
+            selectable: "false",
+            draggable: "false",
             position: {
                 x: 0,
                 y: 0,

@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useStoreActions, useStoreState } from "react-flow-renderer";
 
-export const EditNodeText = (props) => {
+export const EditNodeText = memo((props) => {
     const [toggle, setToggle] = useState(false);
     const [nodeName, setNodeName] = useState(props.value);
 
@@ -58,4 +58,4 @@ export const EditNodeText = (props) => {
             )}
         </div>
     );
-};
+});

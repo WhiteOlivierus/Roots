@@ -7,7 +7,7 @@ import { memo } from "react";
 
 const letters = "abcdefghijklmnopqrstuvwxyz";
 
-export const SceneNode = memo<{ data: any }>(({ data }) => {
+export const SceneNode = memo(({ data }) => {
     const classes = nodeStyle();
 
     const nodes = useStoreState((state) => state.nodes);
@@ -23,6 +23,24 @@ export const SceneNode = memo<{ data: any }>(({ data }) => {
         return hasSourceConnection(connection, nodes, edges);
     };
 
+    const outHandles = data.outHandles.map((handle, index) => {
+        return (
+            <Handle
+                key={index}
+                type="source"
+                position={Position.Right}
+                className={classes.handleRoot}
+                isValidConnection={onHasSourceConnection}
+                id={letters[index]}
+                style={{
+                    top: `${CalculateHandlePosition(length, index)}%`,
+                }}
+            >
+                <p className={classes.handleText}>{handle.text}</p>
+            </Handle>
+        );
+    });
+
     return (
         <Paper className={classes.root}>
             <NodeContent data={data} />
@@ -33,23 +51,7 @@ export const SceneNode = memo<{ data: any }>(({ data }) => {
                 position={Position.Left}
                 className={classes.handleRoot}
             />
-            {data.outHandles.map((handle, index) => {
-                return (
-                    <Handle
-                        key={index}
-                        type="source"
-                        position={Position.Right}
-                        className={classes.handleRoot}
-                        isValidConnection={onHasSourceConnection}
-                        id={letters[index]}
-                        style={{
-                            top: `${CalculateHandlePosition(length, index)}%`,
-                        }}
-                    >
-                        <p className={classes.handleText}>{handle.text}</p>
-                    </Handle>
-                );
-            })}
+            {outHandles}
         </Paper>
     );
 });

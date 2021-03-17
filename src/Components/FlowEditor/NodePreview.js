@@ -1,8 +1,9 @@
 import { Box, Grid, Paper, Typography } from "@material-ui/core";
+import { memo } from "react";
 import { nodeStyle } from "./Nodes/NodeStyle";
 import { AllNodes } from "./Nodes/NodeTypes";
 
-export function NodePreview(props) {
+export const NodePreview = memo((props) => {
     const classes = nodeStyle();
 
     const onDragStart = (event, nodeType) => {
@@ -38,4 +39,4 @@ export function NodePreview(props) {
             })}
         </Grid>
     );
-}
+});

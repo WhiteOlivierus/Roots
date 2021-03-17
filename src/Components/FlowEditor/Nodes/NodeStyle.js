@@ -2,7 +2,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core";
 
 const handleTextSize = 0.5;
 
-export const nodeStyle = makeStyles((theme: Theme) =>
+export const nodeStyle = makeStyles((theme) =>
     createStyles({
         root: {
             width: 160,

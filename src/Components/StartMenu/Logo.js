@@ -3,7 +3,7 @@ import logo from "../../Resources/LogoWhite.png";
 import { Box, Grid, Typography } from "@material-ui/core";
 import { useStyles } from "./useStyles";
 
-export function Logo(props) {
+export const Logo = (props) => {
     const classes = useStyles();
     return (
         <Box p={5}>
@@ -25,4 +25,4 @@ export function Logo(props) {
             </Grid>
         </Box>
     );
-}
+};

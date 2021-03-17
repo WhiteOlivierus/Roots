@@ -9,8 +9,8 @@ export const AllNodes = {
 };
 
 export const NodeTypes = {
-    scene: SceneNode,
     in: InputNode,
+    scene: SceneNode,
     out: OutputNode,
 };
 

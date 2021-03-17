@@ -4,9 +4,9 @@ import {
     ListItemText,
     Tooltip,
 } from "@material-ui/core";
-import React from "react";
+import { memo } from "react";
 
-export const MenuButton = React.memo<{ button: any }>(({ button }) => {
+export const MenuButton = memo(({ button }) => {
     return (
         <Tooltip title={button.tooltip}>
             <ListItem button onClick={button.action}>

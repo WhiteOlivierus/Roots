@@ -15,7 +15,7 @@ import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectF
 
 import { NewProject, OpenProject } from "../../Utilities/ProjectHandler";
 
-export function File(props) {
+export const File = (props) => {
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
 
     const history = useHistory();
@@ -28,20 +28,19 @@ export function File(props) {
         await SetProjectContext(OpenProject);
     }
 
-    async function SetProjectContext(action: any) {
-        try {
-            var { activeRoot, activeFlow } = await action();
-        } catch {
-            return;
-        }
+    async function SetProjectContext(action) {
+        action()
+            .then(({ activeRoot, activeFlow }) => {
+                projectFilesState.activeRoot = activeRoot;
+                projectFilesState.activeFlow = activeFlow;
 
-        projectFilesState.activeRoot = activeRoot;
-        projectFilesState.activeFlow = activeFlow;
-        projectFilesState.projectLoaded = false;
+                setProjectFilesState(projectFilesState);
 
-        setProjectFilesState(projectFilesState);
-
-        history.push("/flow");
+                history.push("/flow");
+            })
+            .catch((e) => {
+                return;
+            });
     }
 
     return (
@@ -82,4 +81,4 @@ export function File(props) {
             </Grid>
         </Grid>
     );
-}
+};

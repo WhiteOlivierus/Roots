@@ -5,7 +5,7 @@ import { NodeContent } from "./NodeContent";
 import { nodeStyle } from "./NodeStyle";
 import { hasSourceConnection } from "./NodeUtilities";
 
-export const InputNode = memo<{ data: any }>(({ data }) => {
+export const InputNode = memo(({ data }) => {
     const classes = nodeStyle();
 
     const nodes = useStoreState((state) => state.nodes);
@@ -23,12 +23,9 @@ export const InputNode = memo<{ data: any }>(({ data }) => {
                 className={classes.handleRoot}
                 position={Position.Right}
                 isValidConnection={onHasSourceConnection}
-                onConnect={(params) => console.log("handle onConnect", params)}
                 id="a"
                 style={{ top: "50%" }}
-            >
-                <p className={classes.handleText}>Left</p>
-            </Handle>
+            ></Handle>
         </Paper>
     );
 });

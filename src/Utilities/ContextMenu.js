@@ -4,7 +4,7 @@ export class ContextMenu extends React.Component {
     state = {
         visible: false,
     };
-    root: any = document.getElementById("root");
+    root = document.getElementById("root");
 
     componentDidMount() {
         document.addEventListener("contextmenu", this._handleContextMenu);
@@ -18,11 +18,11 @@ export class ContextMenu extends React.Component {
         document.removeEventListener("scroll", this._handleScroll);
     }
 
-    _handleContextMenu = (event: any) => {
+    _handleContextMenu = (event) => {
         event.preventDefault();
     };
 
-    _handleClick = (event: any) => {
+    _handleClick = (event) => {
         const { visible } = this.state;
         const wasOutside = !(event.target.contains === this.root);
 

@@ -4,7 +4,7 @@ import { Handle, Position } from "react-flow-renderer";
 import { NodeContent } from "./NodeContent";
 import { nodeStyle } from "./NodeStyle";
 
-export const OutputNode = memo<{ data: any }>(({ data }) => {
+export const OutputNode = memo(({ data }) => {
     const classes = nodeStyle();
     return (
         <Paper className={classes.root}>
