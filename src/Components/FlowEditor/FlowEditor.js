@@ -1,9 +1,10 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import ReactFlow, {
     removeElements,
     addEdge,
     Controls,
     MiniMap,
+    Background,
 } from "react-flow-renderer";
 import { NodeBar } from "./NodeBar";
 import { useHistory } from "react-router-dom";
@@ -34,26 +35,28 @@ export const FlowEditor = memo(({ flow }) => {
     const [elements, setElements] = useState([]);
     const [instance, setInstance] = useState(null);
 
-    const onLoad = (_reactFlowInstance) => {
+    const onLoad = (instance) => setInstance(instance);
+
+    useEffect(() => {
+        if (!instance) return;
+
+        console.log("Instance initialized");
+
         setElements(flow.elements);
-        _reactFlowInstance.setTransform({
-            x: flow.position[0],
-            y: flow.position[1],
-            zoom: flow.zoom || 0,
-        });
+
+        instance.fitView();
 
         nodeViewerState.setElements = setElements;
-        nodeViewerState.rfInstance = _reactFlowInstance;
-        setNodeViewerState(nodeViewerState);
+        nodeViewerState.rfInstance = instance;
 
-        return setInstance(_reactFlowInstance);
-    };
+        setNodeViewerState(nodeViewerState);
+    }, [instance, setInstance]);
 
     const onConnect = (params) =>
         nodeViewerState.setElements((els) => addEdge(params, els));
 
     const onRemove = (elements) => {
-        elements = elements.filter(function (element) {
+        elements = elements.filter((element) => {
             return element.type !== "in";
         });
 
@@ -77,7 +80,10 @@ export const FlowEditor = memo(({ flow }) => {
         });
 
         CreateNode(type, position).then((node) => {
-            nodeViewerState.setElements((els) => els.concat(node));
+            nodeViewerState.setElements((els) => {
+                const newLocal = els.concat(node);
+                return newLocal;
+            });
         });
     };
 
@@ -128,6 +134,7 @@ export const FlowEditor = memo(({ flow }) => {
                 onNodeContextMenu={handleClick}
                 onPaneClick={handleClose}
             >
+                <Background variant="lines" gap={30} size={2} />
                 <Controls />
                 <NodeBar />
                 <MiniMap nodeColor={MinimapSettings} />

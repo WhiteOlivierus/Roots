@@ -18,31 +18,35 @@ export async function SaveFileInFolder(dirHandle, fileHandle) {
 }
 
 export async function WriteFile(fileHandle, contents) {
-    if (fileHandle.createWriter) {
-        const writer = await fileHandle.createWriter();
-        await writer.write(0, contents);
-        await writer.close();
-        return;
+    if (verifyPermission(fileHandle, true)) {
+        if (fileHandle.createWriter) {
+            const writer = await fileHandle.createWriter();
+            await writer.write(0, contents);
+            await writer.close();
+            return;
+        }
+        const writable = await fileHandle.createWritable();
+        await writable.write(contents);
+        await writable.close();
     }
-    const writable = await fileHandle.createWritable();
-    await writable.write(contents);
-    await writable.close();
 }
 
-export async function GetObjectFromFileHandle(handle) {
-    const file = await handle.getFile();
+export async function GetObjectFromFileHandle(fileHandle) {
+    if (Array.isArray(fileHandle)) fileHandle = fileHandle[0];
+
+    const file = await fileHandle.getFile();
     const json = await file.text();
     const obj = await JSON.parse(json);
-    return { obj, handle };
+    return { obj, handle: fileHandle };
 }
 
 export async function LoadElementImages(dirHandle, elements) {
     elements.forEach(async (element, index) => {
-        const containsKeys = "data" in element && "imageName" in element.data;
+        const containsKeys = "data" in element && "image" in element.data;
 
         if (containsKeys) {
             let imageHandle = await FindFile(dirHandle, element.data.imageName);
-            elements[index].data.image = await GetImageBlobPath(imageHandle);
+            elements[index].data.src = await GetImageBlobPath(imageHandle);
         }
     });
 
@@ -50,6 +54,8 @@ export async function LoadElementImages(dirHandle, elements) {
 }
 
 export async function GetImageBlobPath(fileHandle) {
+    if (Array.isArray(fileHandle)) fileHandle = fileHandle[0];
+
     const file = await fileHandle.getFile();
     var path = URL.createObjectURL(file);
     return path;
@@ -91,6 +97,8 @@ async function Find(dirHandle, fileName, type) {
 }
 
 export async function Move(folderHandle, fileHandle) {
+    if (Array.isArray(fileHandle)) fileHandle = fileHandle[0];
+
     let file = await fileHandle.getFile();
 
     const newFileHandle = await folderHandle.getFileHandle(fileHandle.name, {

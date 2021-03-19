@@ -10,10 +10,10 @@ export const defaultFlow = {
                 y: 0,
             },
             data: {
-                label: "in",
+                label: "In",
             },
         },
     ],
-    position: [0, 0],
+    position: [window.outerWidth / 2, window.outerHeight / 2],
     zoom: 1,
 };

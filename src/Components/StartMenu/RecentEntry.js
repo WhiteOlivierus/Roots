@@ -17,7 +17,6 @@ export const RecentEntry = (props) => {
                 .then(({ activeRoot, activeFlow }) => {
                     projectFilesState.activeRoot = activeRoot;
                     projectFilesState.activeFlow = activeFlow;
-                    projectFilesState.projectLoaded = false;
 
                     setProjectFilesState(projectFilesState);
 

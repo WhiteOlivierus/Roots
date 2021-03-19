@@ -1,5 +1,7 @@
 import { makeStyles } from "@material-ui/core";
 import { createElement, memo, useCallback, useEffect, useRef } from "react";
+import { useProjectFilesState } from "../../../Context/ProjectFilesContext/ProjectFilesContext";
+import { FindFile, GetImageBlobPath } from "../../../Utilities/FileHandler";
 import { EditNodeText } from "./EditNodeText";
 
 const contentStyle = makeStyles({
@@ -16,19 +18,27 @@ const contentStyle = makeStyles({
 export const NodeContent = memo(({ data }) => {
     const classes = contentStyle();
 
-    useEffect(() => {
-        var image = new Image();
-        image.src = data.image;
-    }, [data.image]);
+    const { projectFilesState } = useProjectFilesState();
 
-    const preventDragHandler = useCallback((e) => {
-        e.preventDefault();
+    useEffect(() => {
+        if (!("src" in data) && "image" in data) {
+            FindFile(projectFilesState.activeRoot, data.image).then(
+                (fileHandle) => {
+                    GetImageBlobPath(fileHandle).then((blobUrl) => {
+                        var image = new Image();
+                        image.scr = blobUrl;
+
+                        data.src = blobUrl;
+                    });
+                }
+            );
+        }
     }, []);
 
     const nodeImage = createElement("img", {
-        src: data.image ? data.image : "",
+        src: data.src ? data.src : "",
         className: classes.img,
-        onDragStart: preventDragHandler,
+        // onDragStart: preventDragHandler,
     });
 
     return (

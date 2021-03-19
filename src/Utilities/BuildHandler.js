@@ -25,6 +25,10 @@ export async function Build(activeRoot, nodes, edges) {
 
         let times = 0;
 
+        if (edges === undefined) {
+            throw "No connections to build";
+        }
+
         for (let index = 0; index < edges.length; index++) {
             const edge = edges[index];
 

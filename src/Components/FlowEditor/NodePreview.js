@@ -28,7 +28,7 @@ export const NodePreview = memo((props) => {
                             className={classes.root}
                             style={{ backgroundColor: node.color }}
                         >
-                            <Box p={1}>
+                            <Box p={2}>
                                 <Typography variant="h6" gutterBottom>
                                     {key} Node
                                 </Typography>

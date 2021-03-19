@@ -20,7 +20,7 @@ export const NodeBar = () => {
     const classes = useStyles();
 
     return (
-        <Box p={5} style={{ position: "absolute", left: 0, zIndex: 5 }}>
+        <Box p={2} style={{ position: "absolute", left: 0, zIndex: 5 }}>
             <Card className={classes.root}>
                 <CardContent>
                     <Typography variant="body1" gutterBottom>

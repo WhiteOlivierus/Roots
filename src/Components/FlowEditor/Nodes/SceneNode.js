@@ -1,17 +1,17 @@
 import { Paper } from "@material-ui/core";
-import { Handle, Position, useStoreState } from "react-flow-renderer";
+import { Handle, Position } from "react-flow-renderer";
 import { hasSourceConnection } from "./NodeUtilities";
 import { NodeContent } from "./NodeContent";
 import { nodeStyle } from "./NodeStyle";
 import { memo } from "react";
+import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
 
 const letters = "abcdefghijklmnopqrstuvwxyz";
 
 export const SceneNode = memo(({ data }) => {
     const classes = nodeStyle();
 
-    const nodes = useStoreState((state) => state.nodes);
-    const edges = useStoreState((state) => state.edges);
+    const { nodeViewerState } = useNodeViewerState();
 
     const length = data.outHandles.length - 1;
 
@@ -20,7 +20,10 @@ export const SceneNode = memo(({ data }) => {
     };
 
     const onHasSourceConnection = (connection) => {
-        return hasSourceConnection(connection, nodes, edges);
+        return hasSourceConnection(
+            connection,
+            nodeViewerState.rfInstance.getElements()
+        );
     };
 
     const outHandles = data.outHandles.map((handle, index) => {

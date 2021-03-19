@@ -41,17 +41,15 @@ export async function SaveFlow(activeFlow, rfInstance) {
     var flowCopy = clone(flow);
 
     flowCopy.elements.map((element, index) => {
-        if ("data" in element && "image" in element.data) {
-            delete element.data["image"];
+        if ("data" in element && "src" in element.data) {
+            delete element.data["src"];
             flowCopy.elements[index] = element;
         }
     });
 
     const file = await JSON.stringify(flowCopy);
 
-    const writable = await activeFlow.createWritable();
-    await writable.write(file);
-    await writable.close();
+    await WriteFile(activeFlow, file);
 }
 
 export async function SaveFlowAs(activeRoot, rfInstance) {
@@ -67,18 +65,8 @@ export async function SaveFlowAs(activeRoot, rfInstance) {
 }
 
 export async function LoadFlow(root, flowHandle) {
-    try {
-        const { obj: flow } = await GetObjectFromFileHandle(flowHandle);
-
-        if (flow) {
-            flow.elements = await LoadElementImages(root, flow.elements);
-            return flow;
-        } else {
-            return null;
-        }
-    } catch {
-        return null;
-    }
+    const { obj: flow } = await GetObjectFromFileHandle(flowHandle);
+    return flow;
 }
 
 export async function CreateFlow(root) {

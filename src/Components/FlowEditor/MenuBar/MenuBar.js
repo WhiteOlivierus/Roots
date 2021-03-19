@@ -2,9 +2,7 @@ import { useCallback, useState, memo } from "react";
 import { useHistory } from "react-router-dom";
 import {
     AppBar,
-    createStyles,
     IconButton,
-    makeStyles,
     Toolbar,
     Tooltip,
     Typography,
@@ -13,8 +11,6 @@ import MenuIcon from "@material-ui/icons/Menu";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import clsx from "clsx";
 
-import { useStoreState } from "react-flow-renderer";
-
 import { Build } from "../../../Utilities/BuildHandler";
 import { useProjectFilesState } from "../../../Context/ProjectFilesContext/ProjectFilesContext";
 import { useSnackbar } from "notistack";
@@ -22,87 +18,20 @@ import { useSnackbar } from "notistack";
 import { SaveFlow } from "../../../Utilities/FlowHandler";
 import { MenuDrawer } from "./MenuDrawer";
 import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
+import { SeparateNodesAndEdges } from "../Nodes/NodeUtilities";
+import { RemoveExtension } from "../../../Utilities/StringTools";
+import { menuBarStyles } from "./menuBarStyles";
 
-const drawerWidth = 240;
-
-const useStyles = makeStyles((theme) =>
-    createStyles({
-        root: {
-            flexGrow: 1,
-        },
-        appBar: {
-            zIndex: theme.zIndex.drawer + 1,
-            transition: theme.transitions.create(["width", "margin"], {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-            }),
-        },
-        menuButton: {
-            marginRight: theme.spacing(2),
-        },
-        title: {
-            flexGrow: 1,
-            textAlign: "left",
-        },
-        appBarShift: {
-            marginLeft: drawerWidth,
-            width: `calc(100% - ${drawerWidth}px)`,
-            transition: theme.transitions.create(["width", "margin"], {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-        },
-        hide: {
-            display: "none",
-        },
-        drawer: {
-            width: drawerWidth,
-            flexShrink: 0,
-            whiteSpace: "nowrap",
-        },
-        drawerOpen: {
-            width: drawerWidth,
-            transition: theme.transitions.create("width", {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-        },
-        drawerClose: {
-            transition: theme.transitions.create("width", {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-            }),
-            overflowX: "hidden",
-            width: theme.spacing(7) + 1,
-            [theme.breakpoints.up("sm")]: {
-                width: theme.spacing(9) + 1,
-            },
-        },
-        toolbar: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            padding: theme.spacing(0, 1),
-            ...theme.mixins.toolbar,
-        },
-        content: {
-            flexGrow: 1,
-            padding: theme.spacing(3),
-        },
-    })
-);
+export const drawerWidth = 240;
 
 export const MenuBar = memo((props) => {
-    const classes = useStyles();
+    const classes = menuBarStyles();
     const history = useHistory();
-
-    const nodes = useStoreState((store) => store.nodes);
-    const edges = useStoreState((store) => store.edges);
 
     const { enqueueSnackbar } = useSnackbar();
 
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
-    const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
+    const { nodeViewerState } = useNodeViewerState();
 
     const [open, setOpen] = useState(false);
 
@@ -115,41 +44,47 @@ export const MenuBar = memo((props) => {
     }, [setOpen]);
 
     const onBuild = useCallback(() => {
-        async function Action() {
-            await SaveFlow(
-                projectFilesState.activeFlow,
-                nodeViewerState.rfInstance
-            );
+        SaveFlow(projectFilesState.activeFlow, nodeViewerState.rfInstance).then(
+            () => {
+                const FileName = projectFilesState.activeFlow.name.replace(
+                    ".json",
+                    ""
+                );
 
-            const FileName = projectFilesState.activeFlow.name.replace(
-                ".json",
-                ""
-            );
+                enqueueSnackbar(`Start building preview ${FileName}`, {
+                    variant: "info",
+                });
 
-            enqueueSnackbar(`${FileName} saved`, {
-                variant: "success",
-            });
+                var { nodes, edges } = SeparateNodesAndEdges(
+                    nodeViewerState.rfInstance.getElements()
+                );
 
-            enqueueSnackbar(`Building ${FileName}`, {
-                variant: "info",
-            });
+                Build(projectFilesState.activeRoot, nodes, edges)
+                    .then((build) => {
+                        projectFilesState.build = build;
+                        setProjectFilesState(projectFilesState);
 
-            var build = await Build(projectFilesState.activeRoot, nodes, edges);
-            projectFilesState.build = build;
-            setProjectFilesState(projectFilesState);
-            if (build.scenes.length <= 0) {
-                return;
+                        if (build.scenes.length <= 0) return;
+
+                        enqueueSnackbar(`Preview build successfully`, {
+                            variant: "success",
+                        });
+
+                        history.push(`/preview/${build.scenes[0].id}`);
+                    })
+                    .catch((e) => {
+                        enqueueSnackbar(e, {
+                            variant: "error",
+                        });
+                    });
             }
-            history.push(`/preview/${build.scenes[0].id}`);
-        }
-        Action();
-    }, [projectFilesState, setProjectFilesState, nodes, edges]);
+        );
+    }, [projectFilesState, setProjectFilesState, nodeViewerState]);
 
     return (
         <div className={classes.root}>
             <AppBar position="static">
                 <Toolbar
-                    variant="dense"
                     className={clsx(classes.appBar, {
                         [classes.appBarShift]: open,
                     })}
@@ -167,24 +102,7 @@ export const MenuBar = memo((props) => {
                             <MenuIcon />
                         </IconButton>
                     </Tooltip>
-                    <Typography
-                        variant="h6"
-                        color="inherit"
-                        noWrap
-                        className={classes.title}
-                    >
-                        {`Roots - 
-                        ${
-                            projectFilesState.activeRoot === undefined
-                                ? "No project loaded"
-                                : `${
-                                      projectFilesState.activeRoot.name
-                                  } - ${projectFilesState.activeFlow.name.replace(
-                                      ".json",
-                                      ""
-                                  )}`
-                        }`}
-                    </Typography>
+                    <MenuBarTitle />
                     <Tooltip title="Preview">
                         <IconButton onClick={onBuild}>
                             <PlayCircleFilledIcon style={{ fill: "white" }} />
@@ -194,5 +112,24 @@ export const MenuBar = memo((props) => {
             </AppBar>
             <MenuDrawer open={open} handleDrawerClose={handleDrawerClose} />
         </div>
+    );
+});
+
+export const MenuBarTitle = memo((props) => {
+    const classes = menuBarStyles();
+
+    const { projectFilesState, setProjectFilesState } = useProjectFilesState();
+
+    return (
+        <Typography
+            variant="h6"
+            color="inherit"
+            noWrap
+            className={classes.title}
+        >
+            {`Roots - 
+            ${projectFilesState.activeRoot.name} - 
+            ${RemoveExtension(projectFilesState.activeFlow.name)}`}
+        </Typography>
     );
 });
