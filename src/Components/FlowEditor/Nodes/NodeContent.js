@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { createElement, useEffect } from "react";
+import { createElement, memo, useEffect, useState } from "react";
 import { useProjectFilesState } from "../../../Context/ProjectFilesContext/ProjectFilesContext";
 import { FindFile, GetImageBlobPath } from "../../../Utilities/FileHandler";
 import { EditNodeText } from "./EditNodeText";
@@ -15,10 +15,12 @@ const contentStyle = makeStyles({
     },
 });
 
-export const NodeContent = ({ data }) => {
+export const NodeContent = memo(({ data }) => {
     const classes = contentStyle();
 
     const { projectFilesState } = useProjectFilesState();
+
+    const [src, setSrc] = useState(data.src || "");
 
     useEffect(() => {
         if (!("src" in data) && "image" in data) {
@@ -27,8 +29,7 @@ export const NodeContent = ({ data }) => {
                     GetImageBlobPath(fileHandle).then((blobUrl) => {
                         var image = new Image();
                         image.scr = blobUrl;
-
-                        data.src = blobUrl;
+                        setSrc(blobUrl);
                     });
                 }
             );
@@ -36,7 +37,7 @@ export const NodeContent = ({ data }) => {
     });
 
     const nodeImage = createElement("img", {
-        src: data.src ? data.src : undefined,
+        src: src,
         className: classes.img,
     });
 
@@ -48,7 +49,7 @@ export const NodeContent = ({ data }) => {
                 value={data.label}
                 nodeId={data.id}
             />
-            {data.src && nodeImage}
+            {src && nodeImage}
         </div>
     );
-};
+});

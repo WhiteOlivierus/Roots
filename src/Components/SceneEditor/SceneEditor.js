@@ -73,10 +73,11 @@ export const EditorActions = memo((props) => {
 
     const onLoadBackGroundImage = async (e) => {
         var fileHandle = await window.showOpenFilePicker();
+        if (Array.isArray(fileHandle)) fileHandle = fileHandle[0];
 
         await Move(projectFilesState.activeRoot, fileHandle);
 
-        var file = await fileHandle[0].getFile();
+        var file = await fileHandle.getFile();
         var blobUrl = await URL.createObjectURL(file);
 
         props.node({
