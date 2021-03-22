@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { createElement, memo, useCallback, useEffect, useRef } from "react";
+import { createElement, useEffect } from "react";
 import { useProjectFilesState } from "../../../Context/ProjectFilesContext/ProjectFilesContext";
 import { FindFile, GetImageBlobPath } from "../../../Utilities/FileHandler";
 import { EditNodeText } from "./EditNodeText";
@@ -15,7 +15,7 @@ const contentStyle = makeStyles({
     },
 });
 
-export const NodeContent = memo(({ data }) => {
+export const NodeContent = ({ data }) => {
     const classes = contentStyle();
 
     const { projectFilesState } = useProjectFilesState();
@@ -33,12 +33,11 @@ export const NodeContent = memo(({ data }) => {
                 }
             );
         }
-    }, []);
+    });
 
     const nodeImage = createElement("img", {
-        src: data.src ? data.src : "",
+        src: data.src ? data.src : undefined,
         className: classes.img,
-        // onDragStart: preventDragHandler,
     });
 
     return (
@@ -49,7 +48,7 @@ export const NodeContent = memo(({ data }) => {
                 value={data.label}
                 nodeId={data.id}
             />
-            {data.image && nodeImage}
+            {data.src && nodeImage}
         </div>
     );
-});
+};

@@ -1,19 +1,19 @@
 import { memo, useEffect, useRef, useState } from "react";
-import { useStoreActions, useStoreState } from "react-flow-renderer";
+import { isNode } from "react-flow-renderer";
+import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
 
 export const EditNodeText = memo((props) => {
     const [toggle, setToggle] = useState(false);
     const [nodeName, setNodeName] = useState(props.value);
 
-    const nodes = useStoreState((store) => store.nodes);
-    const setElements = useStoreActions((actions) => actions.setElements);
-
     const input = useRef(null);
 
+    const { nodeViewerState } = useNodeViewerState();
+
     useEffect(() => {
-        setElements(
-            nodes.map((el) => {
-                if (el.id === props.nodeId) {
+        nodeViewerState.setElements(
+            nodeViewerState.rfInstance.getElements().map((el) => {
+                if (isNode(el) && el.id === props.nodeId) {
                     el.data = {
                         ...el.data,
                         label: nodeName,
@@ -35,11 +35,12 @@ export const EditNodeText = memo((props) => {
         setToggle((s) => (s = true));
     };
 
-    const handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-            if (event.target.value !== "") {
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (e.target.value !== "") {
                 setToggle((s) => (s = false));
-                setNodeName((s) => (s = event.target.value));
+                setNodeName((s) => (s = e.target.value));
             } else {
                 setToggle((s) => (s = false));
             }

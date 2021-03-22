@@ -52,7 +52,7 @@ export const MenuDrawer = memo(({ open, handleDrawerClose }) => {
         return () => {
             window.removeEventListener("keydown", shortCuts, true);
         };
-    }, []);
+    });
 
     const shortCuts = (e) => {
         if ((e.ctrlKey === true || e.metaKey === true) && e.key === "s") {

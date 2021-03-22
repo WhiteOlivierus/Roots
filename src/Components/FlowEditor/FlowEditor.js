@@ -1,10 +1,12 @@
-import { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import ReactFlow, {
     removeElements,
     addEdge,
     Controls,
     MiniMap,
     Background,
+    useUpdateNodeInternals,
+    useZoomPanHelper,
 } from "react-flow-renderer";
 import { NodeBar } from "./NodeBar";
 import { useHistory } from "react-router-dom";
@@ -20,37 +22,48 @@ import { OnBeforeReload } from "../../Utilities/OnBeforeReload";
 import { Menu, MenuItem } from "@material-ui/core";
 import { EditorWrapper } from "../EditorWrapper";
 import { SaveFlow } from "../../Utilities/FlowHandler";
+import PropTypes from "prop-types";
 
 const initialState = {
     mouseX: null,
     mouseY: null,
 };
 
-export const FlowEditor = memo(({ flow }) => {
-    const history = useHistory();
-
+const FlowEditor = memo(({ flow }) => {
     const { projectFilesState } = useProjectFilesState();
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
+
+    const { initialized } = useZoomPanHelper();
+
+    const updateNodeInternals = useUpdateNodeInternals();
 
     const [elements, setElements] = useState([]);
     const [instance, setInstance] = useState(null);
 
-    const onLoad = (instance) => setInstance(instance);
-
-    useEffect(() => {
-        if (!instance) return;
-
-        console.log("Instance initialized");
-
+    const onLoad = (instance) => {
         setElements(flow.elements);
-
-        instance.fitView();
 
         nodeViewerState.setElements = setElements;
         nodeViewerState.rfInstance = instance;
 
         setNodeViewerState(nodeViewerState);
-    }, [instance, setInstance]);
+
+        return setInstance(instance);
+    };
+
+    useEffect(() => {
+        if (instance === null || !initialized) return;
+
+        instance.setTransform({
+            x: flow.position[0],
+            y: flow.position[1],
+            zoom: flow.zoom || 0,
+        });
+
+        instance.getElements().map((element) => {
+            return updateNodeInternals(element.id);
+        });
+    }, [initialized, instance, flow, updateNodeInternals]);
 
     const onConnect = (params) =>
         nodeViewerState.setElements((els) => addEdge(params, els));
@@ -101,14 +114,16 @@ export const FlowEditor = memo(({ flow }) => {
         setNodeViewerState(nodeViewerState);
     };
 
-    const handleClose = (e) => {
+    const handleClose = () => {
         setState(initialState);
 
         nodeViewerState.activeNode = undefined;
         setNodeViewerState(nodeViewerState);
     };
 
-    const onShowEditor = (e) => {
+    const history = useHistory();
+
+    const onShowEditor = () => {
         SaveFlow(
             projectFilesState.activeFlow,
             nodeViewerState.rfInstance
@@ -125,8 +140,8 @@ export const FlowEditor = memo(({ flow }) => {
                 nodeTypes={NodeTypes}
                 onConnect={onConnect}
                 onElementsRemove={onRemove}
-                onDrop={onDrop}
                 onDragOver={onDragOver}
+                onDrop={onDrop}
                 deleteKeyCode={46}
                 minZoom={0.1}
                 maxZoom={2}
@@ -155,3 +170,11 @@ export const FlowEditor = memo(({ flow }) => {
         </EditorWrapper>
     );
 });
+
+FlowEditor.displayName = "FlowEditor";
+
+FlowEditor.propTypes = {
+    flow: PropTypes.any.isRequired,
+};
+
+export default FlowEditor;

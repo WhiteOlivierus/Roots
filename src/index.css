@@ -40,3 +40,10 @@ code {
     -webkit-app-region: no-drag;
     cursor: default;
 }
+
+.nodePreview {
+    -webkit-user-select: all;
+    -webkit-user-drag: element;
+    -webkit-app-region: no-drag;
+    cursor: move;
+}

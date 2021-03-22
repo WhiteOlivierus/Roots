@@ -1,18 +1,18 @@
-import { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
 import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
 import { LoadFlow } from "../../Utilities/FlowHandler";
-import { FlowEditor } from "./FlowEditor";
+import FlowEditor from "./FlowEditor";
 
-export const FlowLoader = memo((props) => {
+export const FlowLoader = memo(() => {
     const [initialFlow, setInitialFlow] = useState({});
     const [loaded, setLoaded] = useState(false);
 
     const history = useHistory();
 
-    const { projectFilesState, setProjectFilesState } = useProjectFilesState();
-    const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
+    const { projectFilesState } = useProjectFilesState();
+    const { nodeViewerState } = useNodeViewerState();
 
     const UpdateNode = (elements, nodeViewerState) => {
         return elements.map((element) => {
@@ -22,32 +22,29 @@ export const FlowLoader = memo((props) => {
         });
     };
 
-    useEffect(() => {
-        const hasProject =
-            projectFilesState.activeRoot !== undefined &&
-            projectFilesState.activeFlow !== undefined;
+    const SetFlow = (flow) => {
+        const hasUpdatedActiveNode =
+            nodeViewerState && nodeViewerState.activeNode;
 
-        if (hasProject) {
+        if (hasUpdatedActiveNode) {
+            flow.elements = UpdateNode(flow.elements, nodeViewerState);
+        }
+
+        setInitialFlow(flow);
+        setLoaded(true);
+    };
+
+    useEffect(() => {
+        if (nodeViewerState.rfInstance !== undefined) {
+            SetFlow(nodeViewerState.rfInstance.toObject());
+        } else {
             LoadFlow(projectFilesState.activeRoot, projectFilesState.activeFlow)
                 .then((flow) => {
-                    if (nodeViewerState && nodeViewerState.activeNode) {
-                        flow.elements = UpdateNode(
-                            flow.elements,
-                            nodeViewerState
-                        );
-                    }
-
-                    setInitialFlow((prevFlow) => (prevFlow = flow));
-                    setLoaded((prevLoad) => (prevLoad = true));
-
-                    projectFilesState.projectLoaded = true;
-                    setProjectFilesState(projectFilesState);
+                    SetFlow(flow);
                 })
-                .catch((e) => {
+                .catch(() => {
                     history.push("/");
                 });
-        } else {
-            history.push("/");
         }
     }, []);
 

@@ -5,6 +5,7 @@ import { NodeContent } from "./NodeContent";
 import { nodeStyle } from "./NodeStyle";
 import { memo } from "react";
 import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
+import short from "short-uuid";
 
 const letters = "abcdefghijklmnopqrstuvwxyz";
 
@@ -29,7 +30,7 @@ export const SceneNode = memo(({ data }) => {
     const outHandles = data.outHandles.map((handle, index) => {
         return (
             <Handle
-                key={index}
+                key={short.generate()}
                 type="source"
                 position={Position.Right}
                 className={classes.handleRoot}
@@ -46,7 +47,6 @@ export const SceneNode = memo(({ data }) => {
 
     return (
         <Paper className={classes.root}>
-            <NodeContent data={data} />
             <Handle
                 type="target"
                 id="a"
@@ -54,6 +54,7 @@ export const SceneNode = memo(({ data }) => {
                 position={Position.Left}
                 className={classes.handleRoot}
             />
+            <NodeContent data={data} />
             {outHandles}
         </Paper>
     );
