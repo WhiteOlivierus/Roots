@@ -1,6 +1,7 @@
 import { memo, useEffect, useRef, useState } from "react";
 import { isNode } from "react-flow-renderer";
 import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
+import TextField from "@material-ui/core/TextField";
 
 export const EditNodeText = memo((props) => {
     const [toggle, setToggle] = useState(false);
@@ -50,8 +51,12 @@ export const EditNodeText = memo((props) => {
     return (
         <div>
             {toggle ? (
-                <input
+                <TextField
+                    id="outlined-basic"
+                    label="scene name"
+                    variant="outlined"
                     ref={input}
+                    size="small"
                     className={props.inputStyle}
                     type="text"
                     name="node label"

@@ -79,7 +79,13 @@ export const MenuBar = memo((props) => {
                     });
             }
         );
-    }, [projectFilesState, setProjectFilesState, nodeViewerState]);
+    }, [
+        projectFilesState,
+        nodeViewerState.rfInstance,
+        enqueueSnackbar,
+        setProjectFilesState,
+        history,
+    ]);
 
     return (
         <div className={classes.root}>
@@ -118,7 +124,7 @@ export const MenuBar = memo((props) => {
 export const MenuBarTitle = memo((props) => {
     const classes = menuBarStyles();
 
-    const { projectFilesState, setProjectFilesState } = useProjectFilesState();
+    const { projectFilesState } = useProjectFilesState();
 
     return (
         <Typography

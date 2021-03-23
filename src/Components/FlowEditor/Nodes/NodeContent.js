@@ -10,8 +10,9 @@ const contentStyle = makeStyles({
     tag: {
         position: "absolute",
         left: 0,
+        top: -30,
         width: "100%",
-        backgroundColor: "white",
+        margin: 0,
     },
 });
 
@@ -29,6 +30,7 @@ export const NodeContent = memo(({ data }) => {
                     GetImageBlobPath(fileHandle).then((blobUrl) => {
                         var image = new Image();
                         image.scr = blobUrl;
+                        data.src = blobUrl;
                         setSrc(blobUrl);
                     });
                 }

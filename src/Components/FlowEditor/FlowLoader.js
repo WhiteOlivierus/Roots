@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
 import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
@@ -22,17 +22,20 @@ export const FlowLoader = memo(() => {
         });
     };
 
-    const SetFlow = (flow) => {
-        const hasUpdatedActiveNode =
-            nodeViewerState && nodeViewerState.activeNode;
+    const SetFlow = useCallback(
+        (flow) => {
+            const hasUpdatedActiveNode =
+                nodeViewerState && nodeViewerState.activeNode;
 
-        if (hasUpdatedActiveNode) {
-            flow.elements = UpdateNode(flow.elements, nodeViewerState);
-        }
+            if (hasUpdatedActiveNode) {
+                flow.elements = UpdateNode(flow.elements, nodeViewerState);
+            }
 
-        setInitialFlow(flow);
-        setLoaded(true);
-    };
+            setInitialFlow(flow);
+            setLoaded(true);
+        },
+        [nodeViewerState]
+    );
 
     useEffect(() => {
         if (nodeViewerState.rfInstance !== undefined) {
@@ -46,15 +49,21 @@ export const FlowLoader = memo(() => {
                     history.push("/");
                 });
         }
-    }, []);
+    }, [
+        SetFlow,
+        history,
+        nodeViewerState.rfInstance,
+        projectFilesState.activeFlow,
+        projectFilesState.activeRoot,
+    ]);
 
     return (
-        <div>
+        <>
             {loaded === true ? (
                 <FlowEditor flow={initialFlow} />
             ) : (
                 <h1>Loading</h1>
             )}
-        </div>
+        </>
     );
 });

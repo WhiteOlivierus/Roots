@@ -17,16 +17,16 @@ export async function Build(activeRoot, nodes, edges) {
 
         newScene.id = node.id;
 
-        if ("imageName" in node.data) {
-            newScene.img = node.data.image;
+        if ("image" in node.data) {
+            newScene.img = node.data.src;
 
-            images.push(await FindFile(activeRoot, node.data.imageName));
+            images.push(await FindFile(activeRoot, node.data.image));
         }
 
         let times = 0;
 
         if (edges === undefined) {
-            throw "No connections to build";
+            throw new Error("No connections to build");
         }
 
         for (let index = 0; index < edges.length; index++) {

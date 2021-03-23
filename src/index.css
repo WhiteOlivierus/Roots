@@ -47,3 +47,7 @@ code {
     -webkit-app-region: no-drag;
     cursor: move;
 }
+
+input {
+    -webkit-user-select: all;
+}

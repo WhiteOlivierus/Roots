@@ -1,116 +1,85 @@
-import { Link } from "react-router-dom";
-import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    makeStyles,
-    Tooltip,
-} from "@material-ui/core";
+import { Link, useHistory } from "react-router-dom";
+import { Button, Paper, Tooltip } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
 import { OnBeforeReload } from "../../Utilities/OnBeforeReload";
 import { EditorWrapper } from "../EditorWrapper";
 import { MenuBar } from "../FlowEditor/MenuBar/MenuBar";
-import { Move } from "../../Utilities/FileHandler";
-import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
+import { EditorTools } from "./EditorTools";
+import SVGEditor from "dutchskull-svg-editor";
 
-export const SceneEditor = memo((props) => {
+export const SceneEditor = memo(() => {
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
 
+    const history = useHistory();
+
     const [node, setNode] = useState(nodeViewerState.activeNode);
+
 
     useEffect(() => {
         nodeViewerState.activeNode = node;
         setNodeViewerState(nodeViewerState);
-    }, [node, setNode]);
+    }, [node, nodeViewerState, setNode, setNodeViewerState]);
+
+    return (
+        <>
+            {node ? (
+                <EditorWrapper>
+                    <OnBeforeReload />
+                    <MenuBar />
+                    <BackButton />
+                    <EditorCanvas node={node} />
+                    <EditorTools node={setNode} />
+                </EditorWrapper>
+            ) : (
+                history.push("/")
+            )}
+        </>
+    );
+});
+
+const EditorCanvas = memo((props) => {
+    const imageRef = useRef(null);
+
+    const [instance, setInstance] = useState([]);
+
+    const onLoadSetInstance = (instance) => setInstance(instance);
+
+    useEffect(() => {
+        props.node.data.zones = instance;
+    }, [instance, props.node.data])
 
     return (
         <EditorWrapper>
-            <OnBeforeReload />
-            <MenuBar />
-            <Link to="/flow">
-                <Tooltip title="Back to flow editor">
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        style={{
-                            position: "absolute",
-                            left: 20,
-                            top: 80,
-                            zIndex: 1000,
-                        }}
-                    >
-                        <ChevronLeftIcon style={{ fill: "white" }} />
-                    </Button>
-                </Tooltip>
-            </Link>
-            <div>
-                <img src={node.data.src} style={{ width: "50vw" }} />
-                <h1>{node.data.label}</h1>
-            </div>
-            <EditorActions node={setNode} />
+            <Paper style={{ margin: "auto", width: "65%" }}>
+                <SVGEditor polygons={props.node.data.zones} onLoad={onLoadSetInstance} contentRef={imageRef} />
+                <img
+                    ref={imageRef}
+                    src={props.node.data.src}
+                    style={{ width: "100%", height: "100%", borderRadius: 4 }}
+                    alt="scene"
+                />
+            </Paper>
         </EditorWrapper>
     );
 });
 
-const useStyles = makeStyles({
-    root: {
-        maxWidth: 275,
-    },
-    title: {
-        fontSize: 14,
-    },
-});
-
-export const EditorActions = memo((props) => {
-    const classes = useStyles();
-    const { nodeViewerState } = useNodeViewerState();
-    const { projectFilesState } = useProjectFilesState();
-
-    const node = nodeViewerState.activeNode;
-
-    const onLoadBackGroundImage = async (e) => {
-        var fileHandle = await window.showOpenFilePicker();
-        if (Array.isArray(fileHandle)) fileHandle = fileHandle[0];
-
-        await Move(projectFilesState.activeRoot, fileHandle);
-
-        var file = await fileHandle.getFile();
-        var blobUrl = await URL.createObjectURL(file);
-
-        props.node({
-            ...node,
-            data: {
-                ...node.data,
-                image: fileHandle.name,
-                src: blobUrl,
-            },
-        });
+const BackButton = memo(() => {
+    const style = {
+        position: "absolute",
+        left: 20,
+        top: 80,
+        zIndex: 1000,
     };
 
     return (
-        <Box
-            p={5}
-            style={{
-                position: "absolute",
-                right: 0,
-                top: 50,
-                zIndex: 5,
-            }}
-        >
-            <Card className={classes.root}>
-                <CardContent>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={onLoadBackGroundImage}
-                    >
-                        Load Background Image
-                    </Button>
-                </CardContent>
-            </Card>
-        </Box>
+        <Link to="/flow">
+            <Tooltip title="Back to flow editor">
+                <Button variant="contained" color="primary" style={style}>
+                    <ChevronLeftIcon style={{ fill: "white" }} />
+                </Button>
+            </Tooltip>
+        </Link>
     );
 });
