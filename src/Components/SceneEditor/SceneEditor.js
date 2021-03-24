@@ -1,13 +1,13 @@
 import { Link, useHistory } from "react-router-dom";
-import { Button, Paper, Tooltip } from "@material-ui/core";
+import { Button, Tooltip } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
 import { OnBeforeReload } from "../../Utilities/OnBeforeReload";
 import { EditorWrapper } from "../EditorWrapper";
 import { MenuBar } from "../FlowEditor/MenuBar/MenuBar";
 import { EditorTools } from "./EditorTools";
-import SVGEditor from "dutchskull-svg-editor";
+import { EditorCanvas } from "./EditorCanvas";
 
 export const SceneEditor = memo(() => {
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
@@ -36,32 +36,6 @@ export const SceneEditor = memo(() => {
                 history.push("/")
             )}
         </>
-    );
-});
-
-const EditorCanvas = memo((props) => {
-    const imageRef = useRef(null);
-
-    const [instance, setInstance] = useState([]);
-
-    const onLoadSetInstance = (instance) => setInstance(instance);
-
-    useEffect(() => {
-        props.node.data.zones = instance;
-    }, [instance, props.node.data])
-
-    return (
-        <EditorWrapper>
-            <Paper style={{ margin: "auto", width: "65%" }}>
-                <SVGEditor polygons={props.node.data.zones} onLoad={onLoadSetInstance} contentRef={imageRef} />
-                <img
-                    ref={imageRef}
-                    src={props.node.data.src}
-                    style={{ width: "100%", height: "100%", borderRadius: 4 }}
-                    alt="scene"
-                />
-            </Paper>
-        </EditorWrapper>
     );
 });
 

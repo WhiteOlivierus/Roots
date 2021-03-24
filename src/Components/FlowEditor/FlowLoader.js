@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
 import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
 import { LoadFlow } from "../../Utilities/FlowHandler";
+import { SeparateNodesAndEdges } from "./Nodes/NodeUtilities";
 import FlowEditor from "./FlowEditor";
 
 export const FlowLoader = memo(() => {
@@ -14,14 +15,6 @@ export const FlowLoader = memo(() => {
     const { projectFilesState } = useProjectFilesState();
     const { nodeViewerState } = useNodeViewerState();
 
-    const UpdateNode = (elements, nodeViewerState) => {
-        return elements.map((element) => {
-            if (element.id === nodeViewerState.activeNode.id)
-                element = nodeViewerState.activeNode;
-            return element;
-        });
-    };
-
     const SetFlow = useCallback(
         (flow) => {
             const hasUpdatedActiveNode =
@@ -29,6 +22,8 @@ export const FlowLoader = memo(() => {
 
             if (hasUpdatedActiveNode) {
                 flow.elements = UpdateNode(flow.elements, nodeViewerState);
+
+                flow.elements = UpdateEdges(flow.elements);
             }
 
             setInitialFlow(flow);
@@ -67,3 +62,38 @@ export const FlowLoader = memo(() => {
         </>
     );
 });
+
+export const UpdateNode = (elements, nodeViewerState) => {
+    return elements.map((element) => {
+
+        if (element.id !== nodeViewerState.activeNode.id) return element;
+
+        element = nodeViewerState.activeNode;
+
+        return element;
+    });
+};
+
+export const UpdateEdges = (elements) => {
+    var { nodes, edges } = SeparateNodesAndEdges(elements);
+
+    var allZones = nodes.filter((node) => {
+        return node.data.zones && node.data.zones.length > 0;
+    });
+
+    allZones = allZones.map(zone => {
+        return zone.data.zones.map(zone => zone.id);
+    });
+
+    allZones.push("a");
+
+    allZones = [].concat.apply([], allZones);
+
+
+    edges = edges.filter((edge) => {
+        const newLocal = allZones.includes(edge.sourceHandle) && allZones.includes(edge.targetHandle);
+        return newLocal;
+    })
+
+    return nodes.concat(edges);
+};

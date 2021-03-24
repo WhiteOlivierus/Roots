@@ -7,17 +7,16 @@ import { memo } from "react";
 import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
 import short from "short-uuid";
 
-const letters = "abcdefghijklmnopqrstuvwxyz";
-
 export const SceneNode = memo(({ data }) => {
     const classes = nodeStyle();
 
     const { nodeViewerState } = useNodeViewerState();
 
-    const length = data.outHandles.length - 1;
+    const length = data.zones && data.zones.length - 1;
 
     const CalculateHandlePosition = (length, index, handlePadding = 25) => {
-        return handlePadding + (100 - (handlePadding * 2) / length) * index;
+        const part = ((100 - (handlePadding * 2)) / length);
+        return handlePadding + (part * index);
     };
 
     const onHasSourceConnection = (connection) => {
@@ -27,7 +26,7 @@ export const SceneNode = memo(({ data }) => {
         );
     };
 
-    const outHandles = data.outHandles.map((handle, index) => {
+    const outHandles = data.zones && data.zones.map((handle, index) => {
         return (
             <Handle
                 key={short.generate()}
@@ -35,18 +34,19 @@ export const SceneNode = memo(({ data }) => {
                 position={Position.Right}
                 className={classes.handleRoot}
                 isValidConnection={onHasSourceConnection}
-                id={letters[index]}
+                id={handle.id}
                 style={{
                     top: `${CalculateHandlePosition(length, index)}%`,
                 }}
             >
-                <p className={classes.handleText}>{handle.text}</p>
+                <p className={classes.handleText}>{handle.id}</p>
             </Handle>
         );
     });
 
     return (
         <Paper className={classes.root}>
+            <NodeContent data={data} />
             <Handle
                 type="target"
                 id="a"
@@ -54,7 +54,6 @@ export const SceneNode = memo(({ data }) => {
                 position={Position.Left}
                 className={classes.handleRoot}
             />
-            <NodeContent data={data} />
             {outHandles}
         </Paper>
     );
