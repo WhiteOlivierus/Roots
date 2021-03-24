@@ -26,6 +26,8 @@ export const NodePreview = memo((props) => {
                     className={(classes.root, "nodePreview")}
                     style={{
                         backgroundColor: node.color,
+                        width: 160,
+                        height: 90
                     }}
                 >
                     <Box p={2}>

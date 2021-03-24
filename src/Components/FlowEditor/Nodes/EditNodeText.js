@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { isNode } from "react-flow-renderer";
 import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
 import TextField from "@material-ui/core/TextField";
@@ -24,13 +24,20 @@ export const EditNodeText = memo((props) => {
                 return el;
             })
         );
-    }, [nodeName]);
+    }, [nodeName, nodeViewerState, props.nodeId]);
+
+    const toggleEdit = useCallback((e) => {
+        if (e.target.type !== "text") setToggle(false);
+    }, []);
 
     useEffect(() => {
         if (toggle) {
+            window.addEventListener("click", toggleEdit);
             input.current.focus();
+        } else {
+            window.removeEventListener("click", toggleEdit);
         }
-    }, [toggle, setToggle]);
+    }, [toggle, setToggle, toggleEdit]);
 
     const handleDoubleClick = (e) => {
         setToggle((s) => (s = true));

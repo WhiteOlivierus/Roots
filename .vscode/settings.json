@@ -8,7 +8,16 @@
         "**/.hg": true,
         "**/CVS": true,
         "**/.DS_Store": true,
-        "**/node_modules": true
+        "**/node_modules": true,
+        "**/build": true,
+        "**/.gitignore": true,
+        "**/.firebaserc": true,
+        "**/.circleci": true,
+        "**/.firebase": true,
+        "**/.vscode": true,
+        "**/firebase.json": true,
+        "**/package-lock.json": true,
+        "**/yarn.lock": true
     },
     "explorerExclude.backup": null
 }
