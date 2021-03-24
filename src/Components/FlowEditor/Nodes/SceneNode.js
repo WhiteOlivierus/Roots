@@ -1,4 +1,4 @@
-import { Paper } from "@material-ui/core";
+import { IconButton, Paper } from "@material-ui/core";
 import { Handle, Position } from "react-flow-renderer";
 import { hasSourceConnection } from "./NodeUtilities";
 import { NodeContent } from "./NodeContent";
@@ -6,6 +6,8 @@ import { nodeStyle } from "./NodeStyle";
 import { memo } from "react";
 import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
 import short from "short-uuid";
+import EditIcon from '@material-ui/icons/Edit';
+import { useHistory } from "react-router-dom";
 
 export const SceneNode = memo(({ data }) => {
     const classes = nodeStyle();
@@ -24,6 +26,12 @@ export const SceneNode = memo(({ data }) => {
             connection,
             nodeViewerState.rfInstance.getElements()
         );
+    };
+
+    const history = useHistory();
+
+    const onShowEditor = () => {
+        history.push("/editor");
     };
 
     const outHandles = data.zones && data.zones.map((handle, index) => {
@@ -46,6 +54,9 @@ export const SceneNode = memo(({ data }) => {
 
     return (
         <Paper className={classes.root}>
+            <IconButton style={{ position: "absolute", top: 0, left: 0, zIndex: 100000000 }} onClick={onShowEditor}>
+                <EditIcon color="secondary" fontSize="small" />
+            </IconButton>
             <NodeContent data={data} />
             <Handle
                 type="target"

@@ -35,18 +35,18 @@ const FlowEditor = memo(({ flow }) => {
     const [instance, setInstance] = useState(null);
 
     const onLoad = (instance) => {
+        instance.setTransform({
+            x: flow.position[0],
+            y: flow.position[1],
+            zoom: flow.zoom || 0,
+        });
+
         setElements(flow.elements);
 
         nodeViewerState.setElements = setElements;
         nodeViewerState.rfInstance = instance;
 
         setNodeViewerState(nodeViewerState);
-
-        instance.setTransform({
-            x: flow.position[0],
-            y: flow.position[1],
-            zoom: flow.zoom || 0,
-        });
 
         instance.getElements().map((element) => {
             return updateNodeInternals(element.id);
@@ -100,9 +100,13 @@ const FlowEditor = memo(({ flow }) => {
             mouseY: e.clientY - 4,
         });
 
+        setActiveNode(e, node);
+    };
+
+    const setActiveNode = (e, node) => {
         nodeViewerState.activeNode = node;
         setNodeViewerState(nodeViewerState);
-    };
+    }
 
     const handleClose = () => {
         setState(initialState);
@@ -135,6 +139,7 @@ const FlowEditor = memo(({ flow }) => {
                 multiSelectionKeyCode={17}
                 onNodeContextMenu={handleClick}
                 onPaneClick={handleClose}
+                onNodeMouseEnter={setActiveNode}
             >
                 <Background variant="lines" gap={30} size={2} />
                 <Controls />

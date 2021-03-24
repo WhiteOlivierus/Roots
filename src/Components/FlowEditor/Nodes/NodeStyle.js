@@ -1,4 +1,4 @@
-import { createStyles, makeStyles, Theme } from "@material-ui/core";
+import { createStyles, makeStyles } from "@material-ui/core";
 
 const handleTextSize = 0.5;
 
@@ -7,6 +7,9 @@ export const nodeStyle = makeStyles((theme) =>
         root: {
             width: 160,
             height: 90,
+            "&:hover": {
+                border: "black solid 1px"
+            },
         },
         handleRoot: {
             display: "flex",
