@@ -3,31 +3,6 @@ import { memo, useEffect, useRef, useState } from "react";
 import { EditorWrapper } from "../EditorWrapper";
 import SVGEditor from "dutchskull-svg-editor";
 
-const test =
-{
-    "id": "sq3e47aZKbxGdP9WFFAmBo",
-    "points": [
-        221,
-        570.5,
-        136,
-        629.5,
-        398,
-        635.5,
-        676,
-        619.5,
-        803,
-        600.5,
-        774,
-        569.5,
-        621,
-        589.5,
-        494,
-        588.5,
-        307,
-        582.5
-    ]
-};
-
 export const EditorCanvas = memo((props) => {
     const imageRef = useRef(null);
 
@@ -38,24 +13,10 @@ export const EditorCanvas = memo((props) => {
     useEffect(() => {
         const size = { width: imageRef.current.width, height: imageRef.current.height };
 
-        if (props.node.data.zones && props.node.data.zones.length > 0) {
-            console.log(props.node.data.zones[0].points);
-
-            props.node.data.zones = props.node.data.zones.map((zone) => {
-                zone.points = PointsToImageSize(zone.points, size);
-                return zone;
-            });
-
-            // console.log(props.node.data.zones[0].points);
-        }
+        TransformPoints(props, size, PointsToImageSize);
 
         return () => {
-            props.node.data.zones = props.node.data.zones.map((zone) => {
-                zone.points = PointsToRelative(zone.points, size);
-                return zone;
-            });
-
-            // console.log(props.node.data.zones[0].points);
+            TransformPoints(props, size, PointsToRelative);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -111,3 +72,17 @@ const PointsToImageSize = (points, size) => {
     });
     return newPoints;
 };
+
+function TransformPoints(props, size, action) {
+    if (props.node.data.zones && props.node.data.zones.length > 0) {
+
+        console.log(props.node.data.zones[0].points);
+
+        props.node.data.zones = props.node.data.zones.map((zone) => {
+            zone.points = action(zone.points, size);
+            return zone;
+        });
+
+        console.log(props.node.data.zones[0].points);
+    }
+}

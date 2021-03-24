@@ -1,22 +1,29 @@
 import { Game } from "./Game";
 import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
-import { memo, useEffect } from "react";
-import { useHistory, Link, Redirect } from "react-router-dom";
+import { memo, useEffect, useState } from "react";
+import { useHistory, Link } from "react-router-dom";
 import { Button, Tooltip } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import { OnBeforeReload } from "../../Utilities/OnBeforeReload";
 import { EditorWrapper } from "../EditorWrapper";
+import { GetObjectFromFileHandle } from "../../Utilities/FileHandler"
 
 export const Preview = memo((props) => {
     const history = useHistory();
 
     const { projectFilesState } = useProjectFilesState();
 
+    const [state, setState] = useState(undefined);
+
     useEffect(() => {
-        if (projectFilesState.build === undefined) {
+        if (projectFilesState.buildHandle === undefined) {
             history.push("/");
+        } else {
+            GetObjectFromFileHandle(projectFilesState.buildHandle).then(({ obj: build }) => {
+                setState(build);
+            })
         }
-    }, [projectFilesState]);
+    }, [history, projectFilesState]);
 
     return (
         <EditorWrapper>
@@ -37,11 +44,7 @@ export const Preview = memo((props) => {
                     </Button>
                 </Tooltip>
             </Link>
-            {projectFilesState.build ? (
-                <Game game={projectFilesState.build} />
-            ) : (
-                <Redirect to="/" />
-            )}
+            {state && <Game game={state} />}
         </EditorWrapper>
     );
 });

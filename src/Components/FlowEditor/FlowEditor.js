@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useState } from "react";
 import ReactFlow, {
     removeElements,
     addEdge,
@@ -6,13 +6,11 @@ import ReactFlow, {
     MiniMap,
     Background,
     useUpdateNodeInternals,
-    useZoomPanHelper,
 } from "react-flow-renderer";
 import { NodeBar } from "./NodeBar";
 import { useHistory } from "react-router-dom";
 
 import { MinimapSettings, NodeTypes } from "./Nodes/NodeTypes";
-import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
 
 import { MenuBar } from "./MenuBar/MenuBar";
 import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
@@ -21,7 +19,6 @@ import { CreateNode } from "./Nodes/NodeFactory";
 import { OnBeforeReload } from "../../Utilities/OnBeforeReload";
 import { Menu, MenuItem } from "@material-ui/core";
 import { EditorWrapper } from "../EditorWrapper";
-import { SaveFlow } from "../../Utilities/FlowHandler";
 import PropTypes from "prop-types";
 
 const initialState = {
@@ -30,10 +27,7 @@ const initialState = {
 };
 
 const FlowEditor = memo(({ flow }) => {
-    const { projectFilesState } = useProjectFilesState();
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
-
-    const { initialized } = useZoomPanHelper();
 
     const updateNodeInternals = useUpdateNodeInternals();
 
@@ -48,12 +42,6 @@ const FlowEditor = memo(({ flow }) => {
 
         setNodeViewerState(nodeViewerState);
 
-        return setInstance(instance);
-    };
-
-    useEffect(() => {
-        if (instance === null || !initialized) return;
-
         instance.setTransform({
             x: flow.position[0],
             y: flow.position[1],
@@ -63,7 +51,9 @@ const FlowEditor = memo(({ flow }) => {
         instance.getElements().map((element) => {
             return updateNodeInternals(element.id);
         });
-    }, [initialized, instance, flow, updateNodeInternals]);
+
+        return setInstance(instance);
+    };
 
     const onConnect = (params) =>
         nodeViewerState.setElements((els) => addEdge(params, els));
@@ -124,10 +114,7 @@ const FlowEditor = memo(({ flow }) => {
     const history = useHistory();
 
     const onShowEditor = () => {
-        SaveFlow(
-            projectFilesState.activeFlow,
-            nodeViewerState.rfInstance
-        ).then(() => history.push("/editor"));
+        history.push("/editor");
     };
 
     return (

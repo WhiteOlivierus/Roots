@@ -89,7 +89,6 @@ export const UpdateEdges = (elements) => {
 
     allZones = [].concat.apply([], allZones);
 
-
     edges = edges.filter((edge) => {
         const newLocal = allZones.includes(edge.sourceHandle) && allZones.includes(edge.targetHandle);
         return newLocal;

@@ -44,10 +44,10 @@ export default class SvgImageFitter extends Component {
     }
 
     render() {
-        const img = this.props.zones.img;
+        const src = this.props.zones.src;
 
         const image = React.createElement("img", {
-            src: img,
+            src: src,
             style: {
                 width: "100vw",
                 height: "100vh",

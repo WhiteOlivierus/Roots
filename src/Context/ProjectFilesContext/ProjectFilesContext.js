@@ -4,12 +4,12 @@ export class ProjectFilesState {
     projectLoaded = false;
     activeRoot = undefined;
     activeFlow = undefined;
-    build = undefined;
+    buildHandle = undefined;
 }
 
 export const ProjectFilesContext = createContext({
     projectFilesState: new ProjectFilesState(),
-    setProjectFilesState: (projectFilesState) => {},
+    setProjectFilesState: (projectFilesState) => { },
 });
 
 export const useProjectFilesState = () => useContext(ProjectFilesContext);

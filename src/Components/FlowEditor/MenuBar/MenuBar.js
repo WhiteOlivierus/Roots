@@ -60,17 +60,16 @@ export const MenuBar = memo((props) => {
                 );
 
                 Build(projectFilesState.activeRoot, nodes, edges)
-                    .then((build) => {
-                        projectFilesState.build = build;
-                        setProjectFilesState(projectFilesState);
+                    .then(({ buildHandle, id }) => {
+                        projectFilesState.buildHandle = buildHandle;
 
-                        if (build.scenes.length <= 0) return;
+                        setProjectFilesState(projectFilesState);
 
                         enqueueSnackbar(`Preview build successfully`, {
                             variant: "success",
                         });
 
-                        history.push(`/preview/${build.scenes[0].id}`);
+                        history.push(`/preview/${id}`);
                     })
                     .catch((e) => {
                         enqueueSnackbar(e, {
