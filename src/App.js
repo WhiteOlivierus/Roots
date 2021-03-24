@@ -1,28 +1,14 @@
-import React from "react";
-// import logo from "./logo.svg";
-import "./App.css";
+import { ContextMenu } from "./Utilities/ContextMenu";
 
-function App() {
+import { GlobalProvider } from "./GlobalProviders";
+import { GlobalRoutes } from "./GlobalRoutes";
+import { memo } from "react";
+
+export const App = memo(() => {
     return (
-        <div className="App">
-            <header className="App-header">
-                {/* <img src={logo} className="App-logo" alt="logo" /> */}
-                <p>
-                    Edit
-                    <code>src/App.js</code>
-                    and save to reload.
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
-            </header>
-        </div>
+        <GlobalProvider>
+            <ContextMenu />
+            <GlobalRoutes />
+        </GlobalProvider>
     );
-}
-
-export default App;
+});
