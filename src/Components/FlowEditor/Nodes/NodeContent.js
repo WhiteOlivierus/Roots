@@ -21,16 +21,16 @@ export const NodeContent = memo(({ data }) => {
 
     const { projectFilesState } = useProjectFilesState();
 
-    const [src, setSrc] = useState(data.src || "");
+    const [src, setSrc] = useState(data.imageSrc || "");
 
     useEffect(() => {
-        if (!("src" in data) && "image" in data) {
+        if (!("imageSrc" in data) && "image" in data) {
             FindFile(projectFilesState.activeRoot, data.image).then(
                 (fileHandle) => {
                     GetImageBlobPath(fileHandle).then((blobUrl) => {
                         var image = new Image();
                         image.scr = blobUrl;
-                        data.src = blobUrl;
+                        data.imageSrc = blobUrl;
                         setSrc(blobUrl);
                     });
                 }

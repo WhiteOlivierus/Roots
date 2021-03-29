@@ -21,7 +21,7 @@ export async function Build(activeRoot, nodes, edges) {
 
     if ("image" in copiedNodes[firstNodeID].data) {
         newScene.image = copiedNodes[firstNodeID].data.image;
-        newScene.src = copiedNodes[firstNodeID].data.src;
+        newScene.src = copiedNodes[firstNodeID].data.imageSrc;
 
         images.push(await FindFile(activeRoot, copiedNodes[firstNodeID].data.image));
     }
@@ -37,7 +37,7 @@ export async function Build(activeRoot, nodes, edges) {
 
         if ("image" in node.data) {
             newScene.image = node.data.image;
-            newScene.src = node.data.src;
+            newScene.src = node.data.imageSrc;
 
             images.push(await FindFile(activeRoot, node.data.image));
         }

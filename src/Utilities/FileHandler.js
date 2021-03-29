@@ -46,7 +46,7 @@ export async function LoadElementImages(dirHandle, elements) {
 
         if (containsKeys) {
             let imageHandle = await FindFile(dirHandle, element.data.imageName);
-            elements[index].data.src = await GetImageBlobPath(imageHandle);
+            elements[index].data.imageSrc = await GetImageBlobPath(imageHandle);
         }
     });
 

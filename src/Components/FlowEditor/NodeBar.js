@@ -2,6 +2,8 @@ import {
     Box,
     Card,
     CardContent,
+    Divider,
+    Grid,
     makeStyles,
     Typography,
 } from "@material-ui/core";
@@ -20,13 +22,30 @@ export const NodeBar = () => {
     const classes = useStyles();
 
     return (
-        <Box p={2} style={{ position: "absolute", left: 0, zIndex: 5 }}>
+        <Box p={2} style={{ position: "absolute", right: 0, zIndex: 5 }}>
             <Card className={classes.root}>
                 <CardContent>
-                    <Typography variant="body1" gutterBottom>
-                        You can drag the nodes in too the flow editor.
-                    </Typography>
-                    <NodePreview />
+                    <Grid
+                        container
+                        spacing={2}
+                        direction="column"
+                        alignItems="center"
+                    >
+                        <Grid item>
+                            <Typography variant="h5" gutterBottom>
+                                Nodes
+                        </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Typography variant="body1" gutterBottom>
+                                You can drag the nodes in too the flow editor.
+                        </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Divider />
+                        </Grid>
+                        <NodePreview />
+                    </Grid>
                 </CardContent>
             </Card>
         </Box>

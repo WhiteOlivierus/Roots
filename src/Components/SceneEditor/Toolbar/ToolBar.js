@@ -13,20 +13,24 @@ const createStyle = makeStyles((theme) => ({
     }
 }));
 
-const ToolBar = () => {
+const ToolBar = (props) => {
     const classes = createStyle();
-    const [view, setView] = useState('select');
+    const [view, setView] = useState(props.state);
 
     const handleChange = (e, nextView) => {
         setView(nextView);
     };
 
     return (
-        <Box p={3} style={{
-            position: "absolute",
-            top: 60
-        }}>
-            <Grid container
+        <Box
+            p={3}
+            style={{
+                position: "absolute",
+                top: 60
+            }}
+        >
+            <Grid
+                container
                 direction="column"
                 justify="center"
                 alignItems="center"

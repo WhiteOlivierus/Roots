@@ -3,7 +3,6 @@ import {
     FindDir,
     FindFile,
     GetObjectFromFileHandle,
-    LoadElementImages,
 } from "./FileHandler";
 import { defaultFlow } from "./DefaultFlow";
 import { SetActiveFlowInConfig } from "./ProjectHandler";
@@ -41,8 +40,8 @@ export async function SaveFlow(activeFlow, rfInstance) {
     var flowCopy = clone(flow);
 
     flowCopy.elements.map((element, index) => {
-        if ("data" in element && "src" in element.data) {
-            delete element.data["src"];
+        if ("data" in element && "imageSrc" in element.data) {
+            delete element.data["imageSrc"];
             flowCopy.elements[index] = element;
         }
     });

@@ -5,6 +5,8 @@ import { Preview } from "./Components/Preview/Preview";
 import { SceneEditor } from "./Components/SceneEditor/SceneEditor";
 import { memo } from "react";
 
+import { PreviewButton } from "./PreviewButton";
+
 export const GlobalRoutes = memo(() => {
     return (
         <Router>
@@ -14,9 +16,11 @@ export const GlobalRoutes = memo(() => {
                 </Route>
                 <Route path="/flow">
                     <FlowLoader />
+                    <PreviewButton />
                 </Route>
                 <Route path="/editor">
                     <SceneEditor />
+                    <PreviewButton />
                 </Route>
                 <Route path="/preview">
                     <Preview />
@@ -25,3 +29,5 @@ export const GlobalRoutes = memo(() => {
         </Router>
     );
 });
+
+
