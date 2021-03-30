@@ -21,6 +21,7 @@ export const SceneEditor = memo(() => {
 
     const [node, setNode] = useState(nodeViewerState.activeNode);
     const [mode, setMode] = useState("select");
+    const [selection, setSelection] = useState(undefined);
 
     const activeNode = {
         value: node,
@@ -31,6 +32,11 @@ export const SceneEditor = memo(() => {
         value: mode,
         set: (v) => setMode(v)
     };
+
+    const activeSelection = {
+        value: selection,
+        set: (v) => setSelection(v)
+    }
 
     useEffect(() => {
         nodeViewerState.activeNode = node;
@@ -43,11 +49,18 @@ export const SceneEditor = memo(() => {
                     <OnBeforeReload />
                     <MenuBar />
                     <ToolBar mode={activeMode} />
-                    <EditorCanvas node={activeNode} />
+                    <EditorCanvas
+                        node={activeNode}
+                        mode={activeMode}
+                        selection={activeSelection}
+                    />
                     <EditorInspector >
                         <Divider />
-                        <SceneSettingsDrawer node={activeNode} projectFolder={activeRoot} />
-                        {false && (
+                        <SceneSettingsDrawer
+                            node={activeNode}
+                            projectFolder={activeRoot}
+                        />
+                        {selection && (
                             <>
                                 <Divider />
                                 <Typography variant="h6">

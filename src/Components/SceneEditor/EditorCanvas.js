@@ -6,12 +6,15 @@ import SVGEditor from "dutchskull-svg-editor";
 export const EditorCanvas = memo((props) => {
     const imageRef = useRef(null);
 
-    const [instance, setInstance] = useState([]);
+    const [instance, setInstance] = useState(props.node.value.data.zones || []);
 
     const onLoadSetInstance = (instance) => setInstance(instance);
 
     useEffect(() => {
-        const size = { width: imageRef.current.width, height: imageRef.current.height };
+        const size = {
+            width: imageRef.current.width,
+            height: imageRef.current.height
+        };
 
         TransformPoints(props.node.value, size, PointsToImageSize);
 
@@ -33,12 +36,20 @@ export const EditorCanvas = memo((props) => {
     return (
         <EditorWrapper>
             <Paper style={{ margin: "auto", width: "65%" }}>
-                <SVGEditor polygons={props.node.value.data.zones} onLoad={onLoadSetInstance} contentRef={imageRef} />
+                {
+                    props.mode.value === "edit" &&
+                    <SVGEditor
+                        polygons={props.node.value.data.zones}
+                        onLoad={onLoadSetInstance}
+                        contentRef={imageRef}
+                    />
+                }
                 <img
                     ref={imageRef}
                     src={props.node.value.data.imageSrc}
                     style={{ width: "100%", height: "100%", borderRadius: 4 }}
-                    alt="scene" />
+                    alt="scene"
+                />
             </Paper>
         </EditorWrapper>
     );
