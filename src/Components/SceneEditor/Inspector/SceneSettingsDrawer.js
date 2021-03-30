@@ -1,34 +1,23 @@
 import { Typography } from "@material-ui/core";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { FileField } from "./FileField";
-import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
-import { useProjectFilesState } from "../../../Context/ProjectFilesContext/ProjectFilesContext";
 import { LoadAudioFile, LoadImageFile } from "../../../Utilities/LoadFile";
 
-export const SceneSettingsDrawer = () => {
-    const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
-    const [activeNode, setActiveNode] = useState(nodeViewerState.activeNode);
-
-    useEffect(() => {
-        nodeViewerState.activeNode = activeNode;
-        setNodeViewerState(nodeViewerState);
-    }, [activeNode, nodeViewerState, setActiveNode, setNodeViewerState]);
-
-    const { projectFilesState } = useProjectFilesState();
-    const activeRoot = projectFilesState.activeRoot;
+export const SceneSettingsDrawer = (props) => {
+    const data = props.node.value.data;
 
     const handleLoadFile = useCallback((key, LoadAction) => {
-        LoadAction(activeRoot)
+        LoadAction(props.projectFolder)
             .then(({ fileName, blobUrl }) =>
-                setActiveNode({
-                    ...activeNode,
+                props.node.set({
+                    ...props.node.value,
                     data: {
-                        ...activeNode.data,
+                        ...data,
                         [key]: fileName,
                         [`${key}Src`]: blobUrl,
                     },
                 }));
-    }, [activeNode, activeRoot]);
+    }, [data, props.node, props.projectFolder]);
 
     const onLoadImage = useCallback(() => {
         handleLoadFile("image", LoadImageFile);
@@ -46,11 +35,11 @@ export const SceneSettingsDrawer = () => {
             <FileField
                 action={onLoadImage}
                 label="Image"
-                value={activeNode.data.image} />
+                value={data.image} />
             <FileField
                 action={onLoadAudio}
                 label="Music"
-                value={activeNode.data.audio} />
+                value={data.audio} />
         </>
     );
 };

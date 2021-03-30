@@ -1,6 +1,6 @@
-import { Box, Card, CardContent, Divider, Typography } from "@material-ui/core";
+import { Box, Card, CardContent, Typography } from "@material-ui/core";
 import { memo } from "react";
-import { SceneSettingsDrawer } from "./SceneSettingsDrawer";
+
 
 const EditorInspector = memo((props) => {
     return (
@@ -19,16 +19,7 @@ const EditorInspector = memo((props) => {
                     <Typography variant="h5" gutterBottom>
                         Inspector
                     </Typography>
-                    <Divider />
-                    <SceneSettingsDrawer />
-                    {props.selection && (
-                        <>
-                            <Divider />
-                            <Typography variant="h6">
-                                Selection settings
-                        </Typography>
-                        </>
-                    )}
+                    {props.children}
                 </CardContent>
             </Card>
         </Box>

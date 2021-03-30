@@ -5,7 +5,7 @@ import { Preview } from "./Components/Preview/Preview";
 import { SceneEditor } from "./Components/SceneEditor/SceneEditor";
 import { memo } from "react";
 
-import { PreviewButton } from "./PreviewButton";
+import { PreviewButton } from "./Components/PreviewButton";
 
 export const GlobalRoutes = memo(() => {
     return (

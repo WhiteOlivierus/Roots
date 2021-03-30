@@ -2,7 +2,6 @@ import { Paper } from "@material-ui/core";
 import { memo, useEffect, useRef, useState } from "react";
 import { EditorWrapper } from "../EditorWrapper";
 import SVGEditor from "dutchskull-svg-editor";
-import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
 
 export const EditorCanvas = memo((props) => {
     const imageRef = useRef(null);
@@ -11,35 +10,33 @@ export const EditorCanvas = memo((props) => {
 
     const onLoadSetInstance = (instance) => setInstance(instance);
 
-    const { nodeViewerState } = useNodeViewerState();
-
     useEffect(() => {
         const size = { width: imageRef.current.width, height: imageRef.current.height };
 
-        TransformPoints(nodeViewerState.activeNode, size, PointsToImageSize);
+        TransformPoints(props.node.value, size, PointsToImageSize);
 
         return () => {
-            TransformPoints(nodeViewerState.activeNode, size, PointsToRelative);
+            TransformPoints(props.node.value, size, PointsToRelative);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
         if (instance.length < 1) {
-            delete nodeViewerState.activeNode.data.zones;
+            delete props.node.value.data.zones;
             return;
         }
 
-        nodeViewerState.activeNode.data.zones = instance;
-    }, [instance, nodeViewerState.activeNode.data]);
+        props.node.value.data.zones = instance;
+    }, [instance, props.node.value.data]);
 
     return (
         <EditorWrapper>
             <Paper style={{ margin: "auto", width: "65%" }}>
-                <SVGEditor polygons={nodeViewerState.activeNode.data.zones} onLoad={onLoadSetInstance} contentRef={imageRef} />
+                <SVGEditor polygons={props.node.value.data.zones} onLoad={onLoadSetInstance} contentRef={imageRef} />
                 <img
                     ref={imageRef}
-                    src={nodeViewerState.activeNode.data.imageSrc}
+                    src={props.node.value.data.imageSrc}
                     style={{ width: "100%", height: "100%", borderRadius: 4 }}
                     alt="scene" />
             </Paper>

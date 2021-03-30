@@ -107,7 +107,7 @@ export const MenuDrawer = memo(({ open, handleDrawerClose }) => {
                     variant: "error",
                 });
             });
-    }, [projectFilesState, setProjectFilesState, nodeViewerState]);
+    }, [projectFilesState, setProjectFilesState, nodeViewerState, enqueueSnackbar]);
 
     const onNewProject = useCallback(() => {
         NewProject()
@@ -122,7 +122,7 @@ export const MenuDrawer = memo(({ open, handleDrawerClose }) => {
                     variant: "error",
                 });
             });
-    }, [projectFilesState, setProjectFilesState]);
+    }, [enqueueSnackbar, projectFilesState, setProjectFilesState]);
 
     const onOpenFlow = useCallback(() => {
         OpenFlow(projectFilesState.activeRoot)
@@ -139,7 +139,7 @@ export const MenuDrawer = memo(({ open, handleDrawerClose }) => {
                     variant: "error",
                 });
             });
-    }, [projectFilesState, setProjectFilesState, nodeViewerState]);
+    }, [projectFilesState, setProjectFilesState, nodeViewerState, enqueueSnackbar]);
 
     const onOpenProject = useCallback(() => {
         OpenProject()
@@ -160,7 +160,7 @@ export const MenuDrawer = memo(({ open, handleDrawerClose }) => {
                     variant: "error",
                 });
             });
-    }, [projectFilesState, setProjectFilesState]);
+    }, [enqueueSnackbar, projectFilesState, setProjectFilesState]);
 
     const onSaveFlow = useCallback(() => {
         var fileName = RemoveExtension(projectFilesState.activeFlow.name);
@@ -176,7 +176,7 @@ export const MenuDrawer = memo(({ open, handleDrawerClose }) => {
                     variant: "error",
                 });
             });
-    }, [projectFilesState]);
+    }, [enqueueSnackbar, nodeViewerState.rfInstance, projectFilesState.activeFlow]);
 
     const onSaveFlowAs = useCallback(() => {
         var fileName = RemoveExtension(projectFilesState.activeFlow.name);
@@ -196,7 +196,7 @@ export const MenuDrawer = memo(({ open, handleDrawerClose }) => {
                     variant: "error",
                 });
             });
-    }, [projectFilesState, setProjectFilesState]);
+    }, [enqueueSnackbar, nodeViewerState.rfInstance, projectFilesState, setProjectFilesState]);
 
     const buttons = [
         { divide: "" },

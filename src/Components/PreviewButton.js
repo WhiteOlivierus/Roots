@@ -1,13 +1,13 @@
 import { useCallback } from "react";
 import { Fab, makeStyles, Tooltip } from "@material-ui/core";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
-import { SaveFlow } from "./Utilities/FlowHandler";
+import { SaveFlow } from "../Utilities/FlowHandler";
 import { useHistory } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { useProjectFilesState } from "./Context/ProjectFilesContext/ProjectFilesContext";
-import { useNodeViewerState } from "./Context/NodeViewerContext/NodeViewerContext";
-import { Build } from "./Utilities/BuildHandler";
-import { SeparateNodesAndEdges } from "./Components/FlowEditor/Nodes/NodeUtilities";
+import { useProjectFilesState } from "../Context/ProjectFilesContext/ProjectFilesContext";
+import { useNodeViewerState } from "../Context/NodeViewerContext/NodeViewerContext";
+import { Build } from "../Utilities/BuildHandler";
+import { SeparateNodesAndEdges } from "./FlowEditor/Nodes/NodeUtilities";
 
 export const PreviewButton = () => {
     const classes = useStyles();

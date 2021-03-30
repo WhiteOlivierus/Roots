@@ -1,23 +1,15 @@
-import { Box, Icon, Tooltip, Grid, Paper, makeStyles } from "@material-ui/core";
+import { Box, Icon, Tooltip, Grid, Paper } from "@material-ui/core";
 import React, { useState } from "react";
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { BackButton } from "./BackButton";
 
-const createStyle = makeStyles((theme) => ({
-    overrides: {
-        MuiSelected: {
-            fill: "secondary",
-            backgroundColor: "black"
-        }
-    }
-}));
 
 const ToolBar = (props) => {
-    const classes = createStyle();
-    const [view, setView] = useState(props.state);
+    const [view, setView] = useState(props.mode.value);
 
     const handleChange = (e, nextView) => {
+        props.mode.set(nextView);
         setView(nextView);
     };
 
@@ -42,12 +34,12 @@ const ToolBar = (props) => {
                 <Grid item >
                     <Paper>
                         <ToggleButtonGroup orientation="vertical" value={view} exclusive onChange={handleChange}>
-                            <ToggleButton className={classes.overrides} value="select" aria-label="select">
+                            <ToggleButton value="select" aria-label="select">
                                 <Tooltip title="select">
                                     <Icon className="fas fa-mouse-pointer" color="primary" />
                                 </Tooltip>
                             </ToggleButton>
-                            <ToggleButton className={classes.overrides} value="edit" aria-label="edit">
+                            <ToggleButton value="edit" aria-label="edit">
                                 <Tooltip title="edit zones">
                                     <Icon className="fas fa-pen-fancy" color="primary" />
                                 </Tooltip>

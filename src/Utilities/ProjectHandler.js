@@ -1,5 +1,4 @@
 import {
-    CreateFolder,
     WriteFile,
     FindDir,
     FindFile,
@@ -77,7 +76,7 @@ export async function OpenRecentProject(activeRoot) {
         return { activeRoot, activeFlow };
     } catch {
         await UnRegisterRecentProject(activeRoot);
-        throw `Project ${activeRoot.name} does not exist`;
+        throw Error(`Project ${activeRoot.name} does not exist`);
     }
 }
 
