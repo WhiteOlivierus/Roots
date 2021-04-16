@@ -16,7 +16,6 @@ import { MenuBar } from "./MenuBar/MenuBar";
 import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
 
 import { CreateNode } from "./Nodes/NodeFactory";
-import { OnBeforeReload } from "../../Utilities/OnBeforeReload";
 import { Menu, MenuItem } from "@material-ui/core";
 import { EditorWrapper } from "../EditorWrapper";
 import PropTypes from "prop-types";
@@ -123,7 +122,6 @@ const FlowEditor = memo(({ flow }) => {
 
     return (
         <EditorWrapper>
-            <OnBeforeReload />
             <MenuBar />
             <ReactFlow
                 elements={elements}

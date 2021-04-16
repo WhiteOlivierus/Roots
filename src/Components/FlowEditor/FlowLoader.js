@@ -5,12 +5,15 @@ import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectF
 import { LoadFlow } from "../../Utilities/FlowHandler";
 import { SeparateNodesAndEdges } from "./Nodes/NodeUtilities";
 import FlowEditor from "./FlowEditor";
+import { useBeforeReload } from "../../Utilities/UseBeforeReload";
 
 export const FlowLoader = memo(() => {
     const [initialFlow, setInitialFlow] = useState({});
     const [loaded, setLoaded] = useState(false);
 
     const history = useHistory();
+
+    useBeforeReload(() => history.push("/"));
 
     const { projectFilesState } = useProjectFilesState();
     const { nodeViewerState } = useNodeViewerState();
@@ -54,11 +57,10 @@ export const FlowLoader = memo(() => {
 
     return (
         <>
-            {loaded === true ? (
-                <FlowEditor flow={initialFlow} />
-            ) : (
-                <h1>Loading</h1>
-            )}
+            {loaded === true
+                ? <FlowEditor flow={initialFlow} />
+                : <h1>Loading</h1>
+            }
         </>
     );
 });

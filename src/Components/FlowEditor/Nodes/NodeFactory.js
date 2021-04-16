@@ -12,7 +12,6 @@ export async function CreateNode(type, position) {
                 data: {
                     id: uuid,
                     label: `${type} node`,
-                    outHandles: [{ text: "Left" }, { text: "Right" }],
                 },
             };
 

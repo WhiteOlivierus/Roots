@@ -1,15 +1,15 @@
 import { Typography } from "@material-ui/core";
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import { FileField } from "./FileField";
 import { LoadAudioFile, LoadImageFile } from "../../../Utilities/LoadFile";
 
-export const SceneSettingsDrawer = (props) => {
+export const SceneSettingsDrawer = memo((props) => {
     const data = props.node.value.data;
 
     const handleLoadFile = useCallback((key, LoadAction) => {
         LoadAction(props.projectFolder)
             .then(({ fileName, blobUrl }) =>
-                props.node.set({
+                props.node.setValue({
                     ...props.node.value,
                     data: {
                         ...data,
@@ -42,4 +42,4 @@ export const SceneSettingsDrawer = (props) => {
                 value={data.audio} />
         </>
     );
-};
+});

@@ -8,11 +8,14 @@ import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewe
 import short from "short-uuid";
 import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from "react-router-dom";
+import { SceneCanvasHooks } from "dutchskull-scene-manager";
 
-export const SceneNode = memo(({ data }) => {
+export const SceneNode = memo(({ id, data, selected }) => {
     const classes = nodeStyle();
 
     const { nodeViewerState } = useNodeViewerState();
+
+    const showEditButton = SceneCanvasHooks.useToggle(false);
 
     const length = data.zones && data.zones.length - 1;
 
@@ -34,7 +37,8 @@ export const SceneNode = memo(({ data }) => {
         history.push("/editor");
     };
 
-    const outHandles = data.zones && data.zones.map((handle, index) => {
+    const outHandles = data.zones && data.zones.map((zone, index) => {
+        if (!zone.isZone) return undefined;
         return (
             <Handle
                 key={short.generate()}
@@ -42,21 +46,29 @@ export const SceneNode = memo(({ data }) => {
                 position={Position.Right}
                 className={classes.handleRoot}
                 isValidConnection={onHasSourceConnection}
-                id={handle.id}
+                id={zone.id}
                 style={{
                     top: `${CalculateHandlePosition(length, index)}%`,
                 }}
             >
-                <p className={classes.handleText}>{handle.id}</p>
+                <p className={classes.handleText}>{zone.name}</p>
             </Handle>
         );
     });
 
+    const elevation = selected ? 10 : (showEditButton.value ? 5 : 1);
     return (
-        <Paper className={classes.root}>
-            <IconButton style={{ position: "absolute", top: 0, left: 0, zIndex: 100000000 }} onClick={onShowEditor}>
-                <EditIcon color="secondary" fontSize="small" />
-            </IconButton>
+        <Paper
+            className={classes.root}
+            elevation={elevation}
+            onMouseEnter={showEditButton.toggle}
+            onMouseLeave={showEditButton.toggle}
+        >
+            {showEditButton.value &&
+                <IconButton style={{ position: "absolute", top: 0, left: 0, zIndex: 100000000 }} onClick={onShowEditor}>
+                    <EditIcon color="secondary" fontSize="small" />
+                </IconButton>
+            }
             <NodeContent data={data} />
             <Handle
                 type="target"

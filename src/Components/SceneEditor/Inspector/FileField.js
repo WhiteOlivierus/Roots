@@ -1,7 +1,8 @@
 import { Grid, IconButton, Typography } from "@material-ui/core";
 import FolderIcon from '@material-ui/icons/Folder';
+import { memo } from "react";
 
-export const FileField = (props) => {
+export const FileField = memo((props) => {
     return (
         <Grid
             container
@@ -44,4 +45,4 @@ export const FileField = (props) => {
             </Grid>
         </Grid>
     );
-};
+});

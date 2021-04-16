@@ -4,12 +4,14 @@ import { memo, useEffect, useState } from "react";
 import { useHistory, Link } from "react-router-dom";
 import { Button, Tooltip } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import { OnBeforeReload } from "../../Utilities/OnBeforeReload";
+import { useBeforeReload } from "../../Utilities/UseBeforeReload";
 import { EditorWrapper } from "../EditorWrapper";
 import { GetObjectFromFileHandle } from "../../Utilities/FileHandler"
 
-export const Preview = memo((props) => {
+export const Preview = memo(() => {
     const history = useHistory();
+
+    useBeforeReload(() => history.push("/"));
 
     const { projectFilesState } = useProjectFilesState();
 
@@ -27,7 +29,6 @@ export const Preview = memo((props) => {
 
     return (
         <EditorWrapper>
-            <OnBeforeReload />
             <Link to="/flow">
                 <Tooltip title="Back to flow editor">
                     <Button

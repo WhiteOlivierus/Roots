@@ -2,8 +2,8 @@ import { Move } from "./FileHandler";
 
 export const LoadFile = async (root, options = {}) => {
     var fileHandle = await window.showOpenFilePicker(options);
-    if (Array.isArray(fileHandle))
-        fileHandle = fileHandle[0];
+
+    if (Array.isArray(fileHandle)) fileHandle = fileHandle[0];
 
     await Move(root, fileHandle);
 
@@ -40,11 +40,7 @@ export const ImageOptions = {
     multiple: false
 };
 
-export const LoadAudioFile = async (root) => {
-    return LoadFile(root, AudioOptions);
-};
+export const LoadAudioFile = async (root) => LoadFile(root, AudioOptions);
 
 
-export const LoadImageFile = async (root) => {
-    return LoadFile(root, ImageOptions);
-};
+export const LoadImageFile = async (root) => LoadFile(root, ImageOptions);

@@ -1,32 +1,32 @@
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import * as Router from "react-router-dom";
 import { FlowLoader } from "./Components/FlowEditor/FlowLoader";
 import { StartMenu } from "./Components/StartMenu/StartMenu";
 import { Preview } from "./Components/Preview/Preview";
 import { SceneEditor } from "./Components/SceneEditor/SceneEditor";
-import { memo } from "react";
+import * as React from "react";
 
 import { PreviewButton } from "./Components/PreviewButton";
 
-export const GlobalRoutes = memo(() => {
+export const GlobalRoutes = React.memo(() => {
     return (
-        <Router>
-            <Switch>
-                <Route exact={true} path="/">
+        <Router.BrowserRouter>
+            <Router.Switch>
+                <Router.Route exact={true} path="/">
                     <StartMenu />
-                </Route>
-                <Route path="/flow">
+                </Router.Route>
+                <Router.Route path="/flow">
                     <FlowLoader />
                     <PreviewButton />
-                </Route>
-                <Route path="/editor">
+                </Router.Route>
+                <Router.Route path="/editor">
                     <SceneEditor />
                     <PreviewButton />
-                </Route>
-                <Route path="/preview">
+                </Router.Route>
+                <Router.Route path="/preview">
                     <Preview />
-                </Route>
-            </Switch>
-        </Router>
+                </Router.Route>
+            </Router.Switch>
+        </Router.BrowserRouter>
     );
 });
 

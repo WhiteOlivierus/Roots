@@ -7,9 +7,6 @@ export const nodeStyle = makeStyles((theme) =>
         root: {
             width: 160,
             height: 90,
-            "&:hover": {
-                border: "black solid 1px"
-            },
         },
         handleRoot: {
             display: "flex",

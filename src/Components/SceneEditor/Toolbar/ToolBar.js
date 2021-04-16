@@ -1,15 +1,15 @@
 import { Box, Icon, Tooltip, Grid, Paper } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { BackButton } from "./BackButton";
 
 
-const ToolBar = (props) => {
+const ToolBar = memo((props) => {
     const [view, setView] = useState(props.mode.value);
 
     const handleChange = (e, nextView) => {
-        props.mode.set(nextView);
+        props.mode.setValue(nextView);
         setView(nextView);
     };
 
@@ -29,7 +29,7 @@ const ToolBar = (props) => {
                 spacing={2}
             >
                 <Grid item>
-                    <BackButton to={"/flow"} />
+                    <BackButton to={"/flow"} onExit={props.onExit} />
                 </Grid>
                 <Grid item >
                     <Paper>
@@ -50,7 +50,7 @@ const ToolBar = (props) => {
             </Grid>
         </Box>
     )
-}
+});
 
 export default ToolBar;
 
