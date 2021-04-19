@@ -1,15 +1,15 @@
 import { Box, Icon, Tooltip, Grid, Paper } from "@material-ui/core";
-import React, { memo, useState } from "react";
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import { BackButton } from "./BackButton";
+import * as React from "react";
+import ToggleButton from "@material-ui/lab/ToggleButton";
+import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
+import BackButton from "./BackButton";
+import PropTypes from "prop-types";
 
-
-const ToolBar = memo((props) => {
-    const [view, setView] = useState(props.mode.value);
+const ToolBar = ({ mode, onExit }) => {
+    const [view, setView] = React.useState(mode.value);
 
     const handleChange = (e, nextView) => {
-        props.mode.setValue(nextView);
+        mode.setValue(nextView);
         setView(nextView);
     };
 
@@ -18,7 +18,7 @@ const ToolBar = memo((props) => {
             p={3}
             style={{
                 position: "absolute",
-                top: 60
+                top: 60,
             }}
         >
             <Grid
@@ -29,19 +29,30 @@ const ToolBar = memo((props) => {
                 spacing={2}
             >
                 <Grid item>
-                    <BackButton to={"/flow"} onExit={props.onExit} />
+                    <BackButton to={"/flow"} onExit={onExit} />
                 </Grid>
-                <Grid item >
+                <Grid item>
                     <Paper>
-                        <ToggleButtonGroup orientation="vertical" value={view} exclusive onChange={handleChange}>
+                        <ToggleButtonGroup
+                            orientation="vertical"
+                            value={view}
+                            exclusive
+                            onChange={handleChange}
+                        >
                             <ToggleButton value="select" aria-label="select">
                                 <Tooltip title="select">
-                                    <Icon className="fas fa-mouse-pointer" color="primary" />
+                                    <Icon
+                                        className="fas fa-mouse-pointer"
+                                        color="primary"
+                                    />
                                 </Tooltip>
                             </ToggleButton>
                             <ToggleButton value="edit" aria-label="edit">
                                 <Tooltip title="edit zones">
-                                    <Icon className="fas fa-pen-fancy" color="primary" />
+                                    <Icon
+                                        className="fas fa-pen-fancy"
+                                        color="primary"
+                                    />
                                 </Tooltip>
                             </ToggleButton>
                         </ToggleButtonGroup>
@@ -49,9 +60,14 @@ const ToolBar = memo((props) => {
                 </Grid>
             </Grid>
         </Box>
-    )
-});
+    );
+};
 
-export default ToolBar;
+ToolBar.displayName = "ToolBar";
 
+ToolBar.propTypes = {
+    onExit: PropTypes.func.isRequired,
+    mode: PropTypes.object.isRequired,
+};
 
+export default React.memo(ToolBar);

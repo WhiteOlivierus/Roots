@@ -5,8 +5,8 @@ import {
     Tooltip,
 } from "@material-ui/core";
 import { memo } from "react";
-
-export const MenuButton = memo(({ button }) => {
+import PropTypes from "prop-types";
+export const MenuButton = ({ button }) => {
     return (
         <Tooltip title={button.tooltip}>
             <ListItem button onClick={button.action}>
@@ -15,4 +15,8 @@ export const MenuButton = memo(({ button }) => {
             </ListItem>
         </Tooltip>
     );
-});
+};
+
+MenuButton.displayName = "MenuButton";
+MenuButton.propTypes = { button: PropTypes.object.isRequired };
+export default memo(MenuButton);

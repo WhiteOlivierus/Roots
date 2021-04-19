@@ -1,8 +1,9 @@
 import { makeStyles } from "@material-ui/core";
-import { createElement, memo, useEffect, useState } from "react";
-import { useProjectFilesState } from "../../../Context/ProjectFilesContext/ProjectFilesContext";
+import * as React from "react";
+import useProjectFilesState from "../../../Context/ProjectFilesContext/ProjectFilesContext";
 import { FindFile, GetImageBlobPath } from "../../../Utilities/FileHandler";
 import { EditNodeText } from "./EditNodeText";
+import PropTypes from "prop-types";
 
 const contentStyle = makeStyles({
     img: { width: "100%", height: "100%", borderRadius: 4 },
@@ -16,14 +17,14 @@ const contentStyle = makeStyles({
     },
 });
 
-export const NodeContent = memo(({ data }) => {
+export const NodeContent = ({ data }) => {
     const classes = contentStyle();
 
     const { projectFilesState } = useProjectFilesState();
 
-    const [src, setSrc] = useState(data.imageSrc || "");
+    const [src, setSrc] = React.useState(data.imageSrc || "");
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (!("imageSrc" in data) && "image" in data) {
             FindFile(projectFilesState.activeRoot, data.image).then(
                 (fileHandle) => {
@@ -38,7 +39,7 @@ export const NodeContent = memo(({ data }) => {
         }
     });
 
-    const nodeImage = createElement("img", {
+    const nodeImage = React.createElement("img", {
         src: src,
         className: classes.img,
     });
@@ -54,4 +55,12 @@ export const NodeContent = memo(({ data }) => {
             {src && nodeImage}
         </div>
     );
-});
+};
+
+NodeContent.displayName = "NodeContent";
+
+NodeContent.propTypes = {
+    data: PropTypes.object.isRequired,
+};
+
+export default React.memo(NodeContent);

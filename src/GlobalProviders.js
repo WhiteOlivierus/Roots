@@ -1,24 +1,34 @@
-import { memo } from "react";
+import * as React from "react";
 
-import { ProjectFilesProvider } from "./Context/ProjectFilesContext/ProjectFilesProvider";
+import ProjectFilesProvider from "./Context/ProjectFilesContext/ProjectFilesProvider";
 import { ThemeProvider } from "@material-ui/core";
 import { theme } from "./Utilities/Theme";
-import { NodeViewerProvider } from "./Context/NodeViewerContext/NodeViewerProvider";
+import NodeViewerProvider from "./Context/NodeViewerContext/NodeViewerProvider";
 import { SnackbarProvider } from "notistack";
 import { ReactFlowProvider } from "react-flow-renderer";
+import PropTypes from "prop-types";
 
-export const GlobalProvider = memo((props) => {
+const GlobalProvider = ({ children }) => {
     return (
         <SnackbarProvider maxSnack={3}>
             <ProjectFilesProvider>
                 <NodeViewerProvider>
                     <ReactFlowProvider>
-                        <ThemeProvider theme={theme}>
-                            {props.children}
-                        </ThemeProvider>
+                        <ThemeProvider theme={theme}>{children}</ThemeProvider>
                     </ReactFlowProvider>
                 </NodeViewerProvider>
             </ProjectFilesProvider>
         </SnackbarProvider>
     );
-});
+};
+
+GlobalProvider.displayName = "GlobalProvider";
+
+GlobalProvider.propTypes = {
+    children: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.element),
+        PropTypes.element,
+    ]),
+};
+
+export default React.memo(GlobalProvider);

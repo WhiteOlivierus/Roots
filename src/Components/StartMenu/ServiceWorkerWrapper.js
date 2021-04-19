@@ -1,6 +1,6 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as serviceWorkerRegistration from "../../serviceWorkerRegistration";
-import { Box, Button, Card, Grid, Paper, Typography } from "@material-ui/core";
+import { Box, Button, Card, Grid, Typography } from "@material-ui/core";
 
 export const ServiceWorkerWrapper = () => {
     const [showReload, setShowReload] = useState(false);

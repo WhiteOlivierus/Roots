@@ -1,31 +1,38 @@
-import { Box, Card, CardContent, Typography } from "@material-ui/core";
-import { memo } from "react";
+import * as MUI from "@material-ui/core";
+import * as React from "react";
+import PropTypes from "prop-types";
 
-
-const EditorInspector = memo((props) => {
+const EditorInspector = ({ children }) => {
     return (
-        <Box
+        <MUI.Box
             p={3}
             style={{
                 position: "absolute",
                 right: 0,
                 top: 80,
                 zIndex: 5,
-                width: 275
+                width: 275,
             }}
         >
-            <Card >
-                <CardContent>
-                    <Typography variant="h5" gutterBottom>
+            <MUI.Card>
+                <MUI.CardContent>
+                    <MUI.Typography variant="h5" gutterBottom>
                         Inspector
-                    </Typography>
-                    {props.children}
-                </CardContent>
-            </Card>
-        </Box>
+                    </MUI.Typography>
+                    {children}
+                </MUI.CardContent>
+            </MUI.Card>
+        </MUI.Box>
     );
-});
+};
 
-export default EditorInspector;
+EditorInspector.displayName = "EditorInspector";
 
+EditorInspector.propTypes = {
+    children: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.element),
+        PropTypes.element,
+    ]),
+};
 
+export default React.memo(EditorInspector);

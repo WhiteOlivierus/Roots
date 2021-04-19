@@ -1,9 +1,5 @@
 import { CreateFolder, WriteFile } from "./FileHandler";
-import {
-    FindDir,
-    FindFile,
-    GetObjectFromFileHandle,
-} from "./FileHandler";
+import { FindDir, FindFile, GetObjectFromFileHandle } from "./FileHandler";
 import { defaultFlow } from "./DefaultFlow";
 import { SetActiveFlowInConfig } from "./ProjectHandler";
 
@@ -124,7 +120,8 @@ export function clone(obj) {
     if (obj instanceof Object) {
         copy = {};
         for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+            if (Object.prototype.hasOwnProperty.call(obj, attr))
+                copy[attr] = clone(obj[attr]);
         }
         return copy;
     }

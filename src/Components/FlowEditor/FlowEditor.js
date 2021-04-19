@@ -31,6 +31,7 @@ const FlowEditor = memo(({ flow }) => {
     const updateNodeInternals = useUpdateNodeInternals();
 
     const [elements, setElements] = useState([]);
+    // eslint-disable-next-line no-unused-vars
     const [instance, setInstance] = useState(null);
 
     const onLoad = (instance) => {
@@ -105,7 +106,7 @@ const FlowEditor = memo(({ flow }) => {
     const setActiveNode = (e, node) => {
         nodeViewerState.activeNode = node;
         setNodeViewerState(nodeViewerState);
-    }
+    };
 
     const handleClose = () => {
         setState(initialState);
@@ -142,7 +143,7 @@ const FlowEditor = memo(({ flow }) => {
                 <Background variant="lines" gap={30} size={2} />
                 <Controls />
                 <NodeBar />
-                {/* <MiniMap nodeColor={MinimapSettings} /> */}
+                <MiniMap nodeColor={MinimapSettings} />
             </ReactFlow>
             <Menu
                 keepMounted

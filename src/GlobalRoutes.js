@@ -1,13 +1,13 @@
-import * as Router from "react-router-dom";
-import { FlowLoader } from "./Components/FlowEditor/FlowLoader";
-import { StartMenu } from "./Components/StartMenu/StartMenu";
-import { Preview } from "./Components/Preview/Preview";
-import { SceneEditor } from "./Components/SceneEditor/SceneEditor";
 import * as React from "react";
+import * as Router from "react-router-dom";
 
+import { FlowLoader } from "./Components/FlowEditor/FlowLoader";
+import StartMenu from "./Components/StartMenu/StartMenu";
+import { Preview } from "./Components/Preview/Preview";
+import SceneEditor from "./Components/SceneEditor/SceneEditor";
 import { PreviewButton } from "./Components/PreviewButton";
 
-export const GlobalRoutes = React.memo(() => {
+const GlobalRoutes = () => {
     return (
         <Router.BrowserRouter>
             <Router.Switch>
@@ -28,6 +28,8 @@ export const GlobalRoutes = React.memo(() => {
             </Router.Switch>
         </Router.BrowserRouter>
     );
-});
+};
 
+GlobalRoutes.displayName = "GlobalRoutes";
 
+export default React.memo(GlobalRoutes);

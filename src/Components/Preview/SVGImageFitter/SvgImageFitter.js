@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { InitSVG, InitImageValues, ScalePoints } from "./SVGScaler";
 import { ScaledSVG } from "./ScaledSVG.js";
 
@@ -7,7 +8,7 @@ Array.prototype.repeat = function (element, length) {
     return this;
 };
 
-export default class SvgImageFitter extends Component {
+class SvgImageFitter extends Component {
     constructor(props) {
         super(props);
 
@@ -77,3 +78,9 @@ export default class SvgImageFitter extends Component {
         );
     }
 }
+
+SvgImageFitter.displayName = "SvgImageFitter";
+SvgImageFitter.propTypes = {
+    zones: PropTypes.array.isRequired,
+};
+export default SvgImageFitter;

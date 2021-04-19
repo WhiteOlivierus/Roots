@@ -1,11 +1,10 @@
 import React from "react";
 
-import { AudioLayer } from "./layers/AudioLayer";
-import { UILayer } from "./layers/UILayer";
+import AudioLayer from "./layers/AudioLayer";
+import UILayer from "./layers/UILayer";
 import SvgImageFitter from "./SVGImageFitter/SvgImageFitter";
 
-import { Transition } from "react-transition-group";
-
+import PropTypes from "prop-types";
 export function Scene(props) {
     const scene = props.scene;
 
@@ -19,3 +18,9 @@ export function Scene(props) {
         </div>
     );
 }
+
+Scene.displayName = "Scene";
+Scene.propTypes = {
+    scene: PropTypes.object.isRequired,
+};
+export default Scene;

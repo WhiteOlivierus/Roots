@@ -1,20 +1,11 @@
-import { memo /* , useEffect */ } from "react";
+import { memo } from "react";
 
 import { Box, Container, Grid } from "@material-ui/core";
 import { Logo } from "./Logo";
 import { File } from "./File";
 import { Recent } from "./Recent";
 
-export const StartMenu = memo(() => {
-    // const shortCuts = (e) => e.preventDefault();
-
-    // useEffect(() => {
-    // window.addEventListener("keydown", shortCuts, true);
-    // return () => {
-    // window.removeEventListener("keydown", shortCuts, true);
-    // };
-    // });
-
+const StartMenu = () => {
     return (
         <Box paddingTop={10} bgcolor="primary.main" width={1} height={1}>
             <Container maxWidth="lg">
@@ -26,4 +17,8 @@ export const StartMenu = memo(() => {
             </Container>
         </Box>
     );
-});
+};
+
+StartMenu.displayName = "StartMenu";
+
+export default memo(StartMenu);

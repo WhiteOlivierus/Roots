@@ -7,7 +7,7 @@ import {
     makeStyles,
     Typography,
 } from "@material-ui/core";
-import { NodePreview } from "./NodePreview";
+import NodePreview from "./NodePreview";
 
 const useStyles = makeStyles({
     root: {
@@ -34,12 +34,12 @@ export const NodeBar = () => {
                         <Grid item>
                             <Typography variant="h5" gutterBottom>
                                 Nodes
-                        </Typography>
+                            </Typography>
                         </Grid>
                         <Grid item>
                             <Typography variant="body1" gutterBottom>
                                 You can drag the nodes in too the flow editor.
-                        </Typography>
+                            </Typography>
                         </Grid>
                         <Grid item>
                             <Divider />

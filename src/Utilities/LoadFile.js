@@ -16,31 +16,38 @@ export const LoadFile = async (root, options = {}) => {
 export const AudioOptions = {
     types: [
         {
-            description: 'Audio',
+            description: "Audio",
             accept: {
-                'audio/*': ['.aac', '.mp3', '.oga', '.opus', '.wav', '.weba']
-            }
+                "audio/*": [".aac", ".mp3", ".oga", ".opus", ".wav", ".weba"],
+            },
         },
     ],
     excludeAcceptAllOption: true,
-    multiple: false
+    multiple: false,
 };
-
 
 export const ImageOptions = {
     types: [
         {
-            description: 'Image',
+            description: "Image",
             accept: {
-                'image/*': ['.gif', '.jpeg', '.jpg', '.png', '.tif', '.tiff', '.webp', '.bmp']
-            }
+                "image/*": [
+                    ".gif",
+                    ".jpeg",
+                    ".jpg",
+                    ".png",
+                    ".tif",
+                    ".tiff",
+                    ".webp",
+                    ".bmp",
+                ],
+            },
         },
     ],
     excludeAcceptAllOption: true,
-    multiple: false
+    multiple: false,
 };
 
 export const LoadAudioFile = async (root) => LoadFile(root, AudioOptions);
-
 
 export const LoadImageFile = async (root) => LoadFile(root, ImageOptions);

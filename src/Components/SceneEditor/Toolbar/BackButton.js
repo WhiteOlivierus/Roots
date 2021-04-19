@@ -1,15 +1,16 @@
 import { Button, Tooltip } from "@material-ui/core";
-import React, { memo, useCallback } from "react";
+import * as React from "react";
 import { useHistory } from "react-router-dom";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import PropTypes from "prop-types";
 
-export const BackButton = memo((props) => {
+const BackButton = ({ onExit, to }) => {
     const history = useHistory();
 
-    const handleClick = useCallback(() => {
-        props.onExit();
-        history.push(props.to);
-    }, [history, props]);
+    const handleClick = React.useCallback(() => {
+        onExit();
+        history.push(to);
+    }, [history]);
 
     return (
         <Tooltip title="Back to flow editor">
@@ -18,4 +19,13 @@ export const BackButton = memo((props) => {
             </Button>
         </Tooltip>
     );
-});
+};
+
+BackButton.displayName = "BackButton";
+
+BackButton.propTypes = {
+    onExit: PropTypes.func.isRequired,
+    to: PropTypes.string.isRequired,
+};
+
+export default React.memo(BackButton);

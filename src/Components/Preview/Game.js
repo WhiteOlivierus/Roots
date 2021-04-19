@@ -1,8 +1,8 @@
 import { SwitchTransition, CSSTransition } from "react-transition-group";
 import { Switch, Route, useLocation } from "react-router-dom";
 import { Scene } from "./Scene";
-
-export function Game(props) {
+import PropTypes from "prop-types";
+function Game(props) {
     let game = props.game;
 
     let location = useLocation();
@@ -26,3 +26,6 @@ export function Game(props) {
         </SwitchTransition>
     );
 }
+Game.displayName = "Game";
+Game.propTypes = { game: PropTypes.object.isRequired };
+export default Game;

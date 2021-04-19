@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 const G = styled.g`
     cursor: pointer;
@@ -39,3 +40,9 @@ export function ScaledSVG(props) {
         </G>
     );
 }
+
+ScaledSVG.displayName = "ScaledSVG";
+ScaledSVG.propTypes = {
+    zone: PropTypes.object.isRequired,
+};
+export default ScaledSVG;

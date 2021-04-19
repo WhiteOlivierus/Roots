@@ -11,9 +11,13 @@ export async function Build(activeRoot, nodes, edges) {
 
     let inNode = copiedNodes.splice(0, 1);
 
-    var connectedEdgesInNode = edges.filter((edge) => edge.source === inNode[0].id)[0];
+    var connectedEdgesInNode = edges.filter(
+        (edge) => edge.source === inNode[0].id
+    )[0];
 
-    var firstNodeID = copiedNodes.findIndex((node) => node.id === connectedEdgesInNode.target);
+    var firstNodeID = copiedNodes.findIndex(
+        (node) => node.id === connectedEdgesInNode.target
+    );
 
     var id = copiedNodes[firstNodeID].id;
 
@@ -23,7 +27,9 @@ export async function Build(activeRoot, nodes, edges) {
         newScene.image = copiedNodes[firstNodeID].data.image;
         newScene.src = copiedNodes[firstNodeID].data.imageSrc;
 
-        images.push(await FindFile(activeRoot, copiedNodes[firstNodeID].data.image));
+        images.push(
+            await FindFile(activeRoot, copiedNodes[firstNodeID].data.image)
+        );
     }
 
     copiedNodes.splice(firstNodeID, 1);
@@ -87,11 +93,13 @@ const CreateScene = async (node, edges) => {
 
         newInputZone.sceneId = edge.target;
 
-        const zone = node.data.zones.filter((zone) => zone.id === edge.sourceHandle)[0];
+        const zone = node.data.zones.filter(
+            (zone) => zone.id === edge.sourceHandle
+        )[0];
         newInputZone.svg = zone.points;
         newInputZone.text = zone.id;
 
         newScene.inputZones.push(newInputZone);
     }
     return newScene;
-}
+};

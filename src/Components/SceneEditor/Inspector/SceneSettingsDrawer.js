@@ -1,29 +1,33 @@
 import { Typography } from "@material-ui/core";
-import { memo, useCallback } from "react";
+import * as React from "react";
 import { FileField } from "./FileField";
 import { LoadAudioFile, LoadImageFile } from "../../../Utilities/LoadFile";
+import PropTypes from "prop-types";
 
-export const SceneSettingsDrawer = memo((props) => {
-    const data = props.node.value.data;
+export const SceneSettingsDrawer = ({ node, projectFolder }) => {
+    const data = node.value.data;
 
-    const handleLoadFile = useCallback((key, LoadAction) => {
-        LoadAction(props.projectFolder)
-            .then(({ fileName, blobUrl }) =>
-                props.node.setValue({
-                    ...props.node.value,
+    const handleLoadFile = React.useCallback(
+        (key, LoadAction) => {
+            LoadAction(projectFolder).then(({ fileName, blobUrl }) =>
+                node.setValue({
+                    ...node.value,
                     data: {
                         ...data,
                         [key]: fileName,
                         [`${key}Src`]: blobUrl,
                     },
-                }));
-    }, [data, props.node, props.projectFolder]);
+                })
+            );
+        },
+        [data, node, projectFolder]
+    );
 
-    const onLoadImage = useCallback(() => {
+    const onLoadImage = React.useCallback(() => {
         handleLoadFile("image", LoadImageFile);
     }, [handleLoadFile]);
 
-    const onLoadAudio = useCallback(() => {
+    const onLoadAudio = React.useCallback(() => {
         handleLoadFile("audio", LoadAudioFile);
     }, [handleLoadFile]);
 
@@ -31,15 +35,18 @@ export const SceneSettingsDrawer = memo((props) => {
         <>
             <Typography variant="h6" gutterBottom>
                 Scene settings
-                </Typography>
-            <FileField
-                action={onLoadImage}
-                label="Image"
-                value={data.image} />
-            <FileField
-                action={onLoadAudio}
-                label="Music"
-                value={data.audio} />
+            </Typography>
+            <FileField action={onLoadImage} label="Image" value={data.image} />
+            <FileField action={onLoadAudio} label="Music" value={data.audio} />
         </>
     );
-});
+};
+
+SceneSettingsDrawer.displayName = "SceneSettingsDrawer";
+
+SceneSettingsDrawer.propTypes = {
+    node: PropTypes.object.isRequired,
+    projectFolder: PropTypes.object.isRequired,
+};
+
+export default React.memo(SceneSettingsDrawer);

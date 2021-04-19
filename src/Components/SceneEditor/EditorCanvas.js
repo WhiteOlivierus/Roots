@@ -1,14 +1,25 @@
-import { memo } from "react";
+import * as React from "react";
 import SceneCanvas from "dutchskull-scene-manager";
+import PropTypes from "prop-types";
 
-export const EditorCanvas = memo((props) => {
+export const EditorCanvas = ({ mode, polygon, imageRef, selection }) => {
     return (
         <SceneCanvas
-            editMode={props.mode === "edit"}
-            polygons={props.polygon}
-            container={props.imageRef}
-            selection={props.selection}
+            editMode={mode === "edit"}
+            polygons={polygon}
+            container={imageRef}
+            selection={selection}
         />
     );
-});
+};
 
+EditorCanvas.displayName = "EditorCanvas";
+
+EditorCanvas.propTypes = {
+    mode: PropTypes.string.isRequired,
+    polygon: PropTypes.object.isRequired,
+    imageRef: PropTypes.object.isRequired,
+    selection: PropTypes.object.isRequired,
+};
+
+export default React.memo(EditorCanvas);

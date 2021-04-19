@@ -1,14 +1,17 @@
 import { createContext, useContext } from "react";
 
 export class NodeViewerState {
-    setElements = undefined;
-    rfInstance = undefined;
-    activeNode = undefined;
+    constructor() {
+        this.setElements = undefined;
+        this.rfInstance = undefined;
+        this.activeNode = undefined;
+    }
 }
 
 export const NodeViewerContext = createContext({
     nodeViewerState: new NodeViewerState(),
-    setNodeViewerState: (nodeViewerState) => {},
+    // eslint-disable-next-line prettier/prettier, no-unused-vars
+    setNodeViewerState: (nodeViewerState) => { },
 });
 
 export const useNodeViewerState = () => useContext(NodeViewerContext);

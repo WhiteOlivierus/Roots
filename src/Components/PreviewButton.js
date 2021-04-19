@@ -4,7 +4,7 @@ import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import { SaveFlow } from "../Utilities/FlowHandler";
 import { useHistory } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { useProjectFilesState } from "../Context/ProjectFilesContext/ProjectFilesContext";
+import useProjectFilesState from "../Context/ProjectFilesContext/ProjectFilesContext";
 import { useNodeViewerState } from "../Context/NodeViewerContext/NodeViewerContext";
 import { Build } from "../Utilities/BuildHandler";
 import { SeparateNodesAndEdges } from "./FlowEditor/Nodes/NodeUtilities";
@@ -62,7 +62,6 @@ export const PreviewButton = () => {
         history,
     ]);
 
-
     return (
         <Tooltip title="preview">
             <Fab
@@ -78,9 +77,9 @@ export const PreviewButton = () => {
 };
 const useStyles = makeStyles((theme) => ({
     fab: {
-        position: 'absolute',
+        position: "absolute",
         zIndex: 100000000,
         bottom: theme.spacing(2),
         right: theme.spacing(2),
-    }
+    },
 }));

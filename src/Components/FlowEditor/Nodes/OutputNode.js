@@ -3,8 +3,8 @@ import { memo } from "react";
 import { Handle, Position } from "react-flow-renderer";
 import { NodeContent } from "./NodeContent";
 import { nodeStyle } from "./NodeStyle";
-
-export const OutputNode = memo(({ data }) => {
+import PropTypes from "prop-types";
+export const OutputNode = ({ data }) => {
     const classes = nodeStyle();
     return (
         <Paper className={classes.root}>
@@ -12,4 +12,10 @@ export const OutputNode = memo(({ data }) => {
             <Handle id="a" type="target" position={Position.Left} />
         </Paper>
     );
-});
+};
+
+OutputNode.displayName = "OutputNode";
+OutputNode.propTypes = {
+    data: PropTypes.object.isRequired,
+};
+export default memo(OutputNode);

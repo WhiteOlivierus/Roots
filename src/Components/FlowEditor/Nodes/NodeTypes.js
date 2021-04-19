@@ -1,5 +1,5 @@
 import { InputNode } from "./InputNode";
-import { SceneNode } from "./SceneNode";
+import SceneNode from "./SceneNode";
 import { OutputNode } from "./OutputNode";
 
 export const AllNodes = {

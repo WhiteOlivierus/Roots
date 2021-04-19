@@ -1,8 +1,9 @@
 import { Grid, IconButton, Typography } from "@material-ui/core";
-import FolderIcon from '@material-ui/icons/Folder';
-import { memo } from "react";
+import FolderIcon from "@material-ui/icons/Folder";
+import * as React from "react";
+import PropTypes from "prop-types";
 
-export const FileField = memo((props) => {
+export const FileField = ({ label, value, action }) => {
     return (
         <Grid
             container
@@ -10,16 +11,17 @@ export const FileField = memo((props) => {
             justify="flex-start"
             alignItems="center"
             style={{
-                maxWidth: "100%"
+                maxWidth: "100%",
             }}
         >
             <Grid item xs={12}>
                 <Typography
                     variant="body1"
                     style={{
-                        textAlign: "left"
-                    }}>
-                    {props.label}
+                        textAlign: "left",
+                    }}
+                >
+                    {label}
                 </Typography>
             </Grid>
             <Grid item xs={10}>
@@ -29,20 +31,31 @@ export const FileField = memo((props) => {
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
                         overflow: "hidden ",
-                        textAlign: "left"
-                    }}>
-                    {props.value ? props.value : "No file"}
+                        textAlign: "left",
+                    }}
+                >
+                    {value ? value : "No file"}
                 </Typography>
             </Grid>
             <Grid item xs={2}>
                 <IconButton
                     variant="contained"
                     color="primary"
-                    onClick={props.action}
+                    onClick={action}
                 >
                     <FolderIcon />
                 </IconButton>
             </Grid>
         </Grid>
     );
-});
+};
+
+FileField.displayName = "FileField";
+
+FileField.propTypes = {
+    label: PropTypes.string,
+    value: PropTypes.string,
+    action: PropTypes.func.isRequired,
+};
+
+export default React.memo(FileField);

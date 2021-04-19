@@ -5,8 +5,9 @@ import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewe
 import { NodeContent } from "./NodeContent";
 import { nodeStyle } from "./NodeStyle";
 import { hasSourceConnection } from "./NodeUtilities";
+import PropTypes from "prop-types";
 
-export const InputNode = memo(({ data }) => {
+export const InputNode = ({ data }) => {
     const classes = nodeStyle();
 
     const { nodeViewerState } = useNodeViewerState();
@@ -31,4 +32,12 @@ export const InputNode = memo(({ data }) => {
             ></Handle>
         </Paper>
     );
-});
+};
+
+InputNode.displayName = "InputNode";
+
+InputNode.propTypes = {
+    data: PropTypes.object.isRequired,
+};
+
+export default memo(InputNode);

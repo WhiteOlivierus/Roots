@@ -1,44 +1,35 @@
-import { useCallback, useState, memo } from "react";
-import {
-    AppBar,
-    IconButton,
-    Toolbar,
-    Tooltip,
-    Typography,
-} from "@material-ui/core";
+import * as React from "react";
+import * as MUI from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 
 import clsx from "clsx";
-import { useProjectFilesState } from "../../../Context/ProjectFilesContext/ProjectFilesContext";
 import { MenuDrawer } from "./MenuDrawer";
-import { RemoveExtension } from "../../../Utilities/StringTools";
 import { menuBarStyles } from "./menuBarStyles";
+import { MenuBarTitle } from "./MenuBarTitle";
 
 export const drawerWidth = 240;
 
-export const MenuBar = memo((props) => {
+export const MenuBar = () => {
     const classes = menuBarStyles();
 
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = React.useState(false);
 
-    const handleDrawerOpen = useCallback(() => {
-        setOpen((o) => (o = true));
-    }, [setOpen]);
+    const handleDrawerOpen = React.useCallback(() => setOpen(true), [setOpen]);
 
-    const handleDrawerClose = useCallback(() => {
-        setOpen((o) => (o = false));
-    }, [setOpen]);
+    const handleDrawerClose = React.useCallback(() => setOpen(false), [
+        setOpen,
+    ]);
 
     return (
         <div className={classes.root}>
-            <AppBar position="static">
-                <Toolbar
+            <MUI.AppBar position="static">
+                <MUI.Toolbar
                     className={clsx(classes.appBar, {
                         [classes.appBarShift]: open,
                     })}
                 >
-                    <Tooltip title="Menu">
-                        <IconButton
+                    <MUI.Tooltip title="Menu">
+                        <MUI.IconButton
                             color="inherit"
                             aria-label="open drawer"
                             onClick={handleDrawerOpen}
@@ -48,31 +39,16 @@ export const MenuBar = memo((props) => {
                             })}
                         >
                             <MenuIcon />
-                        </IconButton>
-                    </Tooltip>
+                        </MUI.IconButton>
+                    </MUI.Tooltip>
                     <MenuBarTitle />
-                </Toolbar>
-            </AppBar>
+                </MUI.Toolbar>
+            </MUI.AppBar>
             <MenuDrawer open={open} handleDrawerClose={handleDrawerClose} />
         </div>
     );
-});
+};
 
-export const MenuBarTitle = memo((props) => {
-    const classes = menuBarStyles();
+MenuBar.displayName = "MenuBar";
 
-    const { projectFilesState } = useProjectFilesState();
-
-    return (
-        <Typography
-            variant="h6"
-            color="inherit"
-            noWrap
-            className={classes.title}
-        >
-            {`Roots - 
-            ${projectFilesState.activeRoot.name} - 
-            ${RemoveExtension(projectFilesState.activeFlow.name)}`}
-        </Typography>
-    );
-});
+export default React.memo(MenuBar);
