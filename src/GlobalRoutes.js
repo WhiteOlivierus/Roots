@@ -1,11 +1,12 @@
 import * as React from "react";
 import * as Router from "react-router-dom";
 
-import { FlowLoader } from "./Components/FlowEditor/FlowLoader";
+import FlowLoader from "./Components/FlowEditor/FlowLoader";
 import StartMenu from "./Components/StartMenu/StartMenu";
 import { Preview } from "./Components/Preview/Preview";
 import SceneEditor from "./Components/SceneEditor/SceneEditor";
 import { PreviewButton } from "./Components/PreviewButton";
+import Test from "./Test";
 
 const GlobalRoutes = () => {
     return (
@@ -25,6 +26,9 @@ const GlobalRoutes = () => {
                 <Router.Route path="/preview">
                     <Preview />
                 </Router.Route>
+                <Router.Route path="/tests">
+                    <Test />
+                </Router.Route>
             </Router.Switch>
         </Router.BrowserRouter>
     );
@@ -32,4 +36,4 @@ const GlobalRoutes = () => {
 
 GlobalRoutes.displayName = "GlobalRoutes";
 
-export default React.memo(GlobalRoutes);
+export default GlobalRoutes;

@@ -4,17 +4,8 @@ import PropTypes from "prop-types";
 
 const EditorInspector = ({ children }) => {
     return (
-        <MUI.Box
-            p={3}
-            style={{
-                position: "absolute",
-                right: 0,
-                top: 80,
-                zIndex: 5,
-                width: 275,
-            }}
-        >
-            <MUI.Card>
+        <MUI.Box pl={3} height="100%">
+            <MUI.Card square={true} style={{ height: "100%" }}>
                 <MUI.CardContent>
                     <MUI.Typography variant="h5" gutterBottom>
                         Inspector
@@ -30,8 +21,8 @@ EditorInspector.displayName = "EditorInspector";
 
 EditorInspector.propTypes = {
     children: PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.element),
-        PropTypes.element,
+        PropTypes.arrayOf(PropTypes.node),
+        PropTypes.node,
     ]),
 };
 

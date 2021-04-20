@@ -1,24 +1,23 @@
-import React, { memo, useEffect, useState, useCallback } from "react";
+import * as React from "react";
 import { useHistory } from "react-router-dom";
-import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
+import useNodeViewerState from "../../Context/NodeViewerContext/NodeViewerContext";
 import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
 import { LoadFlow } from "../../Utilities/FlowHandler";
 import { SeparateNodesAndEdges } from "./Nodes/NodeUtilities";
 import FlowEditor from "./FlowEditor";
-import { useBeforeReload } from "../../Utilities/UseBeforeReload";
+import useOnUnload from "../../Utilities/UseOnUnLoad";
+// import GoToOnReload from "../../Utilities/GoToOnReload";
 
-export const FlowLoader = memo(() => {
-    const [initialFlow, setInitialFlow] = useState({});
-    const [loaded, setLoaded] = useState(false);
+const FlowLoader = () => {
+    useOnUnload();
 
-    const history = useHistory();
-
-    useBeforeReload(() => history.push("/"));
+    const [initialFlow, setInitialFlow] = React.useState({});
+    const [loaded, setLoaded] = React.useState(false);
 
     const { projectFilesState } = useProjectFilesState();
     const { nodeViewerState } = useNodeViewerState();
 
-    const SetFlow = useCallback(
+    const SetFlow = React.useCallback(
         (flow) => {
             const hasUpdatedActiveNode =
                 nodeViewerState && nodeViewerState.activeNode;
@@ -35,7 +34,9 @@ export const FlowLoader = memo(() => {
         [nodeViewerState]
     );
 
-    useEffect(() => {
+    const history = useHistory();
+
+    React.useEffect(() => {
         if (nodeViewerState.rfInstance !== undefined) {
             SetFlow(nodeViewerState.rfInstance.toObject());
         } else {
@@ -58,7 +59,11 @@ export const FlowLoader = memo(() => {
             )}
         </>
     );
-});
+};
+
+FlowLoader.displayName = "FlowLoader";
+FlowLoader.propTypes = {};
+export default React.memo(FlowLoader);
 
 export const UpdateNode = (elements, nodeViewerState) => {
     return elements.map((element) => {

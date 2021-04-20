@@ -4,12 +4,16 @@ import PropTypes from "prop-types";
 
 export const EditorCanvas = ({ mode, polygon, imageRef, selection }) => {
     return (
-        <SceneCanvas
-            editMode={mode === "edit"}
-            polygons={polygon}
-            container={imageRef}
-            selection={selection}
-        />
+        <>
+            {imageRef.current && (
+                <SceneCanvas
+                    editMode={mode === "edit"}
+                    polygons={polygon}
+                    container={imageRef}
+                    selection={selection}
+                />
+            )}
+        </>
     );
 };
 

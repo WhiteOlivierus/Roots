@@ -13,7 +13,7 @@ import { useHistory } from "react-router-dom";
 import { MinimapSettings, NodeTypes } from "./Nodes/NodeTypes";
 
 import { MenuBar } from "./MenuBar/MenuBar";
-import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
+import useNodeViewerState from "../../Context/NodeViewerContext/NodeViewerContext";
 
 import { CreateNode } from "./Nodes/NodeFactory";
 import { Menu, MenuItem } from "@material-ui/core";

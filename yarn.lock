@@ -5612,10 +5612,10 @@ duplexify@^4.0.0:
     readable-stream "^3.1.1"
     stream-shift "^1.0.0"
 
-dutchskull-scene-manager@0.3.3:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/dutchskull-scene-manager/-/dutchskull-scene-manager-0.3.3.tgz#df2208e83a4ae7b2f6d924b68bead132327509c5"
-  integrity sha512-GZel2PmHt4sL84VXF107Jvw3cRohpnstDN59oXxd45snp0im3SNrtt6sQ8R+fZ45KS0Qh77SVL193U2P8yjknA==
+dutchskull-scene-manager@0.3.5:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/dutchskull-scene-manager/-/dutchskull-scene-manager-0.3.5.tgz#0ffe6400f4a3a4fb00d31a4f60f781a65645c4fb"
+  integrity sha512-KHMLUdp0Xz6E+rRz/udG3mh5ryZEji5YfKgKrN3uNoLYlw7nE9Jv8GTjijHcEx1aZu/IWB2o2J++QSP8dE97FA==
   dependencies:
     concurrently "^6.0.0"
     immer "^9.0.1"

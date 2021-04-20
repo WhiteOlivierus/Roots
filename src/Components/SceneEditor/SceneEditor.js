@@ -1,25 +1,26 @@
-import * as Router from "react-router-dom";
 import * as React from "react";
 import * as MUI from "@material-ui/core";
 import * as Transform from "../../Utilities/Transform";
 
-import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
+import useNodeViewerState from "../../Context/NodeViewerContext/NodeViewerContext";
 import { MenuBar } from "../FlowEditor/MenuBar/MenuBar";
 import { EditorCanvas } from "./EditorCanvas";
 import ToolBar from ".//Toolbar/ToolBar";
 import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
 import { EditorWrapper } from "../EditorWrapper";
 import { SceneCanvasHooks as Hooks } from "dutchskull-scene-manager";
-import { useBeforeReload } from "../../Utilities/UseBeforeReload";
-import { Inspector } from "./Inspector";
+import Inspector from "./Inspector";
+
+import useOnUnload from "../../Utilities/UseOnUnLoad";
+import { Redirect } from "react-router";
+import { Container, Content, Header, Item } from "../../Container";
 
 const SceneEditor = () => {
-    const history = Router.useHistory();
-    useBeforeReload(() => history.push("/"));
+    useOnUnload();
 
     const imageRef = React.useRef();
 
-    const { nodeViewerState } = useNodeViewerState();
+    const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
     const { projectFilesState } = useProjectFilesState();
 
     const activeRoot = projectFilesState.activeRoot;
@@ -29,17 +30,22 @@ const SceneEditor = () => {
 
     const node = Hooks.useStateful(nodeViewerState.activeNode);
     const mode = Hooks.useStateful("select");
+
     const selection = Hooks.useStateful(undefined);
     const selectedZone = Hooks.useStateful(undefined);
 
     const onLoad = React.useCallback(
         (ref) => {
-            if (!node) return;
+            if (
+                !node ||
+                !node.value.data.zones ||
+                !node.value.data.zones[0] ||
+                !("points" in node.value.data.zones[0])
+            )
+                return;
 
-            const size = {
-                width: ref.target.width,
-                height: ref.target.height,
-            };
+            const size = {};
+            ({ width: size.width, height: size.height } = ref.target);
 
             imageSize.setValue(size);
 
@@ -50,6 +56,7 @@ const SceneEditor = () => {
                 size,
                 Transform.PointsToImageSize
             );
+
             zones.setValue(translatedZones);
 
             console.log(translatedZones[0].points);
@@ -79,7 +86,14 @@ const SceneEditor = () => {
         }
 
         nodeViewerState.activeNode = updatedNode;
-    }, [imageSize, node, nodeViewerState, zones]);
+        setNodeViewerState(nodeViewerState);
+    }, [
+        imageSize.value,
+        node.value,
+        nodeViewerState,
+        setNodeViewerState,
+        zones.value,
+    ]);
 
     React.useEffect(() => {
         if (!selection.value) return;
@@ -92,40 +106,53 @@ const SceneEditor = () => {
 
     return (
         <>
-            {!nodeViewerState.activeNode && <Router.Redirect to="/" />}
-            <MenuBar />
-            <ToolBar mode={mode} onExit={onExit} />
-            <EditorWrapper>
-                <MUI.Paper style={{ margin: "auto", width: "65%" }}>
-                    <img
-                        src={node.value.data.imageSrc}
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            borderRadius: 4,
-                        }}
-                        alt="scene"
-                        onLoad={onLoad}
-                        ref={imageRef}
-                    />
-                </MUI.Paper>
-            </EditorWrapper>
-            {imageRef.current && (
-                <EditorCanvas
-                    polygon={zones}
-                    imageRef={imageRef}
-                    mode={mode.value}
-                    selection={selection}
-                />
+            {node.value ? (
+                <Container>
+                    <Header>
+                        <MenuBar />
+                    </Header>
+                    <Content>
+                        <Item auto noShrink>
+                            <ToolBar mode={mode} onExit={onExit} />
+                        </Item>
+                        <Item>
+                            <EditorWrapper style={{ width: "auto" }}>
+                                <MUI.Paper style={{ margin: "auto" }}>
+                                    <img
+                                        src={node.value.data.imageSrc}
+                                        style={{
+                                            width: "100%",
+                                            height: "100%",
+                                            borderRadius: 4,
+                                        }}
+                                        alt="scene"
+                                        onLoad={onLoad}
+                                        ref={imageRef}
+                                    />
+                                </MUI.Paper>
+                            </EditorWrapper>
+                            <EditorCanvas
+                                polygon={zones}
+                                imageRef={imageRef}
+                                mode={mode.value}
+                                selection={selection}
+                            />
+                        </Item>
+                        <Item auto noShrink>
+                            <Inspector
+                                node={node}
+                                activeRoot={activeRoot}
+                                selection={selection}
+                                selectedZone={selectedZone}
+                                mode={mode}
+                                polygons={zones}
+                            />
+                        </Item>
+                    </Content>
+                </Container>
+            ) : (
+                <Redirect to={"/"} />
             )}
-            <Inspector
-                node={node}
-                activeRoot={activeRoot}
-                selection={selection}
-                selectedZone={selectedZone}
-                mode={mode}
-                polygons={zones}
-            />
         </>
     );
 };

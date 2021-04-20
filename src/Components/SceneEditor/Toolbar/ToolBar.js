@@ -6,21 +6,10 @@ import BackButton from "./BackButton";
 import PropTypes from "prop-types";
 
 const ToolBar = ({ mode, onExit }) => {
-    const [view, setView] = React.useState(mode.value);
-
-    const handleChange = (e, nextView) => {
-        mode.setValue(nextView);
-        setView(nextView);
-    };
+    const handleChange = (e, nextView) => mode.setValue(nextView);
 
     return (
-        <Box
-            p={3}
-            style={{
-                position: "absolute",
-                top: 60,
-            }}
-        >
+        <Box p={3}>
             <Grid
                 container
                 direction="column"
@@ -35,7 +24,7 @@ const ToolBar = ({ mode, onExit }) => {
                     <Paper>
                         <ToggleButtonGroup
                             orientation="vertical"
-                            value={view}
+                            value={mode.value}
                             exclusive
                             onChange={handleChange}
                         >

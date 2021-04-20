@@ -4,7 +4,7 @@ import * as MUI from "@material-ui/core";
 import { SceneSettingsDrawer } from "./Inspector/SceneSettingsDrawer";
 import PropTypes from "prop-types";
 
-export const Inspector = ({
+const Inspector = ({
     node,
     activeRoot,
     selection,
@@ -12,6 +12,24 @@ export const Inspector = ({
     polygons,
     mode,
 }) => {
+    const handleToggleZone = React.useCallback(
+        (event) =>
+            polygons.setValue((draft) => {
+                draft.find((zone) => zone.id === selection.value).isZone =
+                    event.target.checked;
+            }),
+        [polygons, selection.value]
+    );
+
+    const handleZoneName = React.useCallback(
+        (event) =>
+            polygons.setValue((draft) => {
+                draft.find((zone) => zone.id === selection.value).name =
+                    event.target.value;
+            }),
+        [polygons, selection.value]
+    );
+
     return (
         <EditorInspector>
             <MUI.Divider />
@@ -26,15 +44,12 @@ export const Inspector = ({
                         <MUI.FormControlLabel
                             control={
                                 <MUI.Switch
-                                    checked={selectedZone.value.isZone}
-                                    onChange={(event) =>
-                                        polygons.setValue((draft) => {
-                                            draft.find(
-                                                (zone) =>
-                                                    zone.id === selection.value
-                                            ).isZone = event.target.checked;
-                                        })
+                                    checked={
+                                        selectedZone.value.isZone
+                                            ? selectedZone.value.isZone
+                                            : false
                                     }
+                                    onChange={handleToggleZone}
                                     name="isZone"
                                 />
                             }
@@ -54,15 +69,7 @@ export const Inspector = ({
                                             selectedZone.value.name === "" &&
                                             "A zone name can't be empty"
                                         }
-                                        onChange={(event) =>
-                                            polygons.setValue((draft) => {
-                                                draft.find(
-                                                    (zone) =>
-                                                        zone.id ===
-                                                        selection.value
-                                                ).name = event.target.value;
-                                            })
-                                        }
+                                        onChange={handleZoneName}
                                     />
                                 }
                             />

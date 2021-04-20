@@ -12,7 +12,7 @@ import * as FlowHandler from "../../../Utilities/FlowHandler";
 import { removeElements } from "react-flow-renderer";
 import { defaultFlow } from "../../../Utilities/DefaultFlow";
 import { RemoveExtension } from "../../../Utilities/StringTools.js";
-import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
+import useNodeViewerState from "../../../Context/NodeViewerContext/NodeViewerContext";
 import PropTypes from "prop-types";
 
 const useMenuDrawerStyles = MUI.makeStyles((theme) =>

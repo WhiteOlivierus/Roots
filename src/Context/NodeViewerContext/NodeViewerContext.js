@@ -14,4 +14,6 @@ export const NodeViewerContext = createContext({
     setNodeViewerState: (nodeViewerState) => { },
 });
 
-export const useNodeViewerState = () => useContext(NodeViewerContext);
+const useNodeViewerState = () => useContext(NodeViewerContext);
+
+export default useNodeViewerState;

@@ -10,7 +10,7 @@ const BackButton = ({ onExit, to }) => {
     const handleClick = React.useCallback(() => {
         onExit();
         history.push(to);
-    }, [history]);
+    }, [history, onExit, to]);
 
     return (
         <Tooltip title="Back to flow editor">

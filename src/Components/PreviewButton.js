@@ -5,7 +5,7 @@ import { SaveFlow } from "../Utilities/FlowHandler";
 import { useHistory } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import useProjectFilesState from "../Context/ProjectFilesContext/ProjectFilesContext";
-import { useNodeViewerState } from "../Context/NodeViewerContext/NodeViewerContext";
+import useNodeViewerState from "../Context/NodeViewerContext/NodeViewerContext";
 import { Build } from "../Utilities/BuildHandler";
 import { SeparateNodesAndEdges } from "./FlowEditor/Nodes/NodeUtilities";
 

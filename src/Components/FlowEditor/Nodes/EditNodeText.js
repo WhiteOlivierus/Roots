@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { isNode } from "react-flow-renderer";
-import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
+import useNodeViewerState from "../../../Context/NodeViewerContext/NodeViewerContext";
 import TextField from "@material-ui/core/TextField";
 import PropTypes from "prop-types";
 
@@ -83,7 +83,7 @@ export const EditNodeText = ({ value, nodeId, inputStyle, textStyle }) => {
 EditNodeText.displayName = "EditNodeText";
 EditNodeText.propTypes = {
     value: PropTypes.string.isRequired,
-    nodeId: PropTypes.string.isRequired,
+    nodeId: PropTypes.string,
     inputStyle: PropTypes.string.isRequired,
     textStyle: PropTypes.string.isRequired,
 };
