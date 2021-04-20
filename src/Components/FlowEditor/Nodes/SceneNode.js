@@ -17,10 +17,14 @@ const SceneNode = ({ data, selected }) => {
 
     const hover = SceneCanvasHooks.useStateful(false);
 
-    const length = data.zones && data.zones.length - 1;
+    const zones =
+        data.zones &&
+        data.zones.filter((zone) => {
+            if ("isZone" in zone) return zone.isZone;
+        });
 
     const CalculateHandlePosition = (length, index, handlePadding = 25) => {
-        const part = (100 - handlePadding * 2) / length;
+        const part = (100 - handlePadding) / length;
         return handlePadding + part * index;
     };
 
@@ -31,10 +35,8 @@ const SceneNode = ({ data, selected }) => {
         );
 
     const outHandles =
-        data.zones &&
-        data.zones.map((zone, index) => {
-            if (!zone.isZone) return undefined;
-
+        zones &&
+        zones.map((zone, index) => {
             return (
                 <Handle
                     key={short.generate()}
@@ -44,7 +46,7 @@ const SceneNode = ({ data, selected }) => {
                     isValidConnection={handleConnection}
                     id={zone.id}
                     style={{
-                        top: `${CalculateHandlePosition(length, index)}%`,
+                        top: `${CalculateHandlePosition(zones.length, index)}%`,
                     }}
                 >
                     <p className={classes.handleText}>{zone.name}</p>

@@ -65,9 +65,10 @@ const SceneEditor = () => {
     );
 
     const onExit = React.useCallback(() => {
-        if (zones.value.length > 0) {
+        mode.setValue("select");
+        /*if (zones.value.length > 0) {
             console.log(zones.value[0].points);
-        }
+        } */
 
         const updatedNode = {
             ...node.value,
@@ -81,14 +82,15 @@ const SceneEditor = () => {
             },
         };
 
-        if (updatedNode.data.zones.value) {
+        /*if (updatedNode.data.zones.value) {
             console.log(updatedNode.data.zones.value[0].points);
-        }
+        } */
 
         nodeViewerState.activeNode = updatedNode;
         setNodeViewerState(nodeViewerState);
     }, [
         imageSize.value,
+        mode,
         node.value,
         nodeViewerState,
         setNodeViewerState,
@@ -97,12 +99,11 @@ const SceneEditor = () => {
 
     React.useEffect(() => {
         if (!selection.value) return;
-        const newLocal = zones.value.find(
+        const newSelectedZone = zones.value.find(
             (zone) => zone.id === selection.value
         );
-        selectedZone.setValue(newLocal);
-        console.log("changed");
-    }, [zones, selectedZone, selection.value]);
+        selectedZone.setValue(newSelectedZone);
+    }, [zones.value, selectedZone, selection.value]);
 
     return (
         <>

@@ -40,41 +40,55 @@ const Inspector = ({
                     <MUI.Typography variant="h6">
                         Selection settings
                     </MUI.Typography>
-                    <MUI.FormControl component="fieldset">
-                        <MUI.FormControlLabel
-                            control={
-                                <MUI.Switch
-                                    checked={
-                                        selectedZone.value.isZone
-                                            ? selectedZone.value.isZone
-                                            : false
-                                    }
-                                    onChange={handleToggleZone}
-                                    name="isZone"
-                                />
-                            }
-                            labelPlacement="start"
-                            label="Is zone"
-                        />
-                        {selectedZone.value.isZone && (
+                    <MUI.Box>
+                        <MUI.FormControl component="fieldset">
                             <MUI.FormControlLabel
                                 control={
-                                    <MUI.TextField
-                                        error={selectedZone.value.name === ""}
-                                        id="filled-basic"
-                                        label="Zone name"
-                                        variant="filled"
-                                        defaultValue={selectedZone.value.name}
-                                        helperText={
-                                            selectedZone.value.name === "" &&
-                                            "A zone name can't be empty"
+                                    <MUI.Switch
+                                        checked={
+                                            selectedZone.value.isZone
+                                                ? selectedZone.value.isZone
+                                                : false
                                         }
-                                        onChange={handleZoneName}
+                                        onChange={handleToggleZone}
+                                        name="isZone"
                                     />
                                 }
+                                labelPlacement="start"
+                                label="Is zone"
                             />
-                        )}
-                    </MUI.FormControl>
+                        </MUI.FormControl>
+                    </MUI.Box>
+                    {selectedZone.value.isZone && (
+                        <MUI.Box>
+                            <MUI.FormControl
+                                variant="filled"
+                                error={selectedZone.value.name === ""}
+                            >
+                                <MUI.InputLabel htmlFor="component-filled">
+                                    Zone name
+                                </MUI.InputLabel>
+                                <MUI.FilledInput
+                                    FilledInput
+                                    id="component-filled"
+                                    value={selectedZone.value.name}
+                                    onChange={handleZoneName}
+                                    aria-describedby="component-error-text"
+                                    inputProps={{
+                                        maxLength: 35,
+                                    }}
+                                />
+                                {selectedZone.value.name === "" && (
+                                    <MUI.FormHelperText
+                                        error={selectedZone.value.name === ""}
+                                        id="component-error-text"
+                                    >
+                                        A zone needs too have a name
+                                    </MUI.FormHelperText>
+                                )}
+                            </MUI.FormControl>
+                        </MUI.Box>
+                    )}
                 </>
             )}
         </EditorInspector>

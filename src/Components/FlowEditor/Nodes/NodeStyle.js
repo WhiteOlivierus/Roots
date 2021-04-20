@@ -19,6 +19,9 @@ export const nodeStyle = makeStyles(() =>
             right: 10,
             margin: 0,
             padding: 0,
+            width: "35ch",
+            textAlign: "right",
+            overflow: "hidden",
         },
     })
 );
