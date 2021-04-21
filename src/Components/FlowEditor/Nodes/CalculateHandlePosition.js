@@ -1,3 +1,5 @@
+import { map_range } from "../../../Utilities/Utilities";
+
 export const CalculateHandlePosition = (length, index, handlePadding = 0) => {
     length -= 1;
     if (length === 0) return 50;
@@ -10,6 +12,3 @@ export const CalculateHandlePosition = (length, index, handlePadding = 0) => {
             100 - handlePadding
         );
 };
-
-const map_range = (value, x1, y1, x2, y2) =>
-    ((value - x1) * (y2 - x2)) / (y1 - x1) + x2;

@@ -1,9 +1,5 @@
+import { MapRange } from "../../../Utilities/Utilities";
 import { CalculateHandlePosition } from "./CalculateHandlePosition";
-
-const MapRange = (r, fn) =>
-    Array(r)
-        .fill(0)
-        .map((_, i) => fn(i));
 
 describe("Node handle positions", () => {
     describe("Without padding", () => {

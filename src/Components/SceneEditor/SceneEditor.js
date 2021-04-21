@@ -66,9 +66,6 @@ const SceneEditor = () => {
 
     const onExit = React.useCallback(() => {
         mode.setValue("select");
-        /*if (zones.value.length > 0) {
-            console.log(zones.value[0].points);
-        } */
 
         const updatedNode = {
             ...node.value,
@@ -81,10 +78,6 @@ const SceneEditor = () => {
                 ),
             },
         };
-
-        /*if (updatedNode.data.zones.value) {
-            console.log(updatedNode.data.zones.value[0].points);
-        } */
 
         nodeViewerState.activeNode = updatedNode;
         setNodeViewerState(nodeViewerState);
