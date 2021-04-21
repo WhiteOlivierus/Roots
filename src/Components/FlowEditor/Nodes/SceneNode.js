@@ -9,6 +9,7 @@ import { SceneCanvasHooks } from "dutchskull-scene-manager";
 import PropTypes from "prop-types";
 import NodePaper from "./NodePaper";
 import { EditButton } from "./EditButton";
+import { CalculateHandlePosition } from "./CalculateHandlePosition";
 
 const SceneNode = ({ data, selected }) => {
     const classes = nodeStyle();
@@ -22,11 +23,6 @@ const SceneNode = ({ data, selected }) => {
         data.zones.filter((zone) => {
             if ("isZone" in zone) return zone.isZone;
         });
-
-    const CalculateHandlePosition = (length, index, handlePadding = 25) => {
-        const part = (100 - handlePadding) / length;
-        return handlePadding + part * index;
-    };
 
     const handleConnection = (connection) =>
         hasSourceConnection(
@@ -46,7 +42,11 @@ const SceneNode = ({ data, selected }) => {
                     isValidConnection={handleConnection}
                     id={zone.id}
                     style={{
-                        top: `${CalculateHandlePosition(zones.length, index)}%`,
+                        top: `${CalculateHandlePosition(
+                            zones.length,
+                            index,
+                            25
+                        )}%`,
                     }}
                 >
                     <p className={classes.handleText}>{zone.name}</p>
