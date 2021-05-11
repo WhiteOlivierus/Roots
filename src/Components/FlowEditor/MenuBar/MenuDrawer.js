@@ -5,6 +5,7 @@ import { MenuButtons } from "./MenuButtons.js";
 import useProjectFilesState from "../../../Context/ProjectFilesContext/ProjectFilesContext";
 import { useSnackbar } from "notistack";
 import SaveIcon from "@material-ui/icons/Save";
+import BuildIcon from "@material-ui/icons/Build";
 import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
 import FolderIcon from "@material-ui/icons/Folder";
 import { NewProject, OpenProject } from "../../../Utilities/ProjectHandler";
@@ -14,6 +15,11 @@ import { defaultFlow } from "../../../Utilities/DefaultFlow";
 import { RemoveExtension } from "../../../Utilities/StringTools.js";
 import useNodeViewerState from "../../../Context/NodeViewerContext/NodeViewerContext";
 import PropTypes from "prop-types";
+import {
+    WriteFile,
+    SaveFileInFolder,
+    FindDir,
+} from "../../../Utilities/FileHandler.js";
 
 const useMenuDrawerStyles = MUI.makeStyles((theme) =>
     MUI.createStyles({
@@ -119,6 +125,12 @@ function useFileActions(
         if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === "KeyN") {
             e.preventDefault();
             onNewFlow();
+            return;
+        }
+
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === "KeyB") {
+            e.preventDefault();
+            onBuild();
             return;
         }
     };
@@ -254,6 +266,40 @@ function useFileActions(
         setProjectFilesState,
     ]);
 
+    const onBuild = React.useCallback(() => {
+        enqueueSnackbar(`Builder is being prepared`, {
+            variant: "warning",
+        });
+
+        let buildHanlder;
+        FindDir(projectFilesState.activeRoot, "Build").then((b) => {
+            buildHanlder = b;
+        });
+
+        fetch("./roots-builder.exe")
+            .then((r) =>
+                Promise.all([
+                    r.blob(),
+                    buildHanlder.getFileHandle("roots-builder.exe", {
+                        create: true,
+                    }),
+                ])
+            )
+            .then((items) => WriteFile(items[1], items[0]))
+            .then((file) => SaveFileInFolder(buildHanlder, file))
+            .catch((e) => {
+                if (e.message.includes("'name'")) return;
+                enqueueSnackbar(e.message, {
+                    variant: "error",
+                });
+            })
+            .finally(() =>
+                enqueueSnackbar(`Builder has been place in project folder`, {
+                    variant: "success",
+                })
+            );
+    }, [enqueueSnackbar, projectFilesState.activeRoot]);
+
     return [
         { divide: "" },
         {
@@ -293,6 +339,13 @@ function useFileActions(
             action: onSaveFlowAs,
             icon: <SaveIcon />,
             tooltip: "Ctrl-Shift-S",
+        },
+        { divide: "" },
+        {
+            name: "Build",
+            action: onBuild,
+            icon: <BuildIcon />,
+            tooltip: "Ctrl-Shift-B",
         },
     ];
 }

@@ -1,4 +1,4 @@
-import { CreateFolder, WriteFile } from "./FileHandler";
+import { WriteFile } from "./FileHandler";
 import { FindDir, FindFile, GetObjectFromFileHandle } from "./FileHandler";
 import { defaultFlow } from "./DefaultFlow";
 import { SetActiveFlowInConfig } from "./ProjectHandler";
@@ -81,7 +81,9 @@ export async function CreateFlow(root) {
             return;
         }
     }
-    var flowDirHandle = await CreateFolder(root, flowName);
+    var flowDirHandle = await root.getDirectoryHandle(flowName, {
+        create: true,
+    });
 
     // Create default flow
     const flowFileHandle = await flowDirHandle.getFileHandle(
