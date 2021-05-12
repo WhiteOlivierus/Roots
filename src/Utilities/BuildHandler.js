@@ -2,7 +2,7 @@ import { getConnectedEdges } from "react-flow-renderer";
 import { WriteFile, FindFile, Move } from "./FileHandler";
 import { InputZone, ProjectFile, Scene } from "./ProjectFile";
 
-export async function Build(activeRoot, nodes, edges) {
+export async function Build(activeRoot, nodes, edges, preview) {
     let projectFile = new ProjectFile(activeRoot.name);
 
     let images = [];
@@ -11,21 +11,21 @@ export async function Build(activeRoot, nodes, edges) {
 
     let inNode = copiedNodes.splice(0, 1);
 
-    var connectedEdgesInNode = edges.filter(
+    let connectedEdgesInNode = edges.filter(
         (edge) => edge.source === inNode[0].id
     )[0];
 
-    var firstNodeID = copiedNodes.findIndex(
+    let firstNodeID = copiedNodes.findIndex(
         (node) => node.id === connectedEdgesInNode.target
     );
 
-    var id = copiedNodes[firstNodeID].id;
+    let id = copiedNodes[firstNodeID].id;
 
-    var newScene = await CreateScene(copiedNodes[firstNodeID], edges);
+    let newScene = await CreateScene(copiedNodes[firstNodeID], edges);
 
     if ("image" in copiedNodes[firstNodeID].data) {
         newScene.image = copiedNodes[firstNodeID].data.image;
-        newScene.src = copiedNodes[firstNodeID].data.imageSrc;
+        if (preview) newScene.src = copiedNodes[firstNodeID].data.imageSrc;
 
         images.push(
             await FindFile(activeRoot, copiedNodes[firstNodeID].data.image)
@@ -43,7 +43,8 @@ export async function Build(activeRoot, nodes, edges) {
 
         if ("image" in node.data) {
             newScene.image = node.data.image;
-            newScene.src = node.data.imageSrc;
+
+            if (preview) newScene.src = node.data.imageSrc;
 
             images.push(await FindFile(activeRoot, node.data.image));
         }
@@ -82,7 +83,7 @@ const CreateScene = async (node, edges) => {
         throw new Error("No connections to build");
     }
 
-    var connectedEdges = getConnectedEdges([node], edges);
+    let connectedEdges = getConnectedEdges([node], edges);
 
     for (let index = 0; index < connectedEdges.length; index++) {
         const edge = connectedEdges[index];
