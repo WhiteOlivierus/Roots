@@ -1,12 +1,13 @@
-import React from "react";
+import * as React from "react";
 
 import AudioLayer from "./layers/AudioLayer";
 import UILayer from "./layers/UILayer";
 import SvgImageFitter from "./SVGImageFitter/SvgImageFitter";
 
 import PropTypes from "prop-types";
-export function Scene(props) {
-    const scene = props.scene;
+
+const Scene = ({ scene }) => {
+    const [imageRef, setImageRef] = React.useState();
 
     return (
         <div id={scene.id}>
@@ -14,13 +15,27 @@ export function Scene(props) {
 
             <AudioLayer audio={scene.audio} />
 
-            <SvgImageFitter zones={scene} />
+            <img
+                src={scene.src ? scene.src : `/img/${scene.image}`}
+                style={{
+                    width: "100vw",
+                    height: "100vh",
+                    objectFit: "cover",
+                }}
+                onLoad={(ref) => setImageRef(ref)}
+            />
+
+            {imageRef && (
+                <SvgImageFitter zones={scene} container={imageRef.target} />
+            )}
         </div>
     );
-}
+};
 
 Scene.displayName = "Scene";
+
 Scene.propTypes = {
     scene: PropTypes.object.isRequired,
 };
-export default Scene;
+
+export default React.memo(Scene);

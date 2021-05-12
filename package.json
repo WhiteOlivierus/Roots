@@ -42,6 +42,7 @@
     "react-scripts": "4.0.2",
     "react-selecto": "^1.11.1",
     "react-transition-group": "^4.4.1",
+    "react-use": "^17.2.4",
     "resize-observer-polyfill": "^1.5.1",
     "serve": "^11.3.2",
     "short-uuid": "^4.1.0",

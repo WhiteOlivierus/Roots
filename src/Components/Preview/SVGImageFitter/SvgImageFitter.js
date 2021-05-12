@@ -1,86 +1,105 @@
-import React, { Component } from "react";
+import * as React from "react";
+import * as UseHooks from "react-use";
+
 import PropTypes from "prop-types";
 import { InitSVG, InitImageValues, ScalePoints } from "./SVGScaler";
-import { ScaledSVG } from "./ScaledSVG.js";
+import ScaledSVG from "./ScaledSVG.js";
 
-Array.prototype.repeat = function (element, length) {
-    while (length) this[--length] = element;
-    return this;
+const SvgImageFitter = ({ zones, container }) => {
+    const { width, height } = UseHooks.useWindowSize();
+    const { svg, inputZones, UpdateZones } = useSVGScaler(container, zones);
+
+    React.useEffect(() => {
+        UpdateZones();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [width, height]);
+
+    return (
+        <div>
+            <svg
+                width={svg.value.width}
+                height={svg.value.height}
+                style={{
+                    position: "absolute",
+                    left: svg.value.left ? -svg.value.offset : 0,
+                    top: !svg.value.left ? -svg.value.offset : 0,
+                }}
+            >
+                {inputZones.value.map((value, index) => (
+                    <ScaledSVG key={index} zone={value} />
+                ))}
+            </svg>
+        </div>
+    );
 };
-
-class SvgImageFitter extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            zones: [].repeat(0, this.props.zones.inputZones.length),
-            svg: { width: 0, height: 0, offset: 0, left: false },
-        };
-    }
-
-    handleSVGScaling(image) {
-        var dimensions = InitImageValues(image.target);
-
-        var svg = InitSVG(dimensions);
-
-        var zones = this.props.zones.inputZones;
-
-        zones.forEach((zone, index) => {
-            if (svg.left)
-                zones[index].svg = ScalePoints(
-                    zone.svg,
-                    dimensions.fullWidth,
-                    dimensions.height
-                );
-            else {
-                zones[index].svg = ScalePoints(
-                    zone.svg,
-                    dimensions.width,
-                    dimensions.fullHeight
-                );
-            }
-        });
-
-        this.setState({ zones: zones, svg: svg });
-    }
-
-    render() {
-        const src = this.props.zones.src;
-
-        const image = React.createElement("img", {
-            src: src,
-            style: {
-                width: "100vw",
-                height: "100vh",
-                objectFit: "cover",
-            },
-            onLoad: (image) => this.handleSVGScaling(image),
-        });
-
-        const zones = this.state.zones;
-        const svg = this.state.svg;
-
-        const svgStyle = {
-            position: "absolute",
-            left: svg.left ? -svg.offset : 0,
-            top: !svg.left ? -svg.offset : 0,
-        };
-
-        return (
-            <div>
-                <svg width={svg.width} height={svg.height} style={svgStyle}>
-                    {zones.map((value, index) => {
-                        return <ScaledSVG key={index} zone={value} />;
-                    })}
-                </svg>
-                {image}
-            </div>
-        );
-    }
-}
 
 SvgImageFitter.displayName = "SvgImageFitter";
+
 SvgImageFitter.propTypes = {
-    zones: PropTypes.array.isRequired,
+    zones: PropTypes.object.isRequired,
+    container: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.shape({ current: PropTypes.instanceOf(PropTypes.element) }),
+    ]),
 };
-export default SvgImageFitter;
+
+export default React.memo(SvgImageFitter);
+
+const useSVGScaler = (container, zones) => {
+    const zonesRef = React.useRef(zones.inputZones);
+
+    const [svgState, setSvgState] = React.useState(
+        InitSVG(InitImageValues(container))
+    );
+
+    const [inputZonesState, setInputZonesState] = React.useState([]);
+
+    const UpdateZones = () => {
+        const copyInputZones = CopyArray(zonesRef.current);
+        setInputZonesState(handleSVGScaling(copyInputZones));
+        console.log("Recalculate svg");
+    };
+
+    const handleSVGScaling = React.useCallback(
+        (newInputZones) => {
+            const sizeRef = InitImageValues(container);
+            const svgL = InitSVG(sizeRef);
+            setSvgState(svgL);
+            newInputZones.forEach((zone, index) => {
+                if (svgL.left)
+                    newInputZones[index] = {
+                        ...zone,
+                        svg: ScalePoints(
+                            zone.svg,
+                            sizeRef.fullWidth,
+                            sizeRef.height
+                        ),
+                    };
+                else {
+                    newInputZones[index] = {
+                        ...zone,
+                        svg: ScalePoints(
+                            zone.svg,
+                            sizeRef.width,
+                            sizeRef.fullHeight
+                        ),
+                    };
+                }
+            });
+
+            return newInputZones;
+        },
+        [container]
+    );
+
+    const svg = { value: svgState, setValue: setSvgState };
+    const inputZones = { value: inputZonesState, setValue: setInputZonesState };
+
+    return {
+        svg,
+        inputZones,
+        UpdateZones,
+    };
+};
+
+const CopyArray = (array) => JSON.parse(JSON.stringify(array));

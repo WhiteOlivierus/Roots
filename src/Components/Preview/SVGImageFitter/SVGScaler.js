@@ -86,8 +86,6 @@ export function ScalePoints(svgPoints, width, height) {
 } */
 
 // Map a value to a range
-Number.prototype.map = function (in_min, in_max, out_min, out_max) {
-    return (
-        ((this - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min
-    );
-};
+// eslint-disable-next-line no-extend-native
+Number.prototype.map = (inMin, inMax, outMin, outMax) =>
+    ((this - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;

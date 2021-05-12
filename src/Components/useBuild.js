@@ -27,7 +27,7 @@ const useBuild = (p) => {
 
                 enqueueSnackbar(
                     `Start building
-                     ${preview.current ? "Preview" : ""} ${FileName}`,
+                    ${preview.current ? "Preview" : ""} ${FileName}`,
                     {
                         variant: "info",
                     }

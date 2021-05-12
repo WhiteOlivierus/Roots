@@ -22,11 +22,10 @@ const Text = styled.text`
     }
 `;
 
-export function ScaledSVG(props) {
-    const zone = props.zone;
+const ScaledSVG = ({ zone }) => {
     return (
         <G id="button">
-            <Link to={`/preview/${zone.sceneId}`}>
+            <Link to={`/${zone.sceneId}`}>
                 <polygon points={zone.svg} />
             </Link>
             <Text
@@ -39,7 +38,7 @@ export function ScaledSVG(props) {
             </Text>
         </G>
     );
-}
+};
 
 ScaledSVG.displayName = "ScaledSVG";
 ScaledSVG.propTypes = {

@@ -69,7 +69,6 @@ const Inspector = ({
                                     Zone name
                                 </MUI.InputLabel>
                                 <MUI.FilledInput
-                                    FilledInput
                                     id="component-filled"
                                     value={selectedZone.value.name}
                                     onChange={handleZoneName}

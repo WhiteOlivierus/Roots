@@ -16,5 +16,5 @@ export const MenuButtons = (props) => {
     );
 };
 MenuButtons.displayName = "MenuButtons";
-MenuButtons.propTypes = { buttons: PropTypes.object.isRequired };
+MenuButtons.propTypes = { buttons: PropTypes.array.isRequired };
 export default MenuButtons;
