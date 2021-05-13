@@ -1,5 +1,7 @@
 # Roots
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/f2286a17d1e845dc94e40845e17dacf3)](https://www.codacy.com/gh/WhiteOlivierus/Roots/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=WhiteOlivierus/Roots&amp;utm_campaign=Badge_Grade)
+
 A open source 2D narrative engine in the browser.
 
 ## Installation
