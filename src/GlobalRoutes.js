@@ -6,7 +6,6 @@ import StartMenu from "./Components/StartMenu/StartMenu";
 import { Preview } from "./Components/Preview/Preview";
 import SceneEditor from "./Components/SceneEditor/SceneEditor";
 import { PreviewButton } from "./Components/PreviewButton";
-import Test from "./Test";
 import GithubCorner from "react-github-corner";
 
 const GlobalRoutes = () => {
@@ -30,9 +29,6 @@ const GlobalRoutes = () => {
                 </Router.Route>
                 <Router.Route path="/preview">
                     <Preview />
-                </Router.Route>
-                <Router.Route path="/tests">
-                    <Test />
                 </Router.Route>
             </Router.Switch>
         </Router.BrowserRouter>
