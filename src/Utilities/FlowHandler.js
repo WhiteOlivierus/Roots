@@ -1,10 +1,5 @@
-import { CreateFolder, WriteFile } from "./FileHandler";
-import {
-    FindDir,
-    FindFile,
-    GetObjectFromFileHandle,
-    LoadElementImages,
-} from "./FileHandler";
+import { WriteFile } from "./FileHandler";
+import { FindDir, FindFile, GetObjectFromFileHandle } from "./FileHandler";
 import { defaultFlow } from "./DefaultFlow";
 import { SetActiveFlowInConfig } from "./ProjectHandler";
 
@@ -41,8 +36,8 @@ export async function SaveFlow(activeFlow, rfInstance) {
     var flowCopy = clone(flow);
 
     flowCopy.elements.map((element, index) => {
-        if ("data" in element && "src" in element.data) {
-            delete element.data["src"];
+        if ("data" in element && "imageSrc" in element.data) {
+            delete element.data["imageSrc"];
             flowCopy.elements[index] = element;
         }
     });
@@ -86,7 +81,9 @@ export async function CreateFlow(root) {
             return;
         }
     }
-    var flowDirHandle = await CreateFolder(root, flowName);
+    var flowDirHandle = await root.getDirectoryHandle(flowName, {
+        create: true,
+    });
 
     // Create default flow
     const flowFileHandle = await flowDirHandle.getFileHandle(
@@ -125,7 +122,8 @@ export function clone(obj) {
     if (obj instanceof Object) {
         copy = {};
         for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+            if (Object.prototype.hasOwnProperty.call(obj, attr))
+                copy[attr] = clone(obj[attr]);
         }
         return copy;
     }

@@ -1,21 +1,23 @@
-import React, { memo, useEffect, useState, useCallback } from "react";
+import * as React from "react";
 import { useHistory } from "react-router-dom";
-import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
-import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
+import useNodeViewerState from "../../Context/NodeViewerContext/NodeViewerContext";
+import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
 import { LoadFlow } from "../../Utilities/FlowHandler";
 import { SeparateNodesAndEdges } from "./Nodes/NodeUtilities";
 import FlowEditor from "./FlowEditor";
+import useOnUnload from "../../Utilities/UseOnUnLoad";
+// import GoToOnReload from "../../Utilities/GoToOnReload";
 
-export const FlowLoader = memo(() => {
-    const [initialFlow, setInitialFlow] = useState({});
-    const [loaded, setLoaded] = useState(false);
+const FlowLoader = () => {
+    useOnUnload();
 
-    const history = useHistory();
+    const [initialFlow, setInitialFlow] = React.useState({});
+    const [loaded, setLoaded] = React.useState(false);
 
     const { projectFilesState } = useProjectFilesState();
     const { nodeViewerState } = useNodeViewerState();
 
-    const SetFlow = useCallback(
+    const SetFlow = React.useCallback(
         (flow) => {
             const hasUpdatedActiveNode =
                 nodeViewerState && nodeViewerState.activeNode;
@@ -32,7 +34,9 @@ export const FlowLoader = memo(() => {
         [nodeViewerState]
     );
 
-    useEffect(() => {
+    const history = useHistory();
+
+    React.useEffect(() => {
         if (nodeViewerState.rfInstance !== undefined) {
             SetFlow(nodeViewerState.rfInstance.toObject());
         } else {
@@ -44,13 +48,7 @@ export const FlowLoader = memo(() => {
                     history.push("/");
                 });
         }
-    }, [
-        SetFlow,
-        history,
-        nodeViewerState.rfInstance,
-        projectFilesState.activeFlow,
-        projectFilesState.activeRoot,
-    ]);
+    }, [SetFlow, history, nodeViewerState.rfInstance, projectFilesState]);
 
     return (
         <>
@@ -61,11 +59,14 @@ export const FlowLoader = memo(() => {
             )}
         </>
     );
-});
+};
+
+FlowLoader.displayName = "FlowLoader";
+FlowLoader.propTypes = {};
+export default React.memo(FlowLoader);
 
 export const UpdateNode = (elements, nodeViewerState) => {
     return elements.map((element) => {
-
         if (element.id !== nodeViewerState.activeNode.id) return element;
 
         element = nodeViewerState.activeNode;
@@ -81,8 +82,8 @@ export const UpdateEdges = (elements) => {
         return node.data.zones && node.data.zones.length > 0;
     });
 
-    allZones = allZones.map(zone => {
-        return zone.data.zones.map(zone => zone.id);
+    allZones = allZones.map((zone) => {
+        return zone.data.zones.map((zone) => zone.id);
     });
 
     allZones.push("a");
@@ -90,9 +91,11 @@ export const UpdateEdges = (elements) => {
     allZones = [].concat.apply([], allZones);
 
     edges = edges.filter((edge) => {
-        const newLocal = allZones.includes(edge.sourceHandle) && allZones.includes(edge.targetHandle);
+        const newLocal =
+            allZones.includes(edge.sourceHandle) &&
+            allZones.includes(edge.targetHandle);
         return newLocal;
-    })
+    });
 
     return nodes.concat(edges);
 };

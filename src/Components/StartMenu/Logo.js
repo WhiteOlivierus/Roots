@@ -3,7 +3,7 @@ import logo from "../../Resources/LogoWhite.png";
 import { Box, Grid, Typography } from "@material-ui/core";
 import { useStyles } from "./useStyles";
 
-export const Logo = (props) => {
+export const Logo = () => {
     const classes = useStyles();
     return (
         <Box p={5}>

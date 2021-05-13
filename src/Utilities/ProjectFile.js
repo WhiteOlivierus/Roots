@@ -1,23 +1,26 @@
 export class InputZone {
-    sceneId = "";
-    svg = "";
-    text = "";
-    img = "";
+    constructor() {
+        this.sceneId = "";
+        this.svg = "";
+        this.text = "";
+        this.img = "";
+    }
 }
 
 export class Scene {
-    id = "";
-    uiId = "";
-    img = "";
-    audio = "";
-    inputZones = [];
+    constructor() {
+        this.id = "";
+        this.uiId = "";
+        this.img = "";
+        this.audio = "";
+        this.inputZones = [];
+    }
 }
 
 export class ProjectFile {
-    constructor(projectName) {
+    constructor(projectName = "") {
         this.project = projectName;
+        this.audio = "";
+        this.scenes = [];
     }
-    project = "";
-    audio = "";
-    scenes = [];
 }

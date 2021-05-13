@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 const G = styled.g`
     cursor: pointer;
@@ -21,11 +22,10 @@ const Text = styled.text`
     }
 `;
 
-export function ScaledSVG(props) {
-    const zone = props.zone;
+const ScaledSVG = ({ zone }) => {
     return (
         <G id="button">
-            <Link to={`/preview/${zone.sceneId}`}>
+            <Link to={`/${zone.sceneId}`}>
                 <polygon points={zone.svg} />
             </Link>
             <Text
@@ -38,4 +38,10 @@ export function ScaledSVG(props) {
             </Text>
         </G>
     );
-}
+};
+
+ScaledSVG.displayName = "ScaledSVG";
+ScaledSVG.propTypes = {
+    zone: PropTypes.object.isRequired,
+};
+export default ScaledSVG;

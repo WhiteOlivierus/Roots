@@ -1,11 +1,12 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { isNode } from "react-flow-renderer";
-import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
+import useNodeViewerState from "../../../Context/NodeViewerContext/NodeViewerContext";
 import TextField from "@material-ui/core/TextField";
+import PropTypes from "prop-types";
 
-export const EditNodeText = memo((props) => {
+export const EditNodeText = ({ value, nodeId, inputStyle, textStyle }) => {
     const [toggle, setToggle] = useState(false);
-    const [nodeName, setNodeName] = useState(props.value);
+    const [nodeName, setNodeName] = useState(value);
 
     const input = useRef(null);
 
@@ -14,7 +15,7 @@ export const EditNodeText = memo((props) => {
     useEffect(() => {
         nodeViewerState.setElements(
             nodeViewerState.rfInstance.getElements().map((el) => {
-                if (isNode(el) && el.id === props.nodeId) {
+                if (isNode(el) && el.id === nodeId) {
                     el.data = {
                         ...el.data,
                         label: nodeName,
@@ -24,26 +25,33 @@ export const EditNodeText = memo((props) => {
                 return el;
             })
         );
-    }, [nodeName]);
+    }, [nodeName, nodeViewerState, nodeId]);
+
+    const toggleEdit = useCallback((e) => {
+        if (e.target.type !== "text") setToggle(false);
+    }, []);
 
     useEffect(() => {
         if (toggle) {
+            window.addEventListener("click", toggleEdit);
             input.current.focus();
+        } else {
+            window.removeEventListener("click", toggleEdit);
         }
-    }, [toggle, setToggle]);
+    }, [toggle, setToggle, toggleEdit]);
 
-    const handleDoubleClick = (e) => {
-        setToggle((s) => (s = true));
+    const handleDoubleClick = () => {
+        setToggle(true);
     };
 
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
             e.preventDefault();
             if (e.target.value !== "") {
-                setToggle((s) => (s = false));
-                setNodeName((s) => (s = e.target.value));
+                setToggle(false);
+                setNodeName(e.target.value);
             } else {
-                setToggle((s) => (s = false));
+                setToggle(false);
             }
         }
     };
@@ -57,20 +65,26 @@ export const EditNodeText = memo((props) => {
                     variant="outlined"
                     ref={input}
                     size="small"
-                    className={props.inputStyle}
+                    className={inputStyle}
                     type="text"
                     name="node label"
                     defaultValue={nodeName}
                     onKeyDown={handleKeyDown}
                 />
             ) : (
-                <p
-                    className={props.textStyle}
-                    onDoubleClick={handleDoubleClick}
-                >
+                <p className={textStyle} onDoubleClick={handleDoubleClick}>
                     {nodeName}
                 </p>
             )}
         </div>
     );
-});
+};
+
+EditNodeText.displayName = "EditNodeText";
+EditNodeText.propTypes = {
+    value: PropTypes.string.isRequired,
+    nodeId: PropTypes.string,
+    inputStyle: PropTypes.string.isRequired,
+    textStyle: PropTypes.string.isRequired,
+};
+export default memo(EditNodeText);

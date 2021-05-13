@@ -1,33 +1,36 @@
-import { Game } from "./Game";
-import { useProjectFilesState } from "../../Context/ProjectFilesContext/ProjectFilesContext";
-import { memo, useEffect, useState } from "react";
+import Game from "./Game";
+import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
+import * as React from "react";
 import { useHistory, Link } from "react-router-dom";
 import { Button, Tooltip } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import { OnBeforeReload } from "../../Utilities/OnBeforeReload";
+import { useBeforeReload } from "../../Utilities/UseBeforeReload";
 import { EditorWrapper } from "../EditorWrapper";
-import { GetObjectFromFileHandle } from "../../Utilities/FileHandler"
+import { GetObjectFromFileHandle } from "../../Utilities/FileHandler";
 
-export const Preview = memo((props) => {
+export const Preview = () => {
     const history = useHistory();
+
+    useBeforeReload(() => history.push("/"));
 
     const { projectFilesState } = useProjectFilesState();
 
-    const [state, setState] = useState(undefined);
+    const [state, setState] = React.useState(undefined);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (projectFilesState.buildHandle === undefined) {
             history.push("/");
         } else {
-            GetObjectFromFileHandle(projectFilesState.buildHandle).then(({ obj: build }) => {
-                setState(build);
-            })
+            GetObjectFromFileHandle(projectFilesState.buildHandle).then(
+                ({ obj: build }) => {
+                    setState(build);
+                }
+            );
         }
     }, [history, projectFilesState]);
 
     return (
         <EditorWrapper>
-            <OnBeforeReload />
             <Link to="/flow">
                 <Tooltip title="Back to flow editor">
                     <Button
@@ -47,4 +50,8 @@ export const Preview = memo((props) => {
             {state && <Game game={state} />}
         </EditorWrapper>
     );
-});
+};
+
+Preview.displayName = "Preview";
+
+export default React.memo(Preview);

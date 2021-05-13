@@ -1,27 +1,44 @@
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { FlowLoader } from "./Components/FlowEditor/FlowLoader";
-import { StartMenu } from "./Components/StartMenu/StartMenu";
-import { Preview } from "./Components/Preview/Preview";
-import { SceneEditor } from "./Components/SceneEditor/SceneEditor";
-import { memo } from "react";
+import * as React from "react";
+import * as Router from "react-router-dom";
 
-export const GlobalRoutes = memo(() => {
+import FlowLoader from "./Components/FlowEditor/FlowLoader";
+import StartMenu from "./Components/StartMenu/StartMenu";
+import { Preview } from "./Components/Preview/Preview";
+import SceneEditor from "./Components/SceneEditor/SceneEditor";
+import { PreviewButton } from "./Components/PreviewButton";
+import Test from "./Test";
+import GithubCorner from "react-github-corner";
+
+const GlobalRoutes = () => {
     return (
-        <Router>
-            <Switch>
-                <Route exact={true} path="/">
+        <Router.BrowserRouter>
+            <Router.Switch>
+                <Router.Route exact={true} path="/">
+                    <GithubCorner
+                        href="https://github.com/WhiteOlivierus/Roots"
+                        direction="left"
+                    />
                     <StartMenu />
-                </Route>
-                <Route path="/flow">
+                </Router.Route>
+                <Router.Route path="/flow">
                     <FlowLoader />
-                </Route>
-                <Route path="/editor">
+                    <PreviewButton />
+                </Router.Route>
+                <Router.Route path="/editor">
                     <SceneEditor />
-                </Route>
-                <Route path="/preview">
+                    <PreviewButton />
+                </Router.Route>
+                <Router.Route path="/preview">
                     <Preview />
-                </Route>
-            </Switch>
-        </Router>
+                </Router.Route>
+                <Router.Route path="/tests">
+                    <Test />
+                </Router.Route>
+            </Router.Switch>
+        </Router.BrowserRouter>
     );
-});
+};
+
+GlobalRoutes.displayName = "GlobalRoutes";
+
+export default GlobalRoutes;

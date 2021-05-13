@@ -13,10 +13,9 @@ import { useHistory } from "react-router-dom";
 import { MinimapSettings, NodeTypes } from "./Nodes/NodeTypes";
 
 import { MenuBar } from "./MenuBar/MenuBar";
-import { useNodeViewerState } from "../../Context/NodeViewerContext/NodeViewerContext";
+import useNodeViewerState from "../../Context/NodeViewerContext/NodeViewerContext";
 
 import { CreateNode } from "./Nodes/NodeFactory";
-import { OnBeforeReload } from "../../Utilities/OnBeforeReload";
 import { Menu, MenuItem } from "@material-ui/core";
 import { EditorWrapper } from "../EditorWrapper";
 import PropTypes from "prop-types";
@@ -32,21 +31,22 @@ const FlowEditor = memo(({ flow }) => {
     const updateNodeInternals = useUpdateNodeInternals();
 
     const [elements, setElements] = useState([]);
+    // eslint-disable-next-line no-unused-vars
     const [instance, setInstance] = useState(null);
 
     const onLoad = (instance) => {
+        instance.setTransform({
+            x: flow.position[0],
+            y: flow.position[1],
+            zoom: flow.zoom || 0,
+        });
+
         setElements(flow.elements);
 
         nodeViewerState.setElements = setElements;
         nodeViewerState.rfInstance = instance;
 
         setNodeViewerState(nodeViewerState);
-
-        instance.setTransform({
-            x: flow.position[0],
-            y: flow.position[1],
-            zoom: flow.zoom || 0,
-        });
 
         instance.getElements().map((element) => {
             return updateNodeInternals(element.id);
@@ -100,6 +100,10 @@ const FlowEditor = memo(({ flow }) => {
             mouseY: e.clientY - 4,
         });
 
+        setActiveNode(e, node);
+    };
+
+    const setActiveNode = (e, node) => {
         nodeViewerState.activeNode = node;
         setNodeViewerState(nodeViewerState);
     };
@@ -119,7 +123,6 @@ const FlowEditor = memo(({ flow }) => {
 
     return (
         <EditorWrapper>
-            <OnBeforeReload />
             <MenuBar />
             <ReactFlow
                 elements={elements}
@@ -135,6 +138,7 @@ const FlowEditor = memo(({ flow }) => {
                 multiSelectionKeyCode={17}
                 onNodeContextMenu={handleClick}
                 onPaneClick={handleClose}
+                onNodeMouseEnter={setActiveNode}
             >
                 <Background variant="lines" gap={30} size={2} />
                 <Controls />

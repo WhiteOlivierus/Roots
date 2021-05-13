@@ -3,16 +3,16 @@ import { Card, CardContent, Grid, List, Typography } from "@material-ui/core";
 
 import { get } from "idb-keyval";
 
-import { RecentEntry } from "./RecentEntry";
+import RecentEntry from "./RecentEntry";
 
 export class Recent extends Component {
-    state = {
-        files: [],
-        loading: true,
-    };
-
     constructor(props) {
         super(props);
+
+        this.state = {
+            files: [],
+            loading: true,
+        };
     }
 
     async componentDidMount() {

@@ -1,8 +1,8 @@
-import { createStyles, makeStyles, Theme } from "@material-ui/core";
+import { createStyles, makeStyles } from "@material-ui/core";
 
 const handleTextSize = 0.5;
 
-export const nodeStyle = makeStyles((theme) =>
+export const nodeStyle = makeStyles(() =>
     createStyles({
         root: {
             width: 160,
@@ -19,6 +19,9 @@ export const nodeStyle = makeStyles((theme) =>
             right: 10,
             margin: 0,
             padding: 0,
+            width: "35ch",
+            textAlign: "right",
+            overflow: "hidden",
         },
     })
 );

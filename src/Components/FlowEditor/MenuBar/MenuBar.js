@@ -1,101 +1,35 @@
-import { useCallback, useState, memo } from "react";
-import { useHistory } from "react-router-dom";
-import {
-    AppBar,
-    IconButton,
-    Toolbar,
-    Tooltip,
-    Typography,
-} from "@material-ui/core";
+import * as React from "react";
+import * as MUI from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
+
 import clsx from "clsx";
-
-import { Build } from "../../../Utilities/BuildHandler";
-import { useProjectFilesState } from "../../../Context/ProjectFilesContext/ProjectFilesContext";
-import { useSnackbar } from "notistack";
-
-import { SaveFlow } from "../../../Utilities/FlowHandler";
 import { MenuDrawer } from "./MenuDrawer";
-import { useNodeViewerState } from "../../../Context/NodeViewerContext/NodeViewerContext";
-import { SeparateNodesAndEdges } from "../Nodes/NodeUtilities";
-import { RemoveExtension } from "../../../Utilities/StringTools";
 import { menuBarStyles } from "./menuBarStyles";
+import { MenuBarTitle } from "./MenuBarTitle";
 
 export const drawerWidth = 240;
 
-export const MenuBar = memo((props) => {
+export const MenuBar = () => {
     const classes = menuBarStyles();
-    const history = useHistory();
 
-    const { enqueueSnackbar } = useSnackbar();
+    const [open, setOpen] = React.useState(false);
 
-    const { projectFilesState, setProjectFilesState } = useProjectFilesState();
-    const { nodeViewerState } = useNodeViewerState();
+    const handleDrawerOpen = React.useCallback(() => setOpen(true), [setOpen]);
 
-    const [open, setOpen] = useState(false);
-
-    const handleDrawerOpen = useCallback(() => {
-        setOpen((o) => (o = true));
-    }, [setOpen]);
-
-    const handleDrawerClose = useCallback(() => {
-        setOpen((o) => (o = false));
-    }, [setOpen]);
-
-    const onBuild = useCallback(() => {
-        SaveFlow(projectFilesState.activeFlow, nodeViewerState.rfInstance).then(
-            () => {
-                const FileName = projectFilesState.activeFlow.name.replace(
-                    ".json",
-                    ""
-                );
-
-                enqueueSnackbar(`Start building preview ${FileName}`, {
-                    variant: "info",
-                });
-
-                var { nodes, edges } = SeparateNodesAndEdges(
-                    nodeViewerState.rfInstance.getElements()
-                );
-
-                Build(projectFilesState.activeRoot, nodes, edges)
-                    .then(({ buildHandle, id }) => {
-                        projectFilesState.buildHandle = buildHandle;
-
-                        setProjectFilesState(projectFilesState);
-
-                        enqueueSnackbar(`Preview build successfully`, {
-                            variant: "success",
-                        });
-
-                        history.push(`/preview/${id}`);
-                    })
-                    .catch((e) => {
-                        enqueueSnackbar(e, {
-                            variant: "error",
-                        });
-                    });
-            }
-        );
-    }, [
-        projectFilesState,
-        nodeViewerState.rfInstance,
-        enqueueSnackbar,
-        setProjectFilesState,
-        history,
+    const handleDrawerClose = React.useCallback(() => setOpen(false), [
+        setOpen,
     ]);
 
     return (
         <div className={classes.root}>
-            <AppBar position="static">
-                <Toolbar
+            <MUI.AppBar position="static">
+                <MUI.Toolbar
                     className={clsx(classes.appBar, {
                         [classes.appBarShift]: open,
                     })}
                 >
-                    <Tooltip title="Menu">
-                        <IconButton
+                    <MUI.Tooltip title="Menu">
+                        <MUI.IconButton
                             color="inherit"
                             aria-label="open drawer"
                             onClick={handleDrawerOpen}
@@ -105,36 +39,16 @@ export const MenuBar = memo((props) => {
                             })}
                         >
                             <MenuIcon />
-                        </IconButton>
-                    </Tooltip>
+                        </MUI.IconButton>
+                    </MUI.Tooltip>
                     <MenuBarTitle />
-                    <Tooltip title="Preview">
-                        <IconButton onClick={onBuild}>
-                            <PlayCircleFilledIcon style={{ fill: "white" }} />
-                        </IconButton>
-                    </Tooltip>
-                </Toolbar>
-            </AppBar>
+                </MUI.Toolbar>
+            </MUI.AppBar>
             <MenuDrawer open={open} handleDrawerClose={handleDrawerClose} />
         </div>
     );
-});
+};
 
-export const MenuBarTitle = memo((props) => {
-    const classes = menuBarStyles();
+MenuBar.displayName = "MenuBar";
 
-    const { projectFilesState } = useProjectFilesState();
-
-    return (
-        <Typography
-            variant="h6"
-            color="inherit"
-            noWrap
-            className={classes.title}
-        >
-            {`Roots - 
-            ${projectFilesState.activeRoot.name} - 
-            ${RemoveExtension(projectFilesState.activeFlow.name)}`}
-        </Typography>
-    );
-});
+export default React.memo(MenuBar);

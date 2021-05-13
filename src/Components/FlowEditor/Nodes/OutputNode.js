@@ -1,15 +1,23 @@
-import { Paper } from "@material-ui/core";
 import { memo } from "react";
 import { Handle, Position } from "react-flow-renderer";
 import { NodeContent } from "./NodeContent";
-import { nodeStyle } from "./NodeStyle";
+import PropTypes from "prop-types";
+import NodePaper from "./NodePaper";
 
-export const OutputNode = memo(({ data }) => {
-    const classes = nodeStyle();
+export const OutputNode = ({ data, selected }) => {
     return (
-        <Paper className={classes.root}>
+        <NodePaper selected={selected}>
             <NodeContent data={data} />
             <Handle id="a" type="target" position={Position.Left} />
-        </Paper>
+        </NodePaper>
     );
-});
+};
+
+OutputNode.displayName = "OutputNode";
+
+OutputNode.propTypes = {
+    data: PropTypes.object.isRequired,
+    selected: PropTypes.bool.isRequired,
+};
+
+export default memo(OutputNode);

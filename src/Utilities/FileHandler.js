@@ -1,9 +1,3 @@
-export async function CreateFolder(fileHandle, directoryName) {
-    return await fileHandle.getDirectoryHandle(directoryName, {
-        create: true,
-    });
-}
-
 export async function SaveFileInFolder(dirHandle, fileHandle) {
     let newFileHandle = await dirHandle.getFileHandle(fileHandle.name, {
         create: true,
@@ -46,7 +40,7 @@ export async function LoadElementImages(dirHandle, elements) {
 
         if (containsKeys) {
             let imageHandle = await FindFile(dirHandle, element.data.imageName);
-            elements[index].data.src = await GetImageBlobPath(imageHandle);
+            elements[index].data.imageSrc = await GetImageBlobPath(imageHandle);
         }
     });
 
@@ -55,6 +49,8 @@ export async function LoadElementImages(dirHandle, elements) {
 
 export async function GetImageBlobPath(fileHandle) {
     if (Array.isArray(fileHandle)) fileHandle = fileHandle[0];
+
+    if (!fileHandle) return;
 
     const file = await fileHandle.getFile();
     var path = URL.createObjectURL(file);

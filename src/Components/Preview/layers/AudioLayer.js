@@ -1,6 +1,6 @@
 import React from "react";
-
-export function AudioLayer(props) {
+import PropTypes from "prop-types";
+function AudioLayer(props) {
     return (
         <div>
             <audio autoPlay>
@@ -9,3 +9,7 @@ export function AudioLayer(props) {
         </div>
     );
 }
+
+AudioLayer.displayName = "AudioLayer";
+AudioLayer.propTypes = { audio: PropTypes.string };
+export default AudioLayer;

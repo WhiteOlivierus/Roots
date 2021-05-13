@@ -1,7 +1,7 @@
 import { Divider } from "@material-ui/core";
 
 import { MenuButton } from "./MenuButton";
-
+import PropTypes from "prop-types";
 export const MenuButtons = (props) => {
     return (
         <div>
@@ -15,3 +15,6 @@ export const MenuButtons = (props) => {
         </div>
     );
 };
+MenuButtons.displayName = "MenuButtons";
+MenuButtons.propTypes = { buttons: PropTypes.array.isRequired };
+export default MenuButtons;
