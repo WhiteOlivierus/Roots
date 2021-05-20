@@ -6,7 +6,9 @@ import BackButton from "./BackButton";
 import PropTypes from "prop-types";
 
 const ToolBar = ({ mode, onExit }) => {
-    const handleChange = (e, nextView) => mode.setValue(nextView);
+    const handleChange = (e, nextView) => {
+        if (nextView) mode.setValue(nextView);
+    };
 
     return (
         <Box p={3}>
@@ -40,6 +42,22 @@ const ToolBar = ({ mode, onExit }) => {
                                 <Tooltip title="edit zones">
                                     <Icon
                                         className="fas fa-pen-fancy"
+                                        color="primary"
+                                    />
+                                </Tooltip>
+                            </ToggleButton>
+                            <ToggleButton value="text" aria-label="text">
+                                <Tooltip title="Add/Edit text">
+                                    <Icon
+                                        className="fas fa-i-cursor"
+                                        color="primary"
+                                    />
+                                </Tooltip>
+                            </ToggleButton>
+                            <ToggleButton value="image" aria-label="image">
+                                <Tooltip title="Add/Edit image">
+                                    <Icon
+                                        className="fas fa-image"
                                         color="primary"
                                     />
                                 </Tooltip>
