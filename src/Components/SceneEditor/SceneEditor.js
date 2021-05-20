@@ -1,17 +1,17 @@
 import * as React from "react";
-import * as MUI from "@material-ui/core";
 import * as Transform from "../../Utilities/Transform";
 
 import useNodeViewerState from "../../Context/NodeViewerContext/NodeViewerContext";
-import { MenuBar } from "../FlowEditor/MenuBar/MenuBar";
-import { EditorCanvas } from "./EditorCanvas";
-import ToolBar from ".//Toolbar/ToolBar";
+import ToolBar from "./Toolbar/ToolBar";
 import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
+import Inspector from "./Inspector";
+import Editor from "./Editor";
+import useOnUnload from "../../Utilities/UseOnUnLoad";
+
+import { EditorCanvas } from "./EditorCanvas";
+import { MenuBar } from "../FlowEditor/MenuBar/MenuBar";
 import { EditorWrapper } from "../EditorWrapper";
 import { SceneCanvasHooks as Hooks } from "dutchskull-scene-manager";
-import Inspector from "./Inspector";
-
-import useOnUnload from "../../Utilities/UseOnUnLoad";
 import { Redirect } from "react-router";
 import { Container, Content, Header, Item } from "../../Container";
 
@@ -49,8 +49,6 @@ const SceneEditor = () => {
 
             imageSize.setValue(size);
 
-            console.log(node.value.data.zones[0].points);
-
             const translatedZones = Transform.TransformPoints(
                 node.value.data.zones,
                 size,
@@ -58,8 +56,6 @@ const SceneEditor = () => {
             );
 
             zones.setValue(translatedZones);
-
-            console.log(translatedZones[0].points);
         },
         [imageSize, node, zones]
     );
@@ -111,19 +107,11 @@ const SceneEditor = () => {
                         </Item>
                         <Item>
                             <EditorWrapper style={{ width: "auto" }}>
-                                <MUI.Paper style={{ margin: "auto" }}>
-                                    <img
-                                        src={node.value.data.imageSrc}
-                                        style={{
-                                            width: "100%",
-                                            height: "100%",
-                                            borderRadius: 4,
-                                        }}
-                                        alt="scene"
-                                        onLoad={onLoad}
-                                        ref={imageRef}
-                                    />
-                                </MUI.Paper>
+                                <Editor
+                                    node={node}
+                                    onLoad={onLoad}
+                                    imageRef={imageRef}
+                                />
                             </EditorWrapper>
                             <EditorCanvas
                                 polygon={zones}
@@ -132,7 +120,7 @@ const SceneEditor = () => {
                                 selection={selection}
                             />
                         </Item>
-                        <Item auto noShrink>
+                        <Item auto noShrink style={{ minWidth: 300 }}>
                             <Inspector
                                 node={node}
                                 activeRoot={activeRoot}

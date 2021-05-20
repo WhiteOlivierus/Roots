@@ -6,7 +6,6 @@ import { LoadFlow } from "../../Utilities/FlowHandler";
 import { SeparateNodesAndEdges } from "./Nodes/NodeUtilities";
 import FlowEditor from "./FlowEditor";
 import useOnUnload from "../../Utilities/UseOnUnLoad";
-// import GoToOnReload from "../../Utilities/GoToOnReload";
 
 const FlowLoader = () => {
     useOnUnload();

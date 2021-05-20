@@ -2,20 +2,18 @@ import * as React from "react";
 import SceneCanvas from "dutchskull-scene-manager";
 import PropTypes from "prop-types";
 
-export const EditorCanvas = ({ mode, polygon, imageRef, selection }) => {
-    return (
-        <>
-            {imageRef.current && (
-                <SceneCanvas
-                    editMode={mode === "edit"}
-                    polygons={polygon}
-                    container={imageRef}
-                    selection={selection}
-                />
-            )}
-        </>
-    );
-};
+export const EditorCanvas = ({ mode, polygon, imageRef, selection }) => (
+    <>
+        {imageRef.current && (
+            <SceneCanvas
+                editMode={mode === "edit"}
+                polygons={polygon}
+                container={imageRef}
+                selection={selection}
+            />
+        )}
+    </>
+);
 
 EditorCanvas.displayName = "EditorCanvas";
 
