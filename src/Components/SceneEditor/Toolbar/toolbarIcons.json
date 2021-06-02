@@ -1,0 +1,18 @@
+[
+    {
+        "tittle": "select",
+        "icon": "-mouse-pointer"
+    },
+    {
+        "tittle": "edit",
+        "icon": "-pen-fancy"
+    },
+    {
+        "tittle": "text",
+        "icon": "-i-cursor"
+    },
+    {
+        "tittle": "image",
+        "icon": "-image"
+    }
+]

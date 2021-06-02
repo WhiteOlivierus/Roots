@@ -1,11 +1,12 @@
-import { Button, Tooltip } from "@material-ui/core";
+import * as MUI from "@material-ui/core";
 import * as React from "react";
-import { useHistory } from "react-router-dom";
+import * as Router from "react-router-dom";
+
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import PropTypes from "prop-types";
 
 const BackButton = ({ onExit, to }) => {
-    const history = useHistory();
+    const history = Router.useHistory();
 
     const handleClick = React.useCallback(() => {
         onExit();
@@ -13,11 +14,15 @@ const BackButton = ({ onExit, to }) => {
     }, [history, onExit, to]);
 
     return (
-        <Tooltip title="Back to flow editor">
-            <Button onClick={handleClick} variant="contained" color="primary">
+        <MUI.Tooltip title="Back to flow editor">
+            <MUI.Button
+                onClick={handleClick}
+                variant="contained"
+                color="primary"
+            >
                 <ChevronLeftIcon style={{ fill: "white" }} />
-            </Button>
-        </Tooltip>
+            </MUI.Button>
+        </MUI.Tooltip>
     );
 };
 

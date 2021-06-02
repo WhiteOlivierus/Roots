@@ -1,7 +1,7 @@
 import Game from "./Game";
 import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
 import * as React from "react";
-import { useHistory, Link } from "react-router-dom";
+import * as Router from "react-router-dom";
 import { Button, Tooltip } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import { useBeforeReload } from "../../Utilities/UseBeforeReload";
@@ -9,7 +9,7 @@ import { EditorWrapper } from "../EditorWrapper";
 import { GetObjectFromFileHandle } from "../../Utilities/FileHandler";
 
 export const Preview = () => {
-    const history = useHistory();
+    const history = Router.useHistory();
 
     useBeforeReload(() => history.push("/"));
 
@@ -31,7 +31,7 @@ export const Preview = () => {
 
     return (
         <EditorWrapper>
-            <Link to="/flow">
+            <Router.Link to="/flow">
                 <Tooltip title="Back to flow editor">
                     <Button
                         variant="contained"
@@ -46,7 +46,7 @@ export const Preview = () => {
                         <ChevronLeftIcon style={{ fill: "white" }} />
                     </Button>
                 </Tooltip>
-            </Link>
+            </Router.Link>
             {state && <Game game={state} />}
         </EditorWrapper>
     );
