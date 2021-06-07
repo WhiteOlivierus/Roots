@@ -1,19 +1,9 @@
 import * as MUI from "@material-ui/core";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
+import { fabStyle } from "./StartMenu/fabStyle";
 import useBuild from "./useBuild";
 
-const useStyles = MUI.makeStyles((theme) => ({
-    fab: {
-        position: "absolute",
-        zIndex: 100000000,
-        bottom: theme.spacing(2),
-        right: theme.spacing(2),
-    },
-}));
-
 export const PreviewButton = () => {
-    const classes = useStyles();
-
     const handleBuild = useBuild(true);
 
     return (
@@ -21,7 +11,7 @@ export const PreviewButton = () => {
             <MUI.Fab
                 color="primary"
                 aria-label="add"
-                className={classes.fab}
+                className={fabStyle().fab}
                 onClick={handleBuild}
             >
                 <PlayCircleFilledIcon style={{ fill: "white" }} />

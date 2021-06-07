@@ -29,11 +29,11 @@ const RecentEntry = ({ files }) => {
                     });
                 });
         },
-        [projectFilesState]
+        [enqueueSnackbar, history, projectFilesState, setProjectFilesState]
     );
 
     return (
-        <div>
+        <div style={{ overflowY: "scroll" }}>
             {files &&
                 files.map((file, index) => (
                     <ListItem
@@ -49,6 +49,36 @@ const RecentEntry = ({ files }) => {
 };
 
 RecentEntry.displayName = "RecentEntry";
+
+RecentEntry.defaultProps = {
+    files: [
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+        { name: "test" },
+    ],
+};
 
 RecentEntry.propTypes = {
     files: PropTypes.array.isRequired,
