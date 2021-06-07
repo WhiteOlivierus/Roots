@@ -4,7 +4,6 @@ import { Box, Container } from "@material-ui/core";
 import { Logo } from "./Logo";
 import { Recent } from "./Recent";
 import CreateProject from "./CreateProject";
-import copyright from "copyright";
 
 const StartMenu = () => (
     <Box bgcolor="primary.main" width={1} height="100vh">
@@ -18,12 +17,10 @@ const StartMenu = () => (
         >
             <Logo />
             <Recent />
-            <CreateProject />
 
-            <Box style={{ flex: "0 1 auto", height: "100px" }}>
-                {copyright("Dutchtskull")}
-            </Box>
+            <Box style={{ flex: "0 1 auto", height: "32px" }}></Box>
         </Container>
+        <CreateProject />
     </Box>
 );
 

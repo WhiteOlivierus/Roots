@@ -56,7 +56,10 @@ export default function CreateProject() {
                 }}
             >
                 <Fade in={open}>
-                    <CreateProjectForm />
+                    <CreateProjectForm
+                        title="New project"
+                        onClose={handleClose}
+                    />
                 </Fade>
             </Modal>
         </>

@@ -1,39 +1,44 @@
-import { Component } from "react";
-import { Card, CardContent, List, Typography } from "@material-ui/core";
+import * as React from "react";
+import * as MUI from "@material-ui/core";
 
 import { get } from "idb-keyval";
 
 import RecentEntry from "./RecentEntry";
 
-export class Recent extends Component {
-    constructor(props) {
-        super(props);
+export const Recent = () => {
+    const [files, setFiles] = React.useState(undefined);
 
-        this.state = {
-            files: [],
-            loading: true,
-        };
-    }
+    React.useEffect(() => {
+        get("files").then((files) => setFiles(files));
+    }, []);
 
-    async componentDidMount() {
-        const files = await get("files");
-        this.setState({ files: files, loading: false });
-    }
+    console.log(files);
 
-    render() {
-        return (
-            <Card>
-                <CardContent>
-                    <Typography variant="h2">Recent Projects</Typography>
-                    <List component="nav" aria-label="main mailbox folders">
-                        {this.state.loading ? (
-                            <Typography variant="h3">Loading...</Typography>
-                        ) : (
-                            <RecentEntry files={this.state.files} />
-                        )}
-                    </List>
-                </CardContent>
-            </Card>
-        );
-    }
-}
+    return (
+        <MUI.Card style={{ flex: "1 1 auto" }}>
+            <MUI.CardContent style={{ height: "90%" }}>
+                <MUI.Typography variant="h2">Recent Projects</MUI.Typography>
+                {files ? <RecentEntry files={files} /> : <NoRecents />}
+            </MUI.CardContent>
+        </MUI.Card>
+    );
+};
+
+const NoRecents = () => {
+    return (
+        <MUI.Grid
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+            style={{ height: "75%" }}
+        >
+            <MUI.Grid item>
+                <MUI.Typography variant="h3">
+                    No projects here yet. <br /> Start making your story by
+                    clicking in the right corner.
+                </MUI.Typography>
+            </MUI.Grid>
+        </MUI.Grid>
+    );
+};

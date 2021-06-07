@@ -26,6 +26,8 @@
     "dagre": "^0.8.5",
     "dutchskull-scene-manager": "0.3.5",
     "firebase-tools": "^9.4.0",
+    "formik": "^2.2.9",
+    "formik-material-ui": "^3.0.1",
     "history": "^4.10.1",
     "idb-keyval": "^5.0.4",
     "immer": "^9.0.1",

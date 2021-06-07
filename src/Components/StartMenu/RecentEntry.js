@@ -1,16 +1,40 @@
-import { ListItem, ListItemText } from "@material-ui/core";
-import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
+import * as React from "react";
+import * as MUI from "@material-ui/core";
+
 import { useHistory } from "react-router-dom";
 import { OpenRecentProject } from "../../Utilities/ProjectHandler";
-import * as React from "react";
-import { useSnackbar } from "notistack";
-import PropTypes from "prop-types";
+import { withSnackbar } from "notistack";
 
-const RecentEntry = ({ files }) => {
+import DescriptionIcon from "@material-ui/icons/Description";
+import PropTypes from "prop-types";
+import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
+import styled from "styled-components";
+
+const StyledDiv = styled.div`
+    overflow-y: scroll;
+    height: 100%;
+    ::-webkit-scrollbar {
+        width: 15px;
+        height: 15px;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #3b2400;
+        border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #f9d4ff;
+    }
+    ::-webkit-scrollbar-track {
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: inset 7px 10px 12px #f0f0f0;
+    }
+`;
+
+const RecentEntry = ({ files, enqueueSnackbar }) => {
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
 
     const history = useHistory();
-    const { enqueueSnackbar } = useSnackbar();
 
     const onOpenRecentProject = React.useCallback(
         (fileHandle) => {
@@ -33,55 +57,38 @@ const RecentEntry = ({ files }) => {
     );
 
     return (
-        <div style={{ overflowY: "scroll" }}>
+        <StyledDiv>
             {files &&
                 files.map((file, index) => (
-                    <ListItem
+                    <MUI.ListItem
                         key={index}
                         button
                         onClick={() => onOpenRecentProject(file)}
                     >
-                        <ListItemText primary={file.name} />
-                    </ListItem>
+                        <MUI.ListItemAvatar>
+                            <MUI.Avatar>
+                                <DescriptionIcon />
+                            </MUI.Avatar>
+                        </MUI.ListItemAvatar>
+                        <MUI.ListItemText
+                            primary={file.name}
+                            secondary={file.timestamp}
+                        />
+                    </MUI.ListItem>
                 ))}
-        </div>
+        </StyledDiv>
     );
 };
 
 RecentEntry.displayName = "RecentEntry";
 
 RecentEntry.defaultProps = {
-    files: [
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-        { name: "test" },
-    ],
+    files: [],
 };
 
 RecentEntry.propTypes = {
-    files: PropTypes.array.isRequired,
+    files: PropTypes.array,
+    enqueueSnackbar: PropTypes.func,
 };
 
-export default React.memo(RecentEntry);
+export default withSnackbar(React.memo(RecentEntry));
