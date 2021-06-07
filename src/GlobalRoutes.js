@@ -7,12 +7,16 @@ import { Preview } from "./Components/Preview/Preview";
 import SceneEditor from "./Components/SceneEditor/SceneEditor";
 import { PreviewButton } from "./Components/PreviewButton";
 import GithubCorner from "react-github-corner";
+import FrontPage from "./FrontPage";
 
 const GlobalRoutes = () => {
     return (
         <Router.BrowserRouter>
             <Router.Switch>
                 <Router.Route exact={true} path="/">
+                    <FrontPage />
+                </Router.Route>
+                <Router.Route path="/roots">
                     <GithubCorner
                         href="https://github.com/WhiteOlivierus/Roots"
                         direction="left"
