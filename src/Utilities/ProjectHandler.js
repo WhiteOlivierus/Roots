@@ -9,9 +9,7 @@ import { set, get } from "idb-keyval";
 import { defaultFlow } from "./DefaultFlow";
 import { CreateFlow } from "./FlowHandler";
 
-export async function NewProject() {
-    var activeRoot = await window.showDirectoryPicker();
-
+export async function NewProject({ projectFolder: activeRoot }) {
     if (activeRoot === undefined) {
         return null;
     }
@@ -24,8 +22,9 @@ export async function NewProject() {
 
     await WriteFile(config, JSON.stringify({ lastOpened: "" }));
 
-    var { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(
-        activeRoot
+    const { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(
+        activeRoot,
+        "Flow"
     );
 
     await WriteFile(activeFlow, JSON.stringify(defaultFlow));
@@ -75,7 +74,7 @@ export async function OpenRecentProject(activeRoot) {
 
         return { activeRoot, activeFlow };
     } catch {
-        await UnRegisterRecentProject(activeRoot);
+        await UnRegisterRecentProject(activeRoot.name);
         throw Error(`Project ${activeRoot.name} does not exist`);
     }
 }
@@ -113,11 +112,11 @@ async function RegisterRecentProject(file) {
     }
 }
 
-async function UnRegisterRecentProject(file) {
+export async function UnRegisterRecentProject(name) {
     var files = await get("files");
 
     const index = files.findIndex((element) => {
-        return element.name === file.name;
+        return element.name === name;
     });
 
     if (index === -1) return;
