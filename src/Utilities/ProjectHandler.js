@@ -9,18 +9,27 @@ import { set, get } from "idb-keyval";
 import { defaultFlow } from "./DefaultFlow";
 import { CreateFlow } from "./FlowHandler";
 
-export async function NewProject({ projectFolder: activeRoot }) {
-    if (activeRoot === undefined) {
-        return null;
-    }
+export async function NewProject(values) {
+    const activeRoot = await values.projectFolder.getDirectoryHandle(
+        values.projectName,
+        {
+            create: true,
+        }
+    );
 
-    verifyPermission(activeRoot, true);
+    if (activeRoot === undefined) return null;
 
     const config = await activeRoot.getFileHandle("config.json", {
         create: true,
     });
 
-    await WriteFile(config, JSON.stringify({ lastOpened: "" }));
+    const newLocal = JSON.stringify({
+        ...values,
+        lastOpened: "",
+        projectFolder: values.projectFolder.name,
+        projectLogo: values.projectLogo.name | "",
+    });
+    await WriteFile(config, newLocal);
 
     const { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(
         activeRoot,

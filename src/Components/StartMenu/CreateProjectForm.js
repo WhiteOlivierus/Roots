@@ -10,8 +10,11 @@ import { TextField } from "formik-material-ui";
 import FolderIcon from "@material-ui/icons/Folder";
 import CancelIcon from "@material-ui/icons/Cancel";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
+import { withRouter } from "react-router";
+import { NewProject } from "../../Utilities/ProjectHandler";
 
-const CreateProjectForm = ({ title, onClose }) => {
+const CreateProjectForm = ({ title, onClose, history }) => {
     const onValidate = (values) => {
         const errors = {};
         if (!values.projectName) {
@@ -26,23 +29,39 @@ const CreateProjectForm = ({ title, onClose }) => {
             errors.description = "Required";
         }
 
-        if (!values.projectFolder) {
+        if (
+            Object.keys(values.projectFolder).length === 0 &&
+            values.projectFolder.constructor === Object
+        ) {
             errors.projectFolder = "Required";
-        }
-
-        if (!values.projectLogo) {
-            errors.projectLogo = "Required";
         }
 
         return errors;
     };
 
-    const onSubmit = (values, { setSubmitting }) => {
-        setTimeout(() => {
-            setSubmitting(false);
-            alert(JSON.stringify(values, null, 2));
-        }, 500);
+    const { projectFilesState, setProjectFilesState } = useProjectFilesState();
+
+    const SetContext = ({ activeRoot, activeFlow }) => {
+        setProjectFilesState({
+            ...projectFilesState,
+            activeRoot: activeRoot,
+            activeFlow: activeFlow,
+        });
     };
+
+    function onNewProject(values) {
+        NewProject(values)
+            .then((out) => SetContext(out))
+            .catch()
+            .finally(() => history.push("/flow"));
+    }
+
+    //TODO Find a place to add this button
+    /*     async function onOpenProject(values) {
+    await SetProjectContext(OpenProject);
+} */
+
+    const onSubmit = (values) => onNewProject(values);
 
     return (
         <MUI.Card style={{ width: "50%" }}>
@@ -52,8 +71,8 @@ const CreateProjectForm = ({ title, onClose }) => {
                         projectName: "",
                         authorName: "",
                         description: "",
-                        projectFolder: "",
-                        projectLogo: "",
+                        projectFolder: {},
+                        projectLogo: {},
                     }}
                     validate={onValidate}
                     onSubmit={onSubmit}
@@ -69,10 +88,10 @@ CreateProjectForm.propTypes = {
     title: PropTypes.string.isRequired,
 };
 
-export default CreateProjectForm;
+export default withRouter(CreateProjectForm);
 
 function ProjectForm(title, onClose) {
-    return ({ submitForm, isSubmitting }) => (
+    return ({ values, submitForm, isSubmitting }) => (
         <formik.Form>
             <MUI.Grid container direction={"column"} spacing={4} m={4}>
                 <MUI.Grid item>
@@ -115,13 +134,17 @@ function ProjectForm(title, onClose) {
                 <FileField
                     label={"Project folder"}
                     icon={<FolderIcon />}
-                    onClick={() => alert("add logo")}
+                    value={values.projectFolder}
+                    onClick={async () =>
+                        (values.projectFolder = await window.showDirectoryPicker())
+                    }
                 >
                     Open
                 </FileField>
                 <FileField
                     label={"Project logo"}
                     icon={<FolderIcon />}
+                    value={values.projectLogo}
                     onClick={() => alert("add logo")}
                 >
                     Open
@@ -165,7 +188,7 @@ function ProjectForm(title, onClose) {
     );
 }
 
-const FileField = ({ label, onClick, icon, children }) => {
+const FileField = ({ label, onClick, icon, children, value }) => {
     const [first, second] = label.split(" ");
     const newLabel = [
         first.toLowerCase(),
@@ -184,7 +207,8 @@ const FileField = ({ label, onClick, icon, children }) => {
                         component={TextField}
                         type={newLabel}
                         name={newLabel}
-                        label={label}
+                        label={"name" in value ? value.name : label}
+                        value={"name" in value ? value.name : label}
                         variant="outlined"
                         fullWidth
                         disabled

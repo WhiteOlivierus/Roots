@@ -1,26 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import * as serviceWorkerRegistration from "../../serviceWorkerRegistration";
 import { Box, Button, Card, Grid, Typography } from "@material-ui/core";
+import { useSnackbar } from "notistack";
 
-export const ServiceWorkerWrapper = () => {
-    const [showReload, setShowReload] = useState(false);
-    const [waitingWorker, setWaitingWorker] = useState(null);
-
-    const onSWUpdate = (registration) => {
-        setShowReload(true);
-        setWaitingWorker(registration.waiting);
-    };
-
-    useEffect(() => {
-        serviceWorkerRegistration.register({ onUpdate: onSWUpdate });
-    }, []);
-
-    const reloadPage = () => {
-        waitingWorker?.postMessage({ type: "SKIP_WAITING" });
-        setShowReload(false);
-        window.location.reload(true);
-    };
-
+const ServiceWorkerWrapper = () => {
+    const { showReload, reloadPage } = useUpdate();
     return (
         <div>
             {showReload && (
@@ -53,4 +37,41 @@ export const ServiceWorkerWrapper = () => {
             )}
         </div>
     );
+};
+
+export default ServiceWorkerWrapper;
+
+export const useUpdate = () => {
+    const { enqueueSnackbar } = useSnackbar();
+    const [showReload, setShowReload] = useState(false);
+    const [waitingWorker, setWaitingWorker] = useState(null);
+
+    const reloadPage = useCallback(() => {
+        waitingWorker?.postMessage({ type: "SKIP_WAITING" });
+        setShowReload(false);
+        window.location.reload(true);
+    }, [waitingWorker]);
+
+    const onSWUpdate = useCallback(
+        (registration) => {
+            enqueueSnackbar("A new update is available", {
+                variant: "info",
+                persist: true,
+                action: (
+                    <Button color="secondary" size="small" onClick={reloadPage}>
+                        Update
+                    </Button>
+                ),
+            });
+            setShowReload(true);
+            setWaitingWorker(registration.waiting);
+        },
+        [enqueueSnackbar, reloadPage]
+    );
+
+    useEffect(() => {
+        serviceWorkerRegistration.register({ onUpdate: onSWUpdate });
+    }, []);
+
+    return { showReload, reloadPage };
 };
