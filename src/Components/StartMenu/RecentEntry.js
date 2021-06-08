@@ -80,15 +80,17 @@ const RecentEntry = ({ files, enqueueSnackbar, onChange }) => {
                             </MUI.Avatar>
                         </MUI.ListItemAvatar>
                         <MUI.ListItemText
-                            primary={file.name}
-                            secondary={file.timestamp}
+                            primary={file.fileHandle.name}
+                            secondary={file.timeStamp}
                         />
                         <MUI.ListItemSecondaryAction>
                             <MUI.IconButton
                                 edge="end"
                                 aria-label="delete"
                                 onClick={() => {
-                                    UnRegisterRecentProject(file.name);
+                                    UnRegisterRecentProject(
+                                        file.fileHandle.name
+                                    );
                                     onChange();
                                 }}
                             >

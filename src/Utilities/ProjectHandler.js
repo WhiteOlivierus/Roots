@@ -19,18 +19,6 @@ export async function NewProject(values) {
 
     if (activeRoot === undefined) return null;
 
-    const config = await activeRoot.getFileHandle("config.json", {
-        create: true,
-    });
-
-    const newLocal = JSON.stringify({
-        ...values,
-        lastOpened: "",
-        projectFolder: values.projectFolder.name,
-        projectLogo: values.projectLogo.name | "",
-    });
-    await WriteFile(config, newLocal);
-
     const { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(
         activeRoot,
         "Flow"
@@ -38,9 +26,23 @@ export async function NewProject(values) {
 
     await WriteFile(activeFlow, JSON.stringify(defaultFlow));
 
-    await SetActiveFlowInConfig(activeRoot, flowDirHandle.name);
+    const config = await activeRoot.getFileHandle("config.json", {
+        create: true,
+    });
 
-    await RegisterRecentProject(activeRoot);
+    const newLocal = JSON.stringify({
+        ...values,
+        lastOpened: flowDirHandle.name,
+        projectFolder: values.projectFolder.name,
+        projectLogo: values.projectLogo.name | "",
+    });
+
+    await WriteFile(config, newLocal);
+
+    await RegisterRecentProject({
+        fileHandle: activeRoot,
+        timeStamp: new Date().toString(),
+    });
 
     return { activeRoot, activeFlow };
 }
@@ -59,7 +61,10 @@ export async function OpenProject() {
         `${config.lastOpened}.json`
     );
 
-    await RegisterRecentProject(activeRoot);
+    await RegisterRecentProject({
+        fileHandle: activeRoot,
+        timeStamp: new Date().toString(),
+    });
 
     return { activeRoot, activeFlow };
 }
@@ -79,7 +84,10 @@ export async function OpenRecentProject(activeRoot) {
             `${config.lastOpened}.json`
         );
 
-        await RegisterRecentProject(activeRoot);
+        await RegisterRecentProject({
+            fileHandle: activeRoot,
+            timeStamp: new Date().toString(),
+        });
 
         return { activeRoot, activeFlow };
     } catch {
@@ -109,7 +117,10 @@ async function RegisterRecentProject(file) {
     function register() {
         for (let index = 0; index < files.length; index++) {
             const newLocal = files[index];
-            if (newLocal.name === file.name) {
+            if (
+                newLocal.name === file.name &&
+                newLocal.name === file.timeStamp
+            ) {
                 files.splice(index, 1);
             }
         }
@@ -125,7 +136,7 @@ export async function UnRegisterRecentProject(name) {
     var files = await get("files");
 
     const index = files.findIndex((element) => {
-        return element.name === name;
+        return element.fileHandle.name === name;
     });
 
     if (index === -1) return;
