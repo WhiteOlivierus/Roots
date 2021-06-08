@@ -2,17 +2,19 @@ import * as React from "react";
 import * as MUI from "@material-ui/core";
 
 import { useHistory } from "react-router-dom";
-import { OpenRecentProject } from "../../Utilities/ProjectHandler";
+import {
+    OpenRecentProject,
+    UnRegisterRecentProject,
+} from "../../Utilities/ProjectHandler";
 import { withSnackbar } from "notistack";
 
 import DescriptionIcon from "@material-ui/icons/Description";
+import DeleteIcon from "@material-ui/icons/Delete";
 import PropTypes from "prop-types";
 import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-const StyledDiv = styled.div`
-    overflow-y: scroll;
-    height: 100%;
+const ScrollBar = css`
     ::-webkit-scrollbar {
         width: 15px;
         height: 15px;
@@ -31,7 +33,14 @@ const StyledDiv = styled.div`
     }
 `;
 
-const RecentEntry = ({ files, enqueueSnackbar }) => {
+const ScrollView = styled.div`
+    ${ScrollBar}
+    overflow-y: scroll;
+    list-style-type: none;
+    height: 100%;
+`;
+
+const RecentEntry = ({ files, enqueueSnackbar, onChange }) => {
     const { projectFilesState, setProjectFilesState } = useProjectFilesState();
 
     const history = useHistory();
@@ -57,7 +66,7 @@ const RecentEntry = ({ files, enqueueSnackbar }) => {
     );
 
     return (
-        <StyledDiv>
+        <ScrollView>
             {files &&
                 files.map((file, index) => (
                     <MUI.ListItem
@@ -74,9 +83,21 @@ const RecentEntry = ({ files, enqueueSnackbar }) => {
                             primary={file.name}
                             secondary={file.timestamp}
                         />
+                        <MUI.ListItemSecondaryAction>
+                            <MUI.IconButton
+                                edge="end"
+                                aria-label="delete"
+                                onClick={() => {
+                                    UnRegisterRecentProject(file.name);
+                                    onChange();
+                                }}
+                            >
+                                <DeleteIcon />
+                            </MUI.IconButton>
+                        </MUI.ListItemSecondaryAction>
                     </MUI.ListItem>
                 ))}
-        </StyledDiv>
+        </ScrollView>
     );
 };
 
@@ -87,8 +108,9 @@ RecentEntry.defaultProps = {
 };
 
 RecentEntry.propTypes = {
-    files: PropTypes.array,
     enqueueSnackbar: PropTypes.func,
+    files: PropTypes.array,
+    onChange: PropTypes.func,
 };
 
 export default withSnackbar(React.memo(RecentEntry));
