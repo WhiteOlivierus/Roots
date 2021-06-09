@@ -7,16 +7,16 @@ import CreateProjectForm from "../../StartMenu/CreateProjectForm";
 
 import MenuIcon from "@material-ui/icons/Menu";
 import SettingsIcon from "@material-ui/icons/Settings";
-import HomeIcon from "@material-ui/icons/Home";
 
 import { MenuDrawer } from "./MenuDrawer";
 import { menuBarStyles } from "./menuBarStyles";
 import { MenuBarTitle } from "./MenuBarTitle";
 import { withRouter } from "react-router";
+import Home from "./home";
 
 export const drawerWidth = 240;
 
-const MenuBar = ({ history }) => {
+const MenuBar = () => {
     const classes = menuBarStyles();
 
     const [openDrawer, handleDrawerOpen, handleDrawerClose] = useOpen(false);
@@ -54,17 +54,7 @@ const MenuBar = ({ history }) => {
                         >
                             <SettingsIcon />
                         </MUI.IconButton>
-                        <MUI.IconButton
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={() => {
-                                history.push("/");
-                            }}
-                            color="inherit"
-                        >
-                            <HomeIcon />
-                        </MUI.IconButton>
+                        <Home />
                     </MUI.Toolbar>
                 </MUI.AppBar>
                 <MenuDrawer

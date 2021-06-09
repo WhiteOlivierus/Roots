@@ -108,14 +108,9 @@ export async function SetActiveFlowInConfig(activeRoot, flowName) {
 }
 
 async function RegisterRecentProject(file) {
-    let files = await get("files");
+    let files = await get("files") || [];
 
-    if (files) {
-        register();
-    } else {
-        files = [];
-        register();
-    }
+    register();
 
     await set("files", files);
 
@@ -156,7 +151,7 @@ const currentDateAndTime = () => {
 };
 
 export async function UnRegisterRecentProject(name) {
-    let files = await get("files");
+    let files = await get("files") || [];
 
     const index = files.findIndex((element) => {
         return element.fileHandle.name === name;
