@@ -1,18 +1,18 @@
 /* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
-import PropTypes from "prop-types";
 import * as React from "react";
 import * as formik from "formik";
 import * as MUI from "@material-ui/core";
 
 import { TextField } from "formik-material-ui";
+import { withRouter } from "react-router";
+import { NewProject } from "../../Utilities/ProjectHandler";
 
+import PropTypes from "prop-types";
 import FolderIcon from "@material-ui/icons/Folder";
 import CancelIcon from "@material-ui/icons/Cancel";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
-import { withRouter } from "react-router";
-import { NewProject } from "../../Utilities/ProjectHandler";
 
 const CreateProjectForm = ({ title, onClose, history }) => {
     const onValidate = (values) => {
@@ -39,27 +39,25 @@ const CreateProjectForm = ({ title, onClose, history }) => {
         return errors;
     };
 
-    const { projectFilesState, setProjectFilesState } = useProjectFilesState();
+    const { projectFilesState } = useProjectFilesState();
+
+    const [loaded, setLoaded] = React.useState(false);
 
     const SetContext = ({ activeRoot, activeFlow }) => {
-        setProjectFilesState({
-            ...projectFilesState,
-            activeRoot: activeRoot,
-            activeFlow: activeFlow,
-        });
+        projectFilesState.activeRoot = activeRoot;
+        projectFilesState.activeFlow = activeFlow;
+        setLoaded(true);
     };
 
     function onNewProject(values) {
         NewProject(values)
             .then((out) => SetContext(out))
-            .catch()
-            .finally(() => history.push("/flow"));
+            .catch();
     }
 
-    //TODO Find a place to add this button
-    /*     async function onOpenProject(values) {
-    await SetProjectContext(OpenProject);
-} */
+    React.useEffect(() => {
+        if (loaded) history.push("/flow");
+    }, [history, loaded]);
 
     const onSubmit = (values) => onNewProject(values);
 

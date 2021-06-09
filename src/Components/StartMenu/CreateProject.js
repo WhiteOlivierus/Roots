@@ -1,12 +1,16 @@
+import PropTypes from "prop-types";
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
-import { fabStyle } from "./fabStyle";
-import { Fab } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
 import CreateProjectForm from "./CreateProjectForm";
+import SpeedDials from "./SpeedDail";
+import NoteAddIcon from "@material-ui/icons/NoteAdd";
+import FolderIcon from "@material-ui/icons/Folder";
+import { OpenProject } from "../../Utilities/ProjectHandler";
+import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
+import { withRouter } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -22,27 +26,40 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function CreateProject() {
+function CreateProject({ history }) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
-    const handleOpen = () => {
-        setOpen(true);
+    const handleOpen = () => setOpen(true);
+
+    const handleClose = () => setOpen(false);
+
+    const { projectFilesState } = useProjectFilesState();
+
+    const [, setLoaded] = React.useState(false);
+
+    const SetContext = ({ activeRoot, activeFlow }) => {
+        projectFilesState.activeFlow = activeFlow;
+        projectFilesState.activeRoot = activeRoot;
+
+        setLoaded(true);
     };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
+    function onOpenProject() {
+        OpenProject()
+            .then((out) => SetContext(out))
+            .catch()
+            .finally(() => history.push("/flow"));
+    }
+
+    const actions = [
+        { icon: <FolderIcon />, name: "Open", onClick: onOpenProject },
+        { icon: <NoteAddIcon />, name: "New", onClick: handleOpen },
+    ];
 
     return (
         <>
-            <Fab
-                className={fabStyle().fab}
-                color="secondary"
-                onClick={handleOpen}
-            >
-                <AddIcon />
-            </Fab>
+            <SpeedDials actions={actions} />
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
@@ -65,3 +82,11 @@ export default function CreateProject() {
         </>
     );
 }
+
+CreateProject.propTypes = {
+    history: PropTypes.shape({
+        push: PropTypes.func,
+    }),
+};
+
+export default withRouter(CreateProject);

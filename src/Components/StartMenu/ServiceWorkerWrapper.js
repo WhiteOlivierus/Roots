@@ -52,7 +52,7 @@ export const useUpdate = () => {
         window.location.reload(true);
     }, [waitingWorker]);
 
-    const onSWUpdate = useCallback(
+    const onUpdate = useCallback(
         (registration) => {
             enqueueSnackbar("A new update is available", {
                 variant: "info",
@@ -70,7 +70,8 @@ export const useUpdate = () => {
     );
 
     useEffect(() => {
-        serviceWorkerRegistration.register({ onUpdate: onSWUpdate });
+        serviceWorkerRegistration.register({ onUpdate: onUpdate });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return { showReload, reloadPage };

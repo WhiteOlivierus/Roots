@@ -9,7 +9,7 @@ import Editor from "./Editor";
 import useOnUnload from "../../Utilities/UseOnUnLoad";
 
 import { EditorCanvas } from "./EditorCanvas";
-import { MenuBar } from "../FlowEditor/MenuBar/MenuBar";
+import MenuBar from "../FlowEditor/MenuBar/MenuBar";
 import { EditorWrapper } from "../EditorWrapper";
 import { SceneCanvasHooks as Hooks } from "dutchskull-scene-manager";
 import { Redirect } from "react-router";
@@ -106,7 +106,14 @@ const SceneEditor = () => {
                             <ToolBar mode={mode} onExit={onExit} />
                         </Item>
                         <Item>
-                            <EditorWrapper style={{ width: "auto" }}>
+                            <EditorWrapper
+                                style={{
+                                    width: "auto",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    height: "100%",
+                                }}
+                            >
                                 <Editor
                                     node={node}
                                     onLoad={onLoad}

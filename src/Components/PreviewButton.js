@@ -9,7 +9,7 @@ export const PreviewButton = () => {
     return (
         <MUI.Tooltip title="preview">
             <MUI.Fab
-                color="primary"
+                color="secondary"
                 aria-label="add"
                 className={fabStyle().fab}
                 onClick={handleBuild}

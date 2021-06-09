@@ -20,15 +20,13 @@ import useBuild from "../../useBuild";
 export function useFileActions() {
     const { enqueueSnackbar } = useSnackbar();
 
-    const { projectFilesState, setProjectFilesState } = useProjectFilesState();
+    const { projectFilesState } = useProjectFilesState();
     const { nodeViewerState } = useNodeViewerState();
 
     const handleNewFlow = React.useCallback(() => {
         FlowHandler.NewFlow(projectFilesState.activeRoot)
             .then(({ activeFlow }) => {
                 projectFilesState.activeFlow = activeFlow;
-
-                setProjectFilesState(projectFilesState);
 
                 nodeViewerState.setElements((els) => removeElements(els, els));
                 nodeViewerState.setElements(defaultFlow.elements);
@@ -38,34 +36,25 @@ export function useFileActions() {
                     variant: "error",
                 })
             );
-    }, [
-        projectFilesState,
-        setProjectFilesState,
-        nodeViewerState,
-        enqueueSnackbar,
-    ]);
+    }, [projectFilesState, nodeViewerState, enqueueSnackbar]);
 
     const handleNewProject = React.useCallback(() => {
         ProjectHandler.NewProject()
             .then(({ activeRoot, activeFlow }) => {
                 projectFilesState.activeRoot = activeRoot;
                 projectFilesState.activeFlow = activeFlow;
-
-                setProjectFilesState(projectFilesState);
             })
             .catch(() => {
                 enqueueSnackbar(`New project could not be created`, {
                     variant: "error",
                 });
             });
-    }, [enqueueSnackbar, projectFilesState, setProjectFilesState]);
+    }, [enqueueSnackbar, projectFilesState]);
 
     const handleOpenFlow = React.useCallback(() => {
         FlowHandler.OpenFlow(projectFilesState.activeRoot)
             .then(({ activeFlow, flow }) => {
                 projectFilesState.activeFlow = activeFlow;
-
-                setProjectFilesState(projectFilesState);
 
                 nodeViewerState.setElements((els) => removeElements(els, els));
                 nodeViewerState.setElements(flow.elements);
@@ -75,20 +64,13 @@ export function useFileActions() {
                     variant: "error",
                 });
             });
-    }, [
-        projectFilesState,
-        setProjectFilesState,
-        nodeViewerState,
-        enqueueSnackbar,
-    ]);
+    }, [projectFilesState, nodeViewerState, enqueueSnackbar]);
 
     const handleOpenProject = React.useCallback(() => {
         ProjectHandler.OpenProject()
             .then(({ activeRoot, activeFlow }) => {
                 projectFilesState.activeRoot = activeRoot;
                 projectFilesState.activeFlow = activeFlow;
-
-                setProjectFilesState(projectFilesState);
 
                 let fileName = RemoveExtension(activeFlow.name);
 
@@ -101,7 +83,7 @@ export function useFileActions() {
                     variant: "error",
                 });
             });
-    }, [enqueueSnackbar, projectFilesState, setProjectFilesState]);
+    }, [enqueueSnackbar, projectFilesState]);
 
     const handleSaveFlow = React.useCallback(() => {
         let fileName = RemoveExtension(projectFilesState.activeFlow.name);
@@ -135,7 +117,6 @@ export function useFileActions() {
         )
             .then((activeFlow) => {
                 projectFilesState.activeFlow = activeFlow;
-                setProjectFilesState(projectFilesState);
 
                 const activeFlowName = RemoveExtension(activeFlow.name);
                 enqueueSnackbar(`${fileName} saved as ${activeFlowName}`, {
@@ -147,12 +128,7 @@ export function useFileActions() {
                     variant: "error",
                 });
             });
-    }, [
-        enqueueSnackbar,
-        nodeViewerState.rfInstance,
-        projectFilesState,
-        setProjectFilesState,
-    ]);
+    }, [enqueueSnackbar, nodeViewerState.rfInstance, projectFilesState]);
 
     const build = useBuild(false);
 

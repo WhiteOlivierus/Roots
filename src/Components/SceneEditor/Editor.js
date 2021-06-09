@@ -1,13 +1,14 @@
 import * as React from "react";
 import * as MUI from "@material-ui/core";
 import PropTypes from "prop-types";
+import { theme } from "../../Utilities/Theme";
 
 const Editor = ({ node, onLoad, imageRef }) => {
     const hasSrc = node.value.data.imageSrc;
     const test = {
         width: !hasSrc && "100%",
         paddingTop: !hasSrc && "56.25%",
-        backgroundColor: !hasSrc && "#e040fb",
+        backgroundColor: !hasSrc && theme.palette.primary.main,
     };
     return (
         <MUI.Paper

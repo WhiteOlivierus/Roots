@@ -14,7 +14,7 @@ const useBuild = (p) => {
 
     const { enqueueSnackbar } = useSnackbar();
 
-    const { projectFilesState, setProjectFilesState } = useProjectFilesState();
+    const { projectFilesState } = useProjectFilesState();
     const { nodeViewerState } = useNodeViewerState();
 
     return useCallback(() => {
@@ -47,8 +47,6 @@ const useBuild = (p) => {
             .then(({ buildHandle, id }) => {
                 projectFilesState.buildHandle = buildHandle;
 
-                setProjectFilesState(projectFilesState);
-
                 enqueueSnackbar(
                     `${preview.current ? "Preview" : ""} build successfully`,
                     {
@@ -69,7 +67,6 @@ const useBuild = (p) => {
         nodeViewerState.rfInstance,
         enqueueSnackbar,
         preview,
-        setProjectFilesState,
         history,
     ]);
 };

@@ -8,15 +8,19 @@ import RecentEntry from "./RecentEntry";
 export const Recent = () => {
     const [files, setFiles] = React.useState(undefined);
 
-    const GetFiles = () => {
-        get("files").then((files) => setFiles(files));
-    };
+    const GetFiles = () => get("files").then((files) => setFiles(files));
 
-    React.useEffect(GetFiles, [files]);
+    React.useEffect(() => {
+        let isSubscribed = true;
+        get("files").then((files) => {
+            if (isSubscribed) setFiles(files);
+        });
+        return () => (isSubscribed = false);
+    }, [files]);
 
     return (
         <MUI.Card style={{ flex: "1 1 auto" }}>
-            <MUI.CardContent style={{ height: "90%" }}>
+            <MUI.CardContent style={{ height: "85%" }}>
                 <MUI.Typography variant="h2">Recent Projects</MUI.Typography>
                 {files && files.length > 0 ? (
                     <RecentEntry files={files} onChange={GetFiles} />

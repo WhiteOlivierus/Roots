@@ -41,7 +41,7 @@ const ScrollView = styled.div`
 `;
 
 const RecentEntry = ({ files, enqueueSnackbar, onChange }) => {
-    const { projectFilesState, setProjectFilesState } = useProjectFilesState();
+    const { projectFilesState } = useProjectFilesState();
 
     const history = useHistory();
 
@@ -52,8 +52,6 @@ const RecentEntry = ({ files, enqueueSnackbar, onChange }) => {
                     projectFilesState.activeRoot = activeRoot;
                     projectFilesState.activeFlow = activeFlow;
 
-                    setProjectFilesState(projectFilesState);
-
                     history.push("/flow");
                 })
                 .catch((e) => {
@@ -62,7 +60,7 @@ const RecentEntry = ({ files, enqueueSnackbar, onChange }) => {
                     });
                 });
         },
-        [enqueueSnackbar, history, projectFilesState, setProjectFilesState]
+        [enqueueSnackbar, history, projectFilesState]
     );
 
     return (
@@ -72,7 +70,7 @@ const RecentEntry = ({ files, enqueueSnackbar, onChange }) => {
                     <MUI.ListItem
                         key={index}
                         button
-                        onClick={() => onOpenRecentProject(file)}
+                        onClick={() => onOpenRecentProject(file.fileHandle)}
                     >
                         <MUI.ListItemAvatar>
                             <MUI.Avatar>
