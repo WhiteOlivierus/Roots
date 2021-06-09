@@ -13,18 +13,19 @@ export const EditNodeText = ({ value, nodeId, inputStyle, textStyle }) => {
     const { nodeViewerState } = useNodeViewerState();
 
     useEffect(() => {
-        nodeViewerState.setElements(
-            nodeViewerState.rfInstance.getElements().map((el) => {
-                if (isNode(el) && el.id === nodeId) {
-                    el.data = {
-                        ...el.data,
-                        label: nodeName,
-                    };
-                }
+        if (nodeViewerState.rfInstance)
+            nodeViewerState.setElements(
+                nodeViewerState.rfInstance.getElements().map((el) => {
+                    if (isNode(el) && el.id === nodeId) {
+                        el.data = {
+                            ...el.data,
+                            label: nodeName,
+                        };
+                    }
 
-                return el;
-            })
-        );
+                    return el;
+                })
+            );
     }, [nodeName, nodeViewerState, nodeId]);
 
     const toggleEdit = useCallback((e) => {

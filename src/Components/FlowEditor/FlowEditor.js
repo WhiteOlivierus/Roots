@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import ReactFlow, {
     removeElements,
     addEdge,
@@ -6,6 +6,7 @@ import ReactFlow, {
     MiniMap,
     Background,
     useUpdateNodeInternals,
+    useZoomPanHelper,
 } from "react-flow-renderer";
 import { NodeBar } from "./NodeBar";
 import { useHistory } from "react-router-dom";
@@ -30,29 +31,21 @@ const FlowEditor = memo(({ flow }) => {
 
     const updateNodeInternals = useUpdateNodeInternals();
 
-    const [elements, setElements] = useState([]);
-    // eslint-disable-next-line no-unused-vars
-    const [instance, setInstance] = useState(null);
+    const { transform } = useZoomPanHelper();
+    const [elements, setElements] = useState(flow.elements || []);
+
+    useEffect(() => {
+        const [x = 0, y = 0] = flow.position;
+        transform({ x, y, zoom: flow.zoom || 0 });
+    }, [flow, transform]);
 
     const onLoad = (instance) => {
-        instance.setTransform({
-            x: flow.position[0],
-            y: flow.position[1],
-            zoom: flow.zoom || 0,
-        });
-
-        setElements(flow.elements);
-
         nodeViewerState.setElements = setElements;
         nodeViewerState.rfInstance = instance;
 
-        setNodeViewerState(nodeViewerState);
-
-        instance.getElements().map((element) => {
-            return updateNodeInternals(element.id);
-        });
-
-        return setInstance(instance);
+        instance
+            .getElements()
+            .map((element) => updateNodeInternals(element.id));
     };
 
     const onConnect = (params) =>
