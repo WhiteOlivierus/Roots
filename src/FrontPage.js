@@ -48,7 +48,9 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: "56.25%",
     },
     cardContent: {
-        padding: theme.spacing(8),
+        paddingTop: theme.spacing(4),
+        paddingRight: theme.spacing(6),
+        paddingLeft: theme.spacing(6),
         flexBasis: "75%",
         textAlign: "left",
         display: "flex",
@@ -116,6 +118,7 @@ const FrontPage = ({ history }) => {
                                 marginTop: 50,
                                 marginBottom: 50,
                             }}
+                            preload
                         />
                         <Typography
                             variant="h5"

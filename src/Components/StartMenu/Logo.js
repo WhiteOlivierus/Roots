@@ -11,7 +11,11 @@ export const Logo = () => (
             spacing={5}
         >
             <Grid item>
-                <img src="/compressed/logo_text_white.svg" width="40%" />
+                <img
+                    src="/compressed/logo_text_white.svg"
+                    width="40%"
+                    preload
+                />
             </Grid>
         </Grid>
     </Box>
