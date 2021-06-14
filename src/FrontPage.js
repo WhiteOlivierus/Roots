@@ -112,7 +112,7 @@ const FrontPage = ({ history }) => {
                 <div className={classes.heroContent}>
                     <Container maxWidth="sm">
                         <img
-                            src="./Compressed/logo_text_color.svg"
+                            src="/Compressed/logo_text_color.svg"
                             width={"100%"}
                             style={{
                                 marginTop: 50,
