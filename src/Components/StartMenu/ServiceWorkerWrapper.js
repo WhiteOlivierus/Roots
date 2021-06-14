@@ -52,22 +52,19 @@ export const useUpdate = () => {
         window.location.reload(true);
     }, [waitingWorker]);
 
-    const onUpdate = useCallback(
-        (registration) => {
-            enqueueSnackbar("A new update is available", {
-                variant: "info",
-                persist: true,
-                action: (
-                    <Button color="secondary" size="small" onClick={reloadPage}>
-                        Update
-                    </Button>
-                ),
-            });
-            setShowReload(true);
-            setWaitingWorker(registration.waiting);
-        },
-        [enqueueSnackbar, reloadPage]
-    );
+    const onUpdate = (registration) => {
+        enqueueSnackbar("A new update is available", {
+            variant: "info",
+            persist: true,
+            action: (
+                <Button color="secondary" size="small" onClick={reloadPage}>
+                    Update
+                </Button>
+            ),
+        });
+        setShowReload(true);
+        setWaitingWorker(registration.waiting);
+    };
 
     useEffect(() => {
         serviceWorkerRegistration.register({ onUpdate: onUpdate });
