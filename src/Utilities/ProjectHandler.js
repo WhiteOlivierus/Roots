@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
     WriteFile,
     FindDir,
@@ -9,30 +10,40 @@ import { set, get } from "idb-keyval";
 import { defaultFlow } from "./DefaultFlow";
 import { CreateFlow } from "./FlowHandler";
 
-export async function NewProject() {
-    var activeRoot = await window.showDirectoryPicker();
+export async function NewProject(values) {
+    const activeRoot = await values.projectFolder.getDirectoryHandle(
+        values.projectName,
+        {
+            create: true,
+        }
+    );
 
-    if (activeRoot === undefined) {
-        return null;
-    }
+    if (activeRoot === undefined) return null;
 
-    verifyPermission(activeRoot, true);
+    const { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(
+        activeRoot,
+        "Flow"
+    );
+
+    await WriteFile(activeFlow, JSON.stringify(defaultFlow));
 
     const config = await activeRoot.getFileHandle("config.json", {
         create: true,
     });
 
-    await WriteFile(config, JSON.stringify({ lastOpened: "" }));
+    const newLocal = JSON.stringify({
+        ...values,
+        lastOpened: flowDirHandle.name,
+        projectFolder: values.projectFolder.name,
+        projectLogo: values.projectLogo.name | "",
+    });
 
-    var { flowFileHandle: activeFlow, flowDirHandle } = await CreateFlow(
-        activeRoot
-    );
+    await WriteFile(config, newLocal);
 
-    await WriteFile(activeFlow, JSON.stringify(defaultFlow));
-
-    await SetActiveFlowInConfig(activeRoot, flowDirHandle.name);
-
-    await RegisterRecentProject(activeRoot);
+    await RegisterRecentProject({
+        fileHandle: activeRoot,
+        timeStamp: currentDateAndTime(),
+    });
 
     return { activeRoot, activeFlow };
 }
@@ -51,7 +62,12 @@ export async function OpenProject() {
         `${config.lastOpened}.json`
     );
 
-    await RegisterRecentProject(activeRoot);
+    await UnRegisterRecentProject(activeRoot.name);
+
+    await RegisterRecentProject({
+        fileHandle: activeRoot,
+        timeStamp: currentDateAndTime(),
+    });
 
     return { activeRoot, activeFlow };
 }
@@ -71,11 +87,16 @@ export async function OpenRecentProject(activeRoot) {
             `${config.lastOpened}.json`
         );
 
-        await RegisterRecentProject(activeRoot);
+        await UnRegisterRecentProject(activeRoot.name);
+
+        await RegisterRecentProject({
+            fileHandle: activeRoot,
+            timeStamp: currentDateAndTime(),
+        });
 
         return { activeRoot, activeFlow };
     } catch {
-        await UnRegisterRecentProject(activeRoot);
+        await UnRegisterRecentProject(activeRoot.name);
         throw Error(`Project ${activeRoot.name} does not exist`);
     }
 }
@@ -87,21 +108,19 @@ export async function SetActiveFlowInConfig(activeRoot, flowName) {
 }
 
 async function RegisterRecentProject(file) {
-    var files = await get("files");
+    let files = await get("files") || [];
 
-    if (files) {
-        register();
-    } else {
-        files = [];
-        register();
-    }
+    register();
 
     await set("files", files);
 
     function register() {
         for (let index = 0; index < files.length; index++) {
             const newLocal = files[index];
-            if (newLocal.name === file.name) {
+            if (
+                newLocal.name === file.name &&
+                newLocal.name === file.timeStamp
+            ) {
                 files.splice(index, 1);
             }
         }
@@ -112,12 +131,30 @@ async function RegisterRecentProject(file) {
         }
     }
 }
+const currentDateAndTime = () => {
+    const dt = new Date();
+    return `${(dt.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}/${dt
+            .getDate()
+            .toString()
+            .padStart(2, "0")}/${dt
+                .getFullYear()
+                .toString()
+                .padStart(4, "0")} ${dt
+                    .getHours()
+                    .toString()
+                    .padStart(2, "0")}:${dt
+                        .getMinutes()
+                        .toString()
+                        .padStart(2, "0")}:${dt.getSeconds().toString().padStart(2, "0")}`;
+};
 
-async function UnRegisterRecentProject(file) {
-    var files = await get("files");
+export async function UnRegisterRecentProject(name) {
+    let files = await get("files") || [];
 
     const index = files.findIndex((element) => {
-        return element.name === file.name;
+        return element.fileHandle.name === name;
     });
 
     if (index === -1) return;

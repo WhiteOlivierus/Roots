@@ -64,9 +64,7 @@ export async function LoadFlow(root, flowHandle) {
     return flow;
 }
 
-export async function CreateFlow(root) {
-    var flowName = prompt("Please enter your first root name", "Root");
-
+export async function CreateFlow(root, flowName) {
     const isFlowName = flowName === "" || flowName === null;
     if (isFlowName) {
         return null;

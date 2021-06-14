@@ -36,8 +36,18 @@ export const SceneSettingsDrawer = ({ node, projectFolder }) => {
             <Typography variant="h6" gutterBottom>
                 Scene settings
             </Typography>
-            <FileField action={onLoadImage} label="Image" value={data.image} />
-            <FileField action={onLoadAudio} label="Music" value={data.audio} />
+            <FileField
+                color="secondary"
+                action={onLoadImage}
+                label="Image"
+                value={data.image}
+            />
+            <FileField
+                color="secondary"
+                action={onLoadAudio}
+                label="Music"
+                value={data.audio}
+            />
         </>
     );
 };

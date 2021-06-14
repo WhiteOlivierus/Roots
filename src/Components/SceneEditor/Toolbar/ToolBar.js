@@ -5,10 +5,10 @@ import * as MUILab from "@material-ui/lab";
 import BackButton from "./BackButton";
 import PropTypes from "prop-types";
 
-import toolbarIcons from "./toolbarIcons.json";
+import { toolBarIcons } from "./toolbarIcons";
 
 const ToolBar = ({ mode, onExit }) => {
-    const handleChange = (e, icon) => icon && mode.setValue(icon);
+    const handleChange = (e, icon) => mode.setValue(icon);
 
     return (
         <MUI.Box p={3}>
@@ -30,17 +30,14 @@ const ToolBar = ({ mode, onExit }) => {
                             exclusive
                             onChange={handleChange}
                         >
-                            {toolbarIcons.map((icon) => (
+                            {toolBarIcons.map(({ icon, title }) => (
                                 <MUILab.ToggleButton
-                                    key={icon.title}
-                                    value={icon.tittle}
-                                    aria-label={icon.tittle}
+                                    key={title}
+                                    value={title}
+                                    aria-label={title}
                                 >
-                                    <MUI.Tooltip title={icon.tittle}>
-                                        <MUI.Icon
-                                            className={`fas fa${icon.icon}`}
-                                            color="primary"
-                                        />
+                                    <MUI.Tooltip title={title}>
+                                        {icon}
                                     </MUI.Tooltip>
                                 </MUILab.ToggleButton>
                             ))}

@@ -5,14 +5,10 @@ import PropTypes from "prop-types";
 const ProjectFilesContext = React.createContext(null);
 
 const ProjectFilesProvider = ({ children }) => {
-    const [projectFilesState, setProjectFilesState] = React.useState(
-        new ProjectFilesState()
-    );
+    const [projectFilesState] = React.useState(new ProjectFilesState());
 
     return (
-        <ProjectFilesContext.Provider
-            value={{ projectFilesState, setProjectFilesState }}
-        >
+        <ProjectFilesContext.Provider value={{ projectFilesState }}>
             {children}
         </ProjectFilesContext.Provider>
     );

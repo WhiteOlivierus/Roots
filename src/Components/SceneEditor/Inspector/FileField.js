@@ -39,8 +39,8 @@ export const FileField = ({ label, value, action }) => {
             </Grid>
             <Grid item xs={2}>
                 <IconButton
+                    color="secondary"
                     variant="contained"
-                    color="primary"
                     onClick={action}
                 >
                     <FolderIcon />

@@ -18,7 +18,7 @@ const BackButton = ({ onExit, to }) => {
             <MUI.Button
                 onClick={handleClick}
                 variant="contained"
-                color="primary"
+                color="secondary"
             >
                 <ChevronLeftIcon style={{ fill: "white" }} />
             </MUI.Button>

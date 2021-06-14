@@ -33,7 +33,15 @@ export const theme = createMuiTheme({
     typography: {
         h1: {
             fontFamily: "Martel",
-            fontWeight: 1000,
+            fontWeight: 100,
+        },
+        h2: {
+            color: "black",
+            fontWeight: 100,
+        },
+        h3: {
+            color: "black",
+            fontWeight: 100,
         },
     },
     shape: {
@@ -78,22 +86,3 @@ export const theme = createMuiTheme({
         },
     },
 });
-
-/* export const theme = createMuiTheme({
-    palette: {
-        type: "light",
-        primary: {
-            main: "#e040fb",
-        },
-        secondary: {
-            main: "#f50057",
-        },
-    },
-    typography: {
-        h1: {
-            fontFamily: "Martel",
-            fontWeight: 1000,
-        },
-    },
-});
- */

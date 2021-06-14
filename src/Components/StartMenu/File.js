@@ -6,7 +6,7 @@ import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFiles
 import { NewProject, OpenProject } from "../../Utilities/ProjectHandler";
 
 export const File = () => {
-    const { projectFilesState, setProjectFilesState } = useProjectFilesState();
+    const { projectFilesState } = useProjectFilesState();
 
     const history = useHistory();
 
@@ -15,8 +15,6 @@ export const File = () => {
             .then(({ activeRoot, activeFlow }) => {
                 projectFilesState.activeRoot = activeRoot;
                 projectFilesState.activeFlow = activeFlow;
-
-                setProjectFilesState(projectFilesState);
 
                 history.push("/flow");
             })
