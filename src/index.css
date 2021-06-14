@@ -56,3 +56,25 @@ input {
     -webkit-user-select: all;
     user-select: all;
 }
+
+::-webkit-scrollbar {
+    width: 15px;
+    height: 15px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(212, 85, 0);
+
+    border-radius: 10px;
+    transition: 0.5s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(220, 119, 51);
+}
+
+::-webkit-scrollbar-track {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: inset 7px 10px 12px #f0f0f0;
+}

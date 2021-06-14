@@ -44,16 +44,15 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "center",
     },
     cardMedia: {
-        flexBasis: "50%",
+        flexBasis: "25%",
         paddingTop: "56.25%",
     },
     cardContent: {
         padding: theme.spacing(8),
-        flexBasis: "50%",
+        flexBasis: "75%",
         textAlign: "left",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
     },
     footer: {
         backgroundColor: theme.palette.background.paper,
@@ -157,14 +156,24 @@ const FrontPage = ({ history }) => {
                 </div>
                 <Container className={classes.cardGrid} maxWidth="md">
                     <Grid container spacing={4}>
-                        {cards.map((card, i) => {
+                        <Grid item xs={12}>
+                            <Typography
+                                gutterBottom
+                                variant="h2"
+                                style={{
+                                    color: theme.palette.primary.contrastText,
+                                }}
+                            >
+                                Features
+                            </Typography>
+                        </Grid>
+                        {cards.map((card) => {
                             return (
-                                <Grid item key={card} xs={12}>
+                                <Grid item key={card} xs={4}>
                                     <Card
                                         className={classes.card}
                                         style={{
-                                            flexDirection:
-                                                i % 2 ? "row" : "row-reverse",
+                                            flexDirection: "column-reverse",
                                         }}
                                     >
                                         <CardMedia
@@ -188,6 +197,79 @@ const FrontPage = ({ history }) => {
                                 </Grid>
                             );
                         })}
+                        <Grid item xs={12}>
+                            <Grid container spacing={4}>
+                                <Grid item xs={12}>
+                                    <Typography
+                                        gutterBottom
+                                        variant="h2"
+                                        style={{
+                                            color:
+                                                theme.palette.primary
+                                                    .contrastText,
+                                        }}
+                                    >
+                                        Contribute
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography
+                                        style={{
+                                            color:
+                                                theme.palette.primary
+                                                    .contrastText,
+                                        }}
+                                        gutterBottom
+                                    >
+                                        If you have the know how you can
+                                        contribute by going to the github page
+                                        and look at the project.
+                                    </Typography>
+                                    <Button
+                                        style={{ margin: theme.spacing(4) }}
+                                        variant="outlined"
+                                        color="secondary"
+                                        onClick={() => {
+                                            window.open(
+                                                "https://github.com/WhiteOlivierus/Roots",
+                                                "_blank"
+                                            );
+                                        }}
+                                    >
+                                        Github
+                                    </Button>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography
+                                        style={{
+                                            color:
+                                                theme.palette.primary
+                                                    .contrastText,
+                                        }}
+                                        gutterBottom
+                                    >
+                                        Even if you don&apos;t know how to
+                                        program you can go to the feature
+                                        request page and share your ideas for
+                                        features.
+                                    </Typography>
+
+                                    <Button
+                                        style={{ margin: theme.spacing(4) }}
+                                        variant="outlined"
+                                        color="secondary"
+                                        onClick={() => {
+                                            window.open(
+                                                "https://github.com/WhiteOlivierus/Roots/issues",
+                                                "_blank"
+                                            );
+                                        }}
+                                    >
+                                        Feature request
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Container>
             </main>
