@@ -6,10 +6,29 @@ export const theme = createMuiTheme({
         type: "light",
         primary: {
             main: "#d45500",
+            light: "rgb(220, 119, 51)",
+            dark: "rgb(148, 59, 0)",
+            contrastText: "#fff",
         },
         secondary: {
             main: "#3b2400",
+            light: "rgb(98, 79, 51)",
+            dark: "rgb(41, 25, 0)",
+            contrastText: "#fff",
         },
+        error: {
+            main: "#f44336",
+        },
+        warning: {
+            main: "#ff9800",
+        },
+        info: {
+            main: "#2196f3",
+        },
+        success: {
+            main: "#4caf50",
+        },
+        divider: "rgba(0, 0, 0, 0.12)",
     },
     typography: {
         h1: {
