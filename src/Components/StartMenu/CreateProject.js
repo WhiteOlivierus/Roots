@@ -47,9 +47,13 @@ function CreateProject({ history }) {
 
     function onOpenProject() {
         OpenProject()
-            .then((out) => SetContext(out))
-            .catch()
-            .finally(() => history.push("/flow"));
+            .then((out) => {
+                SetContext(out);
+                history.push("/flow");
+            })
+            .catch(() => {
+                console.log("User canceled open project");
+            });
     }
 
     const actions = [
