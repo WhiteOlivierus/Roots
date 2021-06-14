@@ -14,7 +14,7 @@ export const Logo = () => (
                 <img
                     src="/compressed/logo_text_white.svg"
                     width="40%"
-                    preload
+                    preload="true"
                 />
             </Grid>
         </Grid>

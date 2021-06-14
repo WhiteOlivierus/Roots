@@ -118,7 +118,7 @@ const FrontPage = ({ history }) => {
                                 marginTop: 50,
                                 marginBottom: 50,
                             }}
-                            preload
+                            preload="true"
                         />
                         <Typography
                             variant="h5"
@@ -172,7 +172,7 @@ const FrontPage = ({ history }) => {
                         </Grid>
                         {cards.map((card) => {
                             return (
-                                <Grid item key={card} xs={4}>
+                                <Grid item key={card.heading} xs={4}>
                                     <Card
                                         className={classes.card}
                                         style={{
@@ -230,7 +230,7 @@ const FrontPage = ({ history }) => {
                                     </Typography>
                                     <Button
                                         style={{ margin: theme.spacing(4) }}
-                                        variant="outlined"
+                                        variant="contained"
                                         color="secondary"
                                         onClick={() => {
                                             window.open(
@@ -259,7 +259,7 @@ const FrontPage = ({ history }) => {
 
                                     <Button
                                         style={{ margin: theme.spacing(4) }}
-                                        variant="outlined"
+                                        variant="contained"
                                         color="secondary"
                                         onClick={() => {
                                             window.open(
