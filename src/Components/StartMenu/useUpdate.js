@@ -47,7 +47,6 @@ const useUpdate = (showSnackBar, location = undefined) => {
 
     React.useEffect(() => {
         serviceWorker.register({ onUpdate: onUpdate });
-        console.log(history.location);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

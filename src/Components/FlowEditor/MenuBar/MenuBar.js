@@ -3,7 +3,6 @@ import * as React from "react";
 import * as MUI from "@material-ui/core";
 
 import clsx from "clsx";
-import CreateProjectForm from "../../StartMenu/CreateProjectForm";
 
 import MenuIcon from "@material-ui/icons/Menu";
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -13,6 +12,7 @@ import { menuBarStyles } from "./menuBarStyles";
 import { MenuBarTitle } from "./MenuBarTitle";
 import { withRouter } from "react-router";
 import Home from "./home";
+import ProjectSettingsModal from "../../StartMenu/ProjectSettingsModal";
 
 export const drawerWidth = 240;
 
@@ -62,27 +62,7 @@ const MenuBar = () => {
                     handleDrawerClose={handleDrawerClose}
                 />
             </div>
-            {openModal && (
-                <MUI.Modal
-                    aria-labelledby="transition-modal-title"
-                    aria-describedby="transition-modal-description"
-                    className={classes.modal}
-                    open={openModal}
-                    onClose={handleModalClose}
-                    closeAfterTransition
-                    BackdropComponent={MUI.Backdrop}
-                    BackdropProps={{
-                        timeout: 500,
-                    }}
-                >
-                    <MUI.Fade in={open}>
-                        <CreateProjectForm
-                            title="New project"
-                            onClose={handleModalOpen}
-                        />
-                    </MUI.Fade>
-                </MUI.Modal>
-            )}
+            <ProjectSettingsModal onClose={handleModalClose} open={openModal} />
         </>
     );
 };
