@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
-import * as serviceWorkerRegistration from "../../serviceWorkerRegistration";
+import React from "react";
 import { Box, Button, Card, Grid, Typography } from "@material-ui/core";
-import { useSnackbar } from "notistack";
+import useUpdate from "./useUpdate";
 
 const ServiceWorkerWrapper = () => {
-    const { showReload, reloadPage } = useUpdate();
+    const { showReload, reloadPage } = useUpdate(false);
     return (
         <div>
             {showReload && (
@@ -40,36 +39,3 @@ const ServiceWorkerWrapper = () => {
 };
 
 export default ServiceWorkerWrapper;
-
-export const useUpdate = () => {
-    const { enqueueSnackbar } = useSnackbar();
-    const [showReload, setShowReload] = useState(false);
-    const [waitingWorker, setWaitingWorker] = useState(null);
-
-    const reloadPage = useCallback(() => {
-        waitingWorker?.postMessage({ type: "SKIP_WAITING" });
-        setShowReload(false);
-        window.location.reload(true);
-    }, [waitingWorker]);
-
-    const onUpdate = (registration) => {
-        enqueueSnackbar("A new update is available", {
-            variant: "info",
-            persist: true,
-            action: (
-                <Button color="secondary" size="small" onClick={reloadPage}>
-                    Update
-                </Button>
-            ),
-        });
-        setShowReload(true);
-        setWaitingWorker(registration.waiting);
-    };
-
-    useEffect(() => {
-        serviceWorkerRegistration.register({ onUpdate: onUpdate });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    return { showReload, reloadPage };
-};

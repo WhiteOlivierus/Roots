@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as Router from "react-router-dom";
 
 import ProjectFilesProvider from "./Context/ProjectFilesContext/ProjectFilesProvider";
 import { ThemeProvider } from "@material-ui/core";
@@ -10,15 +11,19 @@ import PropTypes from "prop-types";
 
 const GlobalProvider = ({ children }) => {
     return (
-        <SnackbarProvider maxSnack={3}>
-            <ProjectFilesProvider>
-                <NodeViewerProvider>
-                    <ReactFlowProvider>
-                        <ThemeProvider theme={theme}>{children}</ThemeProvider>
-                    </ReactFlowProvider>
-                </NodeViewerProvider>
-            </ProjectFilesProvider>
-        </SnackbarProvider>
+        <Router.BrowserRouter>
+            <SnackbarProvider maxSnack={3}>
+                <ProjectFilesProvider>
+                    <NodeViewerProvider>
+                        <ReactFlowProvider>
+                            <ThemeProvider theme={theme}>
+                                {children}
+                            </ThemeProvider>
+                        </ReactFlowProvider>
+                    </NodeViewerProvider>
+                </ProjectFilesProvider>
+            </SnackbarProvider>
+        </Router.BrowserRouter>
     );
 };
 
