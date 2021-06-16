@@ -13,11 +13,14 @@ import { MenuBarTitle } from "./MenuBarTitle";
 import { withRouter } from "react-router";
 import Home from "./home";
 import ProjectSettingsModal from "../../StartMenu/ProjectSettingsModal";
+import useProjectFilesState from "../../../Context/ProjectFilesContext/ProjectFilesContext";
 
 export const drawerWidth = 240;
 
 const MenuBar = () => {
     const classes = menuBarStyles();
+
+    const { projectFilesState } = useProjectFilesState();
 
     const [openDrawer, handleDrawerOpen, handleDrawerClose] = useOpen(false);
     const [openModal, handleModalOpen, handleModalClose] = useOpen(false);
@@ -62,7 +65,11 @@ const MenuBar = () => {
                     handleDrawerClose={handleDrawerClose}
                 />
             </div>
-            <ProjectSettingsModal onClose={handleModalClose} open={openModal} />
+            <ProjectSettingsModal
+                onClose={handleModalClose}
+                open={openModal}
+                config={projectFilesState.config}
+            />
         </>
     );
 };

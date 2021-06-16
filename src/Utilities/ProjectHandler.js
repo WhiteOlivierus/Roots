@@ -27,25 +27,25 @@ export async function NewProject(values) {
 
     await WriteFile(activeFlow, JSON.stringify(defaultFlow));
 
-    const config = await activeRoot.getFileHandle("config.json", {
+    const configHandle = await activeRoot.getFileHandle("config.json", {
         create: true,
     });
 
-    const newLocal = JSON.stringify({
+    const config = JSON.stringify({
         ...values,
         lastOpened: flowDirHandle.name,
         projectFolder: values.projectFolder.name,
         projectLogo: values.projectLogo.name | "",
     });
 
-    await WriteFile(config, newLocal);
+    await WriteFile(configHandle, config);
 
     await RegisterRecentProject({
         fileHandle: activeRoot,
         timeStamp: currentDateAndTime(),
     });
 
-    return { activeRoot, activeFlow };
+    return { activeRoot, activeFlow, activeConfig: config };
 }
 
 export async function OpenProject() {
@@ -69,7 +69,7 @@ export async function OpenProject() {
         timeStamp: currentDateAndTime(),
     });
 
-    return { activeRoot, activeFlow };
+    return { activeRoot, activeFlow, activeConfig: config };
 }
 
 export async function OpenRecentProject(activeRoot) {
@@ -94,7 +94,7 @@ export async function OpenRecentProject(activeRoot) {
             timeStamp: currentDateAndTime(),
         });
 
-        return { activeRoot, activeFlow };
+        return { activeRoot, activeFlow, activeConfig: config };
     } catch {
         await UnRegisterRecentProject(activeRoot.name);
         throw Error(`Project ${activeRoot.name} does not exist`);

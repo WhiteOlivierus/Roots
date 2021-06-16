@@ -48,9 +48,10 @@ const RecentEntry = ({ files, enqueueSnackbar, onChange }) => {
     const onOpenRecentProject = React.useCallback(
         (fileHandle) => {
             OpenRecentProject(fileHandle)
-                .then(({ activeRoot, activeFlow }) => {
+                .then(({ activeRoot, activeFlow, activeConfig }) => {
                     projectFilesState.activeRoot = activeRoot;
                     projectFilesState.activeFlow = activeFlow;
+                    projectFilesState.config = activeConfig;
 
                     history.push("/flow");
                 })

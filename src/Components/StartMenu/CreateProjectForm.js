@@ -1,82 +1,78 @@
-/* eslint-disable react/display-name */
-/* eslint-disable react/prop-types */
 import * as React from "react";
-import * as formik from "formik";
+import * as Formik from "formik";
 import * as MUI from "@material-ui/core";
+import * as Yup from "yup";
+import * as Router from "react-router";
 
-import { TextField } from "formik-material-ui";
-import { withRouter } from "react-router";
 import { NewProject } from "../../Utilities/ProjectHandler";
 
+import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
 import PropTypes from "prop-types";
+
 import FolderIcon from "@material-ui/icons/Folder";
 import CancelIcon from "@material-ui/icons/Cancel";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
+import IconButton from "@material-ui/core/IconButton";
 
-const CreateProjectForm = ({ title, onClose, history }) => {
-    const onValidate = (values) => {
+const validationSchema = Yup.object({
+    projectName: Yup.string("Enter a project name")
+        .min(1, "Project name should be of minimum 1 characters length")
+        .required("Project name is required"),
+    authorName: Yup.string("Enter a author name")
+        .min(2, "Author name should be of minimum 2 characters length")
+        .required("Author name is required"),
+    description: Yup.string("Enter a description").required(
+        "Description is required"
+    ),
+});
+
+const CreateProjectForm = ({ title, onClose, history, config }) => {
+    const [loaded, setLoaded] = React.useState(false);
+
+    const { projectFilesState } = useProjectFilesState();
+
+    const validate = (values) => {
         const errors = {};
-        if (!values.projectName) {
-            errors.projectName = "Required";
-        }
 
-        if (!values.authorName) {
-            errors.authorName = "Required";
-        }
-
-        if (!values.description) {
-            errors.description = "Required";
-        }
-
-        if (
-            Object.keys(values.projectFolder).length === 0 &&
-            values.projectFolder.constructor === Object
-        ) {
+        if (!values.projectFolder.name) {
             errors.projectFolder = "Required";
         }
 
         return errors;
     };
 
-    const { projectFilesState } = useProjectFilesState();
-
-    const [loaded, setLoaded] = React.useState(false);
-
-    const SetContext = ({ activeRoot, activeFlow }) => {
-        projectFilesState.activeRoot = activeRoot;
-        projectFilesState.activeFlow = activeFlow;
-        setLoaded(true);
-    };
-
-    function onNewProject(values) {
-        NewProject(values)
-            .then((out) => SetContext(out))
-            .catch();
-    }
+    const formik = Formik.useFormik({
+        initialValues: {
+            ...{
+                projectName: "",
+                authorName: "",
+                description: "",
+                projectFolder: { name: "" },
+                projectLogo: { name: "" },
+            },
+            ...config,
+        },
+        validate: validate,
+        validationSchema: validationSchema,
+        onSubmit: (values) =>
+            NewProject(values)
+                .then(({ activeRoot, activeFlow, activeConfig }) => {
+                    projectFilesState.activeRoot = activeRoot;
+                    projectFilesState.activeFlow = activeFlow;
+                    projectFilesState.config = activeConfig;
+                    setLoaded(true);
+                })
+                .catch(),
+    });
 
     React.useEffect(() => {
         if (loaded) history.push("/flow");
     }, [history, loaded]);
 
-    const onSubmit = (values) => onNewProject(values);
-
     return (
         <MUI.Card style={{ width: "50%" }}>
             <MUI.Box p={4} m={4}>
-                <formik.Formik
-                    initialValues={{
-                        projectName: "",
-                        authorName: "",
-                        description: "",
-                        projectFolder: {},
-                        projectLogo: {},
-                    }}
-                    validate={onValidate}
-                    onSubmit={onSubmit}
-                >
-                    {ProjectForm(title, onClose)}
-                </formik.Formik>
+                <ProjectForm title={title} onClose={onClose} formik={formik} />
             </MUI.Box>
         </MUI.Card>
     );
@@ -84,146 +80,193 @@ const CreateProjectForm = ({ title, onClose, history }) => {
 
 CreateProjectForm.propTypes = {
     title: PropTypes.string.isRequired,
+    config: PropTypes.object,
+    onClose: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
 };
 
-export default withRouter(CreateProjectForm);
+export default Router.withRouter(CreateProjectForm);
 
-function ProjectForm(title, onClose) {
-    return ({ values, submitForm, isSubmitting }) => (
-        <formik.Form>
-            <MUI.Grid container direction={"column"} spacing={4} m={4}>
-                <MUI.Grid item>
-                    <MUI.Typography variant="h2" component="h2">
-                        {title}
-                    </MUI.Typography>
-                </MUI.Grid>
-                <MUI.Grid item>
-                    <formik.Field
-                        component={TextField}
-                        name="projectName"
-                        type="projectName"
-                        label="Project name"
-                        variant="outlined"
-                        fullWidth
-                    />
-                </MUI.Grid>
-                <MUI.Grid item>
-                    <formik.Field
-                        component={TextField}
-                        type="authorName"
-                        name="authorName"
-                        label="Author name"
-                        variant="outlined"
-                        fullWidth
-                    />
-                </MUI.Grid>
-                <MUI.Grid item>
-                    <formik.Field
-                        component={TextField}
-                        type="description"
-                        name="description"
-                        label="Description"
-                        variant="outlined"
-                        fullWidth
-                        multiline
-                        rows={4}
-                    />
-                </MUI.Grid>
-                <FileField
-                    label={"Project folder"}
-                    icon={<FolderIcon />}
-                    value={values.projectFolder}
-                    onClick={async () =>
-                        (values.projectFolder = await window.showDirectoryPicker())
+const ProjectForm = ({ title, onClose, formik }) => (
+    <form onSubmit={formik.handleSubmit}>
+        <MUI.Grid container direction={"column"} spacing={4} m={4}>
+            <MUI.Grid item>
+                <MUI.Typography variant="h2" component="h2">
+                    {title}
+                </MUI.Typography>
+            </MUI.Grid>
+            <MUI.Grid item>
+                <MUI.TextField
+                    name="projectName"
+                    type="projectName"
+                    label="Project name"
+                    variant="outlined"
+                    fullWidth
+                    value={formik.values.projectName}
+                    onChange={formik.handleChange}
+                    error={
+                        formik.touched.projectName &&
+                        Boolean(formik.errors.projectName)
                     }
-                >
-                    Open
-                </FileField>
-                <FileField
-                    label={"Project logo"}
-                    icon={<FolderIcon />}
-                    value={values.projectLogo}
-                    onClick={() => alert("add logo")}
-                >
-                    Open
-                </FileField>
-                <MUI.Grid item>
-                    <MUI.Grid
-                        container
-                        direction="row"
-                        justify="center"
-                        alignItems="center"
-                        spacing={4}
-                    >
-                        <MUI.Grid item>
-                            <MUI.Button
-                                variant="contained"
-                                color="secondary"
-                                disabled={isSubmitting}
-                                onClick={onClose}
-                                startIcon={<CancelIcon />}
-                                size="large"
+                    helperText={
+                        formik.touched.projectName && formik.errors.projectName
+                    }
+                />
+            </MUI.Grid>
+            <MUI.Grid item>
+                <MUI.TextField
+                    type="authorName"
+                    name="authorName"
+                    label="Author name"
+                    variant="outlined"
+                    fullWidth
+                    value={formik.values.authorName}
+                    onChange={formik.handleChange}
+                    error={
+                        formik.touched.authorName &&
+                        Boolean(formik.errors.authorName)
+                    }
+                    helperText={
+                        formik.touched.authorName && formik.errors.authorName
+                    }
+                />
+            </MUI.Grid>
+            <MUI.Grid item>
+                <MUI.TextField
+                    type="description"
+                    name="description"
+                    label="Description"
+                    variant="outlined"
+                    fullWidth
+                    multiline
+                    rows={4}
+                    value={formik.values.description}
+                    onChange={formik.handleChange}
+                    error={
+                        formik.touched.description &&
+                        Boolean(formik.errors.description)
+                    }
+                    helperText={
+                        formik.touched.description && formik.errors.description
+                    }
+                />
+            </MUI.Grid>
+            <MUI.Grid item>
+                <MUI.TextField
+                    name="projectFolder"
+                    type="projectFolder"
+                    label="Project folder"
+                    variant="outlined"
+                    fullWidth
+                    disabled
+                    style={{
+                        outlineColor: "#f44336",
+                    }}
+                    value={formik.values.projectFolder.name}
+                    error={
+                        formik.touched.projectFolder &&
+                        Boolean(formik.errors.projectFolder)
+                    }
+                    helperText={
+                        formik.touched.projectFolder &&
+                        formik.errors.projectFolder
+                    }
+                    InputProps={{
+                        endAdornment: (
+                            <IconButton
+                                onClick={(e) =>
+                                    window
+                                        .showDirectoryPicker()
+                                        .then((directory) => {
+                                            formik.handleChange({
+                                                ...e,
+                                                target: {
+                                                    ...e.target,
+                                                    value: directory,
+                                                },
+                                            });
+                                        })
+                                }
                             >
-                                Cancel
-                            </MUI.Button>
-                        </MUI.Grid>
-                        <MUI.Grid item>
-                            <MUI.Button
-                                variant="contained"
-                                color="secondary"
-                                disabled={isSubmitting}
-                                onClick={submitForm}
-                                startIcon={<CheckCircleIcon />}
-                                size="large"
+                                <FolderIcon />
+                            </IconButton>
+                        ),
+                    }}
+                />
+            </MUI.Grid>
+            <MUI.Grid item>
+                <MUI.TextField
+                    name="projectLogo"
+                    type="projectLogo"
+                    label="Project logo"
+                    variant="outlined"
+                    fullWidth
+                    disabled
+                    value={formik.values.projectLogo.name}
+                    onChange={formik.handleChange}
+                    error={
+                        formik.touched.projectLogo &&
+                        Boolean(formik.errors.projectLogo)
+                    }
+                    helperText={
+                        formik.touched.projectLogo && formik.errors.projectLogo
+                    }
+                    InputProps={{
+                        endAdornment: (
+                            <IconButton
+                                onClick={() =>
+                                    window
+                                        .showOpenFilePicker()
+                                        .then(
+                                            (logo) =>
+                                                (formik.values.projectLogo = logo)
+                                        )
+                                }
                             >
-                                Create
-                            </MUI.Button>
-                        </MUI.Grid>
+                                <FolderIcon />
+                            </IconButton>
+                        ),
+                    }}
+                />
+            </MUI.Grid>
+            <MUI.Grid item>
+                <MUI.Grid
+                    container
+                    direction="row"
+                    justify="center"
+                    alignItems="center"
+                    spacing={4}
+                >
+                    <MUI.Grid item>
+                        <MUI.Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={onClose}
+                            startIcon={<CancelIcon />}
+                            size="large"
+                        >
+                            Cancel
+                        </MUI.Button>
+                    </MUI.Grid>
+                    <MUI.Grid item>
+                        <MUI.Button
+                            variant="contained"
+                            color="secondary"
+                            type="submit"
+                            startIcon={<CheckCircleIcon />}
+                            size="large"
+                        >
+                            Create
+                        </MUI.Button>
                     </MUI.Grid>
                 </MUI.Grid>
             </MUI.Grid>
-        </formik.Form>
-    );
-}
-
-const FileField = ({ label, onClick, icon, children, value }) => {
-    const [first, second] = label.split(" ");
-    const newLabel = [
-        first.toLowerCase(),
-        second.charAt(0).toUpperCase() + second.slice(1),
-    ].join("");
-    return (
-        <MUI.Grid item>
-            <MUI.Grid
-                container
-                direction={"row"}
-                justify="space-between"
-                alignItems="center"
-            >
-                <MUI.Grid item xs={10}>
-                    <formik.Field
-                        component={TextField}
-                        type={newLabel}
-                        name={newLabel}
-                        label={"name" in value ? value.name : label}
-                        value={"name" in value ? value.name : label}
-                        variant="outlined"
-                        fullWidth
-                        disabled
-                    />
-                </MUI.Grid>
-                <MUI.Grid item>
-                    <MUI.Button
-                        variant="contained"
-                        size="large"
-                        color="secondary"
-                        onClick={onClick}
-                        startIcon={icon}
-                    >
-                        {children}
-                    </MUI.Button>
-                </MUI.Grid>
-            </MUI.Grid>
         </MUI.Grid>
-    );
+    </form>
+);
+
+ProjectForm.propTypes = {
+    title: PropTypes.string.isRequired,
+    formik: PropTypes.object.isRequired,
+    onClose: PropTypes.func.isRequired,
 };

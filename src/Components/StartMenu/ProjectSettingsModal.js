@@ -6,7 +6,7 @@ import Fade from "@material-ui/core/Fade";
 import CreateProjectForm from "./CreateProjectForm";
 import { useStyles } from "./CreateProject";
 
-const ProjectSettingsModal = ({ onClose, open }) => {
+const ProjectSettingsModal = ({ onClose, open, config }) => {
     const classes = useStyles();
     return (
         <Modal
@@ -22,14 +22,20 @@ const ProjectSettingsModal = ({ onClose, open }) => {
             }}
         >
             <Fade in={open}>
-                <CreateProjectForm title="New project" onClose={onClose} />
+                <CreateProjectForm
+                    title="New project"
+                    onClose={onClose}
+                    config={config}
+                />
             </Fade>
         </Modal>
     );
 };
+
 ProjectSettingsModal.propTypes = {
     onClose: PropTypes.func,
     open: PropTypes.bool,
+    config: PropTypes.object,
 };
 
 export default ProjectSettingsModal;

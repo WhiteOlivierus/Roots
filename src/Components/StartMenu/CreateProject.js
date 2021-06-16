@@ -28,9 +28,10 @@ function CreateProject({ history }) {
 
     const [, setLoaded] = React.useState(false);
 
-    const SetContext = ({ activeRoot, activeFlow }) => {
+    const SetContext = ({ activeRoot, activeFlow, activeConfig }) => {
         projectFilesState.activeFlow = activeFlow;
         projectFilesState.activeRoot = activeRoot;
+        projectFilesState.config = activeConfig;
 
         setLoaded(true);
     };
