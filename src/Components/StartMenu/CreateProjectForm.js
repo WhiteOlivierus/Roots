@@ -178,13 +178,14 @@ const ProjectForm = ({ title, onClose, formik }) => (
                                     window
                                         .showDirectoryPicker()
                                         .then((directory) => {
-                                            formik.handleChange({
+                                            const value = {
                                                 ...e,
                                                 target: {
-                                                    ...e.target,
+                                                    name: "projectFolder",
                                                     value: directory,
                                                 },
-                                            });
+                                            };
+                                            formik.handleChange(value);
                                         })
                                 }
                             >
@@ -214,13 +215,17 @@ const ProjectForm = ({ title, onClose, formik }) => (
                     InputProps={{
                         endAdornment: (
                             <IconButton
-                                onClick={() =>
-                                    window
-                                        .showOpenFilePicker()
-                                        .then(
-                                            (logo) =>
-                                                (formik.values.projectLogo = logo)
-                                        )
+                                onClick={(e) =>
+                                    window.showOpenFilePicker().then((logo) => {
+                                        const value = {
+                                            ...e,
+                                            target: {
+                                                name: "projectLogo",
+                                                value: logo[0],
+                                            },
+                                        };
+                                        formik.handleChange(value);
+                                    })
                                 }
                             >
                                 <FolderIcon />
