@@ -66,9 +66,10 @@ const MenuBar = () => {
                 />
             </div>
             <ProjectSettingsModal
-                onClose={handleModalClose}
+                title="Project settings"
                 open={openModal}
                 config={projectFilesState.config}
+                onClose={handleModalClose}
             />
         </>
     );

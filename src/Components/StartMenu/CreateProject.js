@@ -4,10 +4,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import SpeedDials from "./SpeedDail";
 import NoteAddIcon from "@material-ui/icons/NoteAdd";
 import FolderIcon from "@material-ui/icons/Folder";
-import { OpenProject } from "../../Utilities/ProjectHandler";
+import { NewProject, OpenProject } from "../../Utilities/ProjectHandler";
 import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
 import { withRouter } from "react-router";
 import ProjectSettingsModal from "./ProjectSettingsModal";
+import { WriteFile } from "../../Utilities/FileHandler";
 
 export const useStyles = makeStyles(() => ({
     modal: {
@@ -26,14 +27,31 @@ function CreateProject({ history }) {
 
     const { projectFilesState } = useProjectFilesState();
 
-    const [, setLoaded] = React.useState(false);
-
     const SetContext = ({ activeRoot, activeFlow, activeConfig }) => {
         projectFilesState.activeFlow = activeFlow;
         projectFilesState.activeRoot = activeRoot;
         projectFilesState.config = activeConfig;
+    };
 
-        setLoaded(true);
+    const handleSubmit = (values) => {
+        NewProject(values)
+            .then((out) => {
+                SetContext(out);
+
+                const extension = values.projectLogo.name.split(".");
+
+                return Promise.all([
+                    out.activeRoot.getFileHandle(`logo.${extension[1]}`, {
+                        create: true,
+                    }),
+                    values.projectLogo.getFile(),
+                ]);
+            })
+            .then(([logoHandler, logoFile]) => {
+                WriteFile(logoHandler, logoFile);
+                history.push("/flow");
+            })
+            .catch();
     };
 
     function onOpenProject() {
@@ -55,7 +73,12 @@ function CreateProject({ history }) {
     return (
         <>
             <SpeedDials actions={actions} />
-            <ProjectSettingsModal onClose={handleClose} open={open} />
+            <ProjectSettingsModal
+                title="Create project"
+                onClose={handleClose}
+                open={open}
+                onSubmit={handleSubmit}
+            />
         </>
     );
 }

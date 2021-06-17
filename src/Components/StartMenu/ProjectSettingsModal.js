@@ -6,7 +6,7 @@ import Fade from "@material-ui/core/Fade";
 import CreateProjectForm from "./CreateProjectForm";
 import { useStyles } from "./CreateProject";
 
-const ProjectSettingsModal = ({ onClose, open, config }) => {
+const ProjectSettingsModal = ({ open, ...rest }) => {
     const classes = useStyles();
     return (
         <Modal
@@ -14,7 +14,7 @@ const ProjectSettingsModal = ({ onClose, open, config }) => {
             aria-describedby="transition-modal-description"
             className={classes.modal}
             open={open}
-            onClose={onClose}
+            onClose={rest.onClose}
             closeAfterTransition
             BackdropComponent={Backdrop}
             BackdropProps={{
@@ -22,11 +22,7 @@ const ProjectSettingsModal = ({ onClose, open, config }) => {
             }}
         >
             <Fade in={open}>
-                <CreateProjectForm
-                    title="New project"
-                    onClose={onClose}
-                    config={config}
-                />
+                <CreateProjectForm {...rest} />
             </Fade>
         </Modal>
     );
@@ -34,8 +30,10 @@ const ProjectSettingsModal = ({ onClose, open, config }) => {
 
 ProjectSettingsModal.propTypes = {
     onClose: PropTypes.func,
+    onSubmit: PropTypes.func,
     open: PropTypes.bool,
     config: PropTypes.object,
+    title: PropTypes.string,
 };
 
 export default ProjectSettingsModal;

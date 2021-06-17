@@ -2,11 +2,7 @@ import * as React from "react";
 import * as Formik from "formik";
 import * as MUI from "@material-ui/core";
 import * as Yup from "yup";
-import * as Router from "react-router";
 
-import { NewProject } from "../../Utilities/ProjectHandler";
-
-import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
 import PropTypes from "prop-types";
 
 import FolderIcon from "@material-ui/icons/Folder";
@@ -26,11 +22,7 @@ const validationSchema = Yup.object({
     ),
 });
 
-const CreateProjectForm = ({ title, onClose, history, config }) => {
-    const [loaded, setLoaded] = React.useState(false);
-
-    const { projectFilesState } = useProjectFilesState();
-
+const CreateProjectForm = ({ config, onSubmit, ...rest }) => {
     const validate = (values) => {
         const errors = {};
 
@@ -54,25 +46,13 @@ const CreateProjectForm = ({ title, onClose, history, config }) => {
         },
         validate: validate,
         validationSchema: validationSchema,
-        onSubmit: (values) =>
-            NewProject(values)
-                .then(({ activeRoot, activeFlow, activeConfig }) => {
-                    projectFilesState.activeRoot = activeRoot;
-                    projectFilesState.activeFlow = activeFlow;
-                    projectFilesState.config = activeConfig;
-                    setLoaded(true);
-                })
-                .catch(),
+        onSubmit: onSubmit,
     });
-
-    React.useEffect(() => {
-        if (loaded) history.push("/flow");
-    }, [history, loaded]);
 
     return (
         <MUI.Card style={{ width: "50%" }}>
             <MUI.Box p={4} m={4}>
-                <ProjectForm title={title} onClose={onClose} formik={formik} />
+                <ProjectForm {...rest} formik={formik} />
             </MUI.Box>
         </MUI.Card>
     );
@@ -82,10 +62,11 @@ CreateProjectForm.propTypes = {
     title: PropTypes.string.isRequired,
     config: PropTypes.object,
     onClose: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
 };
 
-export default Router.withRouter(CreateProjectForm);
+export default CreateProjectForm;
 
 const ProjectForm = ({ title, onClose, formik }) => (
     <form onSubmit={formik.handleSubmit}>
@@ -151,50 +132,52 @@ const ProjectForm = ({ title, onClose, formik }) => (
                     }
                 />
             </MUI.Grid>
-            <MUI.Grid item>
-                <MUI.TextField
-                    name="projectFolder"
-                    type="projectFolder"
-                    label="Project folder"
-                    variant="outlined"
-                    fullWidth
-                    disabled
-                    style={{
-                        outlineColor: "#f44336",
-                    }}
-                    value={formik.values.projectFolder.name}
-                    error={
-                        formik.touched.projectFolder &&
-                        Boolean(formik.errors.projectFolder)
-                    }
-                    helperText={
-                        formik.touched.projectFolder &&
-                        formik.errors.projectFolder
-                    }
-                    InputProps={{
-                        endAdornment: (
-                            <IconButton
-                                onClick={(e) =>
-                                    window
-                                        .showDirectoryPicker()
-                                        .then((directory) => {
-                                            const value = {
-                                                ...e,
-                                                target: {
-                                                    name: "projectFolder",
-                                                    value: directory,
-                                                },
-                                            };
-                                            formik.handleChange(value);
-                                        })
-                                }
-                            >
-                                <FolderIcon />
-                            </IconButton>
-                        ),
-                    }}
-                />
-            </MUI.Grid>
+            {title === "Create project" && (
+                <MUI.Grid item>
+                    <MUI.TextField
+                        name="projectFolder"
+                        type="projectFolder"
+                        label="Project folder"
+                        variant="outlined"
+                        fullWidth
+                        disabled
+                        style={{
+                            outlineColor: "#f44336",
+                        }}
+                        value={formik.values.projectFolder.name}
+                        error={
+                            formik.touched.projectFolder &&
+                            Boolean(formik.errors.projectFolder)
+                        }
+                        helperText={
+                            formik.touched.projectFolder &&
+                            formik.errors.projectFolder
+                        }
+                        InputProps={{
+                            endAdornment: (
+                                <IconButton
+                                    onClick={(e) =>
+                                        window
+                                            .showDirectoryPicker()
+                                            .then((directory) => {
+                                                const value = {
+                                                    ...e,
+                                                    target: {
+                                                        name: "projectFolder",
+                                                        value: directory,
+                                                    },
+                                                };
+                                                formik.handleChange(value);
+                                            })
+                                    }
+                                >
+                                    <FolderIcon />
+                                </IconButton>
+                            ),
+                        }}
+                    />
+                </MUI.Grid>
+            )}
             <MUI.Grid item>
                 <MUI.TextField
                     name="projectLogo"
