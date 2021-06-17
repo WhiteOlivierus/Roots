@@ -44,7 +44,7 @@ const FlowLoader = () => {
                     SetFlow(flow);
                 })
                 .catch(() => {
-                    history.push("/");
+                    history.push("/roots");
                 });
         }
     }, [SetFlow, history, nodeViewerState.rfInstance, projectFilesState]);

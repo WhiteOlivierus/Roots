@@ -71,7 +71,7 @@ function Home({ history }) {
                                 variant="contained"
                                 onClick={() => {
                                     fileActions[7].action();
-                                    history.push("/");
+                                    history.push("/roots");
                                 }}
                             >
                                 Yes
@@ -80,9 +80,9 @@ function Home({ history }) {
                         <MUI.Grid item>
                             <MUI.Button
                                 color="secondary"
-                                variant="contained"
+                                variant="outlined"
                                 onClick={() => {
-                                    history.push("/");
+                                    history.push("/roots");
                                 }}
                             >
                                 No

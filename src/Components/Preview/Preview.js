@@ -11,7 +11,7 @@ import { GetObjectFromFileHandle } from "../../Utilities/FileHandler";
 export const Preview = () => {
     const history = Router.useHistory();
 
-    useBeforeReload(() => history.push("/"));
+    useBeforeReload(() => history.push("/roots"));
 
     const { projectFilesState } = useProjectFilesState();
 
@@ -19,7 +19,7 @@ export const Preview = () => {
 
     React.useEffect(() => {
         if (projectFilesState.buildHandle === undefined) {
-            history.push("/");
+            history.push("/roots");
         } else {
             GetObjectFromFileHandle(projectFilesState.buildHandle).then(
                 ({ obj: build }) => {

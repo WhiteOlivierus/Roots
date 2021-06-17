@@ -15,6 +15,7 @@ import Home from "./home";
 import ProjectSettingsModal from "../../StartMenu/ProjectSettingsModal";
 import useProjectFilesState from "../../../Context/ProjectFilesContext/ProjectFilesContext";
 import { FindFile, WriteFile } from "../../../Utilities/FileHandler";
+import { useOpen } from "./useOpen";
 
 export const drawerWidth = 240;
 
@@ -114,17 +115,3 @@ MenuBar.propTypes = {
 MenuBar.displayName = "MenuBar";
 
 export default React.memo(withRouter(MenuBar));
-
-const useOpen = (initial) => {
-    const [open, setOpenDrawer] = React.useState(initial);
-
-    const handleOpen = React.useCallback(() => setOpenDrawer(true), [
-        setOpenDrawer,
-    ]);
-
-    const handleClose = React.useCallback(() => setOpenDrawer(false), [
-        setOpenDrawer,
-    ]);
-
-    return [open, handleOpen, handleClose];
-};

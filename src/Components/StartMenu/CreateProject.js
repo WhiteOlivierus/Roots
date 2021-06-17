@@ -18,13 +18,7 @@ export const useStyles = makeStyles(() => ({
     },
 }));
 
-function CreateProject({ history }) {
-    const [open, setOpen] = React.useState(false);
-
-    const handleOpen = () => setOpen(true);
-
-    const handleClose = () => setOpen(false);
-
+function CreateProject({ history, handleOpen, handleClose, open }) {
     const { projectFilesState } = useProjectFilesState();
 
     const SetContext = ({ activeRoot, activeFlow, activeConfig }) => {
@@ -88,6 +82,9 @@ CreateProject.propTypes = {
     history: PropTypes.shape({
         push: PropTypes.func,
     }),
+    handleOpen: PropTypes.func,
+    handleClose: PropTypes.func,
+    open: PropTypes.bool,
 };
 
 export default withRouter(CreateProject);
