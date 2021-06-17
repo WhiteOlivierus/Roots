@@ -44,8 +44,8 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "center",
     },
     cardMedia: {
-        flexBasis: "25%",
-        paddingTop: "56.25%",
+        flexBasis: "72px",
+        marginTop: `${theme.spacing(4)}px !important`,
     },
     cardContent: {
         paddingTop: theme.spacing(4),
@@ -64,41 +64,64 @@ const useStyles = makeStyles((theme) => ({
 
 const cards = [
     {
-        heading: "Node based workflow",
-        text: "Create branched stories with the node based workflow.",
-        img: "https://source.unsplash.com/random",
+        heading: "Open-source",
+        text:
+            "Creative tools for everyone. That is why Roots is open source. Contribute code or features, so everyone can create their stories.",
+        img: "/frontPageIcons/OpenSource.svg",
+    },
+    {
+        heading: "Node-based story workflow",
+        text:
+            "Branched or a linear story, create immersive stories with Roots node-based workflow.",
+        img: "/frontPageIcons/NodeWorkflow.svg",
     },
     {
         heading: "Simple user interface",
         text:
-            "This app has been build up with useability in mind. If you have made a presentation or used a computer you can build a story with this tool.",
-        img: "https://source.unsplash.com/random",
-        offsetX: -25,
+            "Roots has been made with simplicity in mind. Be up and running in minutes. Everybody should be able to use the tools to create.",
+        img: "/frontPageIcons/SimpleUserInterface.svg",
     },
     {
-        heading: "Web app",
-        text: "Take Roots everywhere you go, even if you don't have internet.",
-        img: "https://source.unsplash.com/random",
-        offsetX: 30,
-    },
-    {
-        heading: "Audio",
-        text: "Wow audio in the app",
-        img: "https://source.unsplash.com/random",
-        offsetX: 30,
+        heading: "Accessible anywhere",
+        text:
+            "Access Roots anywhere! In the browser, as an app, and even when you are offline. Create anywhere.",
+        img: "/frontPageIcons/Earth.svg",
     },
     {
         heading: "Simple scene editor",
-        text: "Just like making a presentation",
-        img: "https://source.unsplash.com/random",
-        offsetX: 30,
+        text:
+            "Create your narrative by adding text, images, and music just like you would in any presentation software.",
+        img: "/frontPageIcons/SimpleEditor.svg",
     },
     {
-        heading: "Publish executable",
+        heading: "Share easily",
         text:
-            "No need to understand hosting or too pay for publishing. You always can export your project to a executable that you can share with who ever and where ever you want.",
-        img: "https://source.unsplash.com/random",
-        offsetX: 50,
+            "No need to pay for hosting nor to know how all of that works. Export your game as an executable and share it with anyone.",
+        img: "/frontPageIcons/Share.svg",
+    },
+];
+
+const contributions = [
+    {
+        title: "Code",
+        text:
+            "Do you want to help and make Roots better by lending your development skills? Quickly go to GitHub and start talking about what you want to help with.",
+        button: "Github",
+        link: "https://github.com/WhiteOlivierus/Roots",
+    },
+    {
+        title: "Bugs",
+        text:
+            "Oh no, Roots broke down when you were working on your story.Help us to make Roots more stable by reporting the bug, so you can go on with your project.",
+        button: "Report bug",
+        link: "https://github.com/WhiteOlivierus/Roots/issues",
+    },
+    {
+        title: "Features",
+        text:
+            "Do you have a great idea to improve everyone's productivity or creativity? Leave a request for your feature on GitHub.",
+        button: "Feature request",
+        link: "https://github.com/WhiteOlivierus/Roots/issues",
     },
 ];
 
@@ -106,7 +129,7 @@ const FrontPage = ({ history }) => {
     const classes = useStyles();
     const theme = useTheme();
     return (
-        <React.Fragment>
+        <>
             <CssBaseline />
             <main style={{ backgroundColor: theme.palette.primary.main }}>
                 <div className={classes.heroContent}>
@@ -170,36 +193,38 @@ const FrontPage = ({ history }) => {
                                 Features
                             </Typography>
                         </Grid>
-                        {cards.map((card) => {
-                            return (
-                                <Grid item key={card.heading} xs={4}>
-                                    <Card
-                                        className={classes.card}
+                        {cards.map((card) => (
+                            <Grid item key={card.heading} xs={4}>
+                                <Card
+                                    className={classes.card}
+                                    style={{
+                                        flexDirection: "column",
+                                    }}
+                                >
+                                    <CardMedia
                                         style={{
-                                            flexDirection: "column-reverse",
+                                            backgroundSize: "contain",
+                                            margin: theme.spacing(),
                                         }}
+                                        className={classes.cardMedia}
+                                        image={card.img}
+                                        title="Image title"
+                                    />
+                                    <CardContent
+                                        className={classes.cardContent}
                                     >
-                                        <CardMedia
-                                            className={classes.cardMedia}
-                                            image={card.img}
-                                            title="Image title"
-                                        />
-                                        <CardContent
-                                            className={classes.cardContent}
+                                        <Typography
+                                            gutterBottom
+                                            variant="h5"
+                                            component="h2"
                                         >
-                                            <Typography
-                                                gutterBottom
-                                                variant="h5"
-                                                component="h2"
-                                            >
-                                                {card.heading}
-                                            </Typography>
-                                            <Typography>{card.text}</Typography>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-                            );
-                        })}
+                                            {card.heading}
+                                        </Typography>
+                                        <Typography>{card.text}</Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
                         <Grid item xs={12}>
                             <Grid container spacing={4}>
                                 <Grid item xs={12}>
@@ -215,62 +240,13 @@ const FrontPage = ({ history }) => {
                                         Contribute
                                     </Typography>
                                 </Grid>
-                                <Grid item xs={6}>
-                                    <Typography
-                                        style={{
-                                            color:
-                                                theme.palette.primary
-                                                    .contrastText,
-                                        }}
-                                        gutterBottom
-                                    >
-                                        If you have the know how you can
-                                        contribute by going to the github page
-                                        and look at the project.
-                                    </Typography>
-                                    <Button
-                                        style={{ margin: theme.spacing(4) }}
-                                        variant="contained"
-                                        color="secondary"
-                                        onClick={() => {
-                                            window.open(
-                                                "https://github.com/WhiteOlivierus/Roots",
-                                                "_blank"
-                                            );
-                                        }}
-                                    >
-                                        Github
-                                    </Button>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography
-                                        style={{
-                                            color:
-                                                theme.palette.primary
-                                                    .contrastText,
-                                        }}
-                                        gutterBottom
-                                    >
-                                        Even if you don&apos;t know how to
-                                        program you can go to the feature
-                                        request page and share your ideas for
-                                        features.
-                                    </Typography>
-
-                                    <Button
-                                        style={{ margin: theme.spacing(4) }}
-                                        variant="contained"
-                                        color="secondary"
-                                        onClick={() => {
-                                            window.open(
-                                                "https://github.com/WhiteOlivierus/Roots/issues",
-                                                "_blank"
-                                            );
-                                        }}
-                                    >
-                                        Feature request
-                                    </Button>
-                                </Grid>
+                                {contributions.map((contribution, i) => (
+                                    <Contribution
+                                        key={`contribution_${i}`}
+                                        theme={theme}
+                                        contribution={contribution}
+                                    />
+                                ))}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -287,7 +263,7 @@ const FrontPage = ({ history }) => {
                 </Typography>
                 <Copyright />
             </footer>
-        </React.Fragment>
+        </>
     );
 };
 
@@ -307,3 +283,46 @@ FrontPage.propTypes = {
 };
 
 export default withRouter(FrontPage);
+
+const Contribution = ({ theme, contribution }) => (
+    <Grid item xs={4} style={{ display: "flex", flexDirection: "column" }}>
+        <Typography
+            style={{
+                color: theme.palette.primary.contrastText,
+            }}
+            gutterBottom
+            variant="h3"
+        >
+            {contribution.title}
+        </Typography>
+        <Typography
+            style={{
+                color: theme.palette.primary.contrastText,
+                flexGrow: 1,
+            }}
+            gutterBottom
+        >
+            {contribution.text}
+        </Typography>
+        <Button
+            style={{ margin: theme.spacing(4) }}
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+                window.open(contribution.link, "_blank");
+            }}
+        >
+            {contribution.button}
+        </Button>
+    </Grid>
+);
+
+Contribution.propTypes = {
+    theme: PropTypes.object,
+    contribution: PropTypes.shape({
+        title: PropTypes.string,
+        text: PropTypes.string,
+        button: PropTypes.string,
+        link: PropTypes.string,
+    }),
+};
