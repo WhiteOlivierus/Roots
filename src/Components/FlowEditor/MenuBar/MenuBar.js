@@ -14,6 +14,7 @@ import { withRouter } from "react-router";
 import Home from "./home";
 import ProjectSettingsModal from "../../StartMenu/ProjectSettingsModal";
 import useProjectFilesState from "../../../Context/ProjectFilesContext/ProjectFilesContext";
+import { FindFile, WriteFile } from "../../../Utilities/FileHandler";
 
 export const drawerWidth = 240;
 
@@ -21,6 +22,32 @@ const MenuBar = () => {
     const classes = menuBarStyles();
 
     const { projectFilesState } = useProjectFilesState();
+
+    const handleSubmit = (values) =>
+        FindFile(projectFilesState.activeRoot, "config.json")
+            .then((configHandler) => {
+                projectFilesState.config = values;
+                WriteFile(configHandler, JSON.stringify(values));
+            })
+            .then(() => {
+                if (values.projectLogo.name === "logo.jpg") {
+                    handleModalClose();
+                    return;
+                }
+                Promise.all([
+                    projectFilesState.activeRoot.getFileHandle(
+                        `logo.${values.projectLogo.name.split(".")[1]}`,
+                        {
+                            create: true,
+                        }
+                    ),
+                    values.projectLogo.getFile(),
+                ]).then(([logoHandler, logoFile]) => {
+                    WriteFile(logoHandler, logoFile);
+                    handleModalClose();
+                });
+            })
+            .catch();
 
     const [openDrawer, handleDrawerOpen, handleDrawerClose] = useOpen(false);
     const [openModal, handleModalOpen, handleModalClose] = useOpen(false);
@@ -68,8 +95,13 @@ const MenuBar = () => {
             <ProjectSettingsModal
                 title="Project settings"
                 open={openModal}
-                config={projectFilesState.config}
+                config={{
+                    ...projectFilesState.config,
+                    projectFolder: projectFilesState.activeRoot,
+                    projectLogo: { name: "logo.jpg" },
+                }}
                 onClose={handleModalClose}
+                onSubmit={handleSubmit}
             />
         </>
     );

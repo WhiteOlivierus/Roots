@@ -49,6 +49,7 @@ function CreateProject({ history }) {
             })
             .then(([logoHandler, logoFile]) => {
                 WriteFile(logoHandler, logoFile);
+                projectFilesState.logo = logoHandler;
                 history.push("/flow");
             })
             .catch();

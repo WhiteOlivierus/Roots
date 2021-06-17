@@ -63,7 +63,6 @@ CreateProjectForm.propTypes = {
     config: PropTypes.object,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
 };
 
 export default CreateProjectForm;
@@ -244,7 +243,7 @@ const ProjectForm = ({ title, onClose, formik }) => (
                             startIcon={<CheckCircleIcon />}
                             size="large"
                         >
-                            Create
+                            {title === "Create project" ? "Create" : "Save"}
                         </MUI.Button>
                     </MUI.Grid>
                 </MUI.Grid>
