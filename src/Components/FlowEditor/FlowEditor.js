@@ -136,7 +136,7 @@ const FlowEditor = memo(({ flow }) => {
                 <Background variant="lines" gap={30} size={2} />
                 <Controls />
                 <NodeBar />
-                <MiniMap nodeColor={MinimapSettings} />
+                <MiniMap nodeColor={MinimapSettings} style={{ left: 50 }} />
             </ReactFlow>
             <Menu
                 keepMounted
