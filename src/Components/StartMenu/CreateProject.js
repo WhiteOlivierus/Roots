@@ -32,10 +32,8 @@ function CreateProject({ history, handleOpen, handleClose, open }) {
             .then((out) => {
                 SetContext(out);
 
-                const extension = values.projectLogo.name.split(".");
-
                 return Promise.all([
-                    out.activeRoot.getFileHandle(`logo.${extension[1]}`, {
+                    out.activeRoot.getFileHandle(`logo.png`, {
                         create: true,
                     }),
                     values.projectLogo.getFile(),

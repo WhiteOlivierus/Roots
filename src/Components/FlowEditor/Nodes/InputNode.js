@@ -28,7 +28,7 @@ export const InputNode = ({ selected }) => {
             }}
             selected={selected}
         >
-            <h3>Input</h3>
+            <h3>Start</h3>
             <Handle
                 type="source"
                 className={classes.handleRoot}

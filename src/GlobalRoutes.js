@@ -3,9 +3,9 @@ import * as Router from "react-router-dom";
 
 import FlowLoader from "./Components/FlowEditor/FlowLoader";
 import StartMenu from "./Components/StartMenu/StartMenu";
-import { Preview } from "./Components/Preview/Preview";
+import Preview from "./Components/Preview/Preview";
 import SceneEditor from "./Components/SceneEditor/SceneEditor";
-import { PreviewButton } from "./Components/PreviewButton";
+import PreviewButton from "./Components/PreviewButton";
 import GithubCorner from "react-github-corner";
 import FrontPage from "./FrontPage";
 import styled from "styled-components";

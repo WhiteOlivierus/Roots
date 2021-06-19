@@ -3,7 +3,7 @@ import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import { fabStyle } from "./StartMenu/fabStyle";
 import useBuild from "./useBuild";
 
-export const PreviewButton = () => {
+const PreviewButton = () => {
     const handleBuild = useBuild(true);
 
     return (
@@ -19,3 +19,5 @@ export const PreviewButton = () => {
         </MUI.Tooltip>
     );
 };
+
+export default PreviewButton;

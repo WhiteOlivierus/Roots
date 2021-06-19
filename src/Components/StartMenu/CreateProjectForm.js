@@ -198,16 +198,29 @@ const ProjectForm = ({ title, onClose, formik }) => (
                         endAdornment: (
                             <IconButton
                                 onClick={(e) =>
-                                    window.showOpenFilePicker().then((logo) => {
-                                        const value = {
-                                            ...e,
-                                            target: {
-                                                name: "projectLogo",
-                                                value: logo[0],
-                                            },
-                                        };
-                                        formik.handleChange(value);
-                                    })
+                                    window
+                                        .showOpenFilePicker({
+                                            startIn: "pictures",
+                                            id: "importLogo",
+                                            types: [
+                                                {
+                                                    description: "Logo file",
+                                                    accept: {
+                                                        "image/png": [".png"],
+                                                    },
+                                                },
+                                            ],
+                                        })
+                                        .then((logo) => {
+                                            const value = {
+                                                ...e,
+                                                target: {
+                                                    name: "projectLogo",
+                                                    value: logo[0],
+                                                },
+                                            };
+                                            formik.handleChange(value);
+                                        })
                                 }
                             >
                                 <FolderIcon />

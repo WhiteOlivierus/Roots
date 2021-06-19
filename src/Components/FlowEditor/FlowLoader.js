@@ -61,7 +61,9 @@ const FlowLoader = () => {
 };
 
 FlowLoader.displayName = "FlowLoader";
+
 FlowLoader.propTypes = {};
+
 export default React.memo(FlowLoader);
 
 export const UpdateNode = (elements, nodeViewerState) => {
@@ -75,9 +77,9 @@ export const UpdateNode = (elements, nodeViewerState) => {
 };
 
 export const UpdateEdges = (elements) => {
-    var { nodes, edges } = SeparateNodesAndEdges(elements);
+    let { nodes, edges } = SeparateNodesAndEdges(elements);
 
-    var allZones = nodes.filter((node) => {
+    let allZones = nodes.filter((node) => {
         return node.data.zones && node.data.zones.length > 0;
     });
 

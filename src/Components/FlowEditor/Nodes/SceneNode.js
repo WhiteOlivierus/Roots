@@ -8,7 +8,7 @@ import short from "short-uuid";
 import { SceneCanvasHooks } from "dutchskull-scene-manager";
 import PropTypes from "prop-types";
 import NodePaper from "./NodePaper";
-import { EditButton } from "./EditButton";
+import EditButton from "./EditButton";
 import { CalculateHandlePosition } from "./CalculateHandlePosition";
 
 const SceneNode = ({ data, selected }) => {
