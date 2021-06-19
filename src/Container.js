@@ -4,6 +4,7 @@ export const Container = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1 0 100%;
+    height: 100%;
 `;
 export const Header = styled.div`
     flex: 1 0 auto;

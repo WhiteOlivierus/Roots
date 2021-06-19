@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { nodeStyle } from "./NodeStyle";
 import { SceneCanvasHooks } from "dutchskull-scene-manager";
 
-const NodePaper = ({ onHover, selected, children }) => {
+const NodePaper = ({ onHover, selected, children, style }) => {
     const classes = nodeStyle();
 
     const hover = SceneCanvasHooks.useToggle(false);
@@ -23,6 +23,7 @@ const NodePaper = ({ onHover, selected, children }) => {
             elevation={elevation}
             onMouseEnter={handleHover}
             onMouseLeave={handleHover}
+            style={style}
         >
             {children}
         </MUI.Paper>
@@ -38,6 +39,7 @@ NodePaper.propTypes = {
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node,
     ]),
+    style: PropTypes.object,
 };
 
 NodePaper.defaultProps = {

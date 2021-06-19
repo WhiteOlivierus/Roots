@@ -1,13 +1,12 @@
 import { memo } from "react";
 import { Handle, Position } from "react-flow-renderer";
 import useNodeViewerState from "../../../Context/NodeViewerContext/NodeViewerContext";
-import { NodeContent } from "./NodeContent";
 import { nodeStyle } from "./NodeStyle";
 import { hasSourceConnection } from "./NodeUtilities";
 import PropTypes from "prop-types";
 import NodePaper from "./NodePaper";
 
-export const InputNode = ({ data, selected }) => {
+export const InputNode = ({ selected }) => {
     const classes = nodeStyle();
 
     const { nodeViewerState } = useNodeViewerState();
@@ -20,8 +19,16 @@ export const InputNode = ({ data, selected }) => {
     };
 
     return (
-        <NodePaper selected={selected}>
-            <NodeContent data={data} />
+        <NodePaper
+            style={{
+                width: 90,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+            }}
+            selected={selected}
+        >
+            <h3>Input</h3>
             <Handle
                 type="source"
                 className={classes.handleRoot}
