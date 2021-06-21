@@ -1,24 +1,25 @@
 import { Move } from "./FileHandler";
 
 export const LoadFile = async (root, options = {}) => {
-    var fileHandle = await window.showOpenFilePicker(options);
+    let fileHandle = await window.showOpenFilePicker(options);
 
     if (Array.isArray(fileHandle)) fileHandle = fileHandle[0];
 
     await Move(root, fileHandle);
 
-    var file = await fileHandle.getFile();
-    var blobUrl = await URL.createObjectURL(file);
+    const file = await fileHandle.getFile();
+    const blobUrl = await URL.createObjectURL(file);
 
     return { fileName: fileHandle.name, blobUrl };
 };
 
 export const AudioOptions = {
+    id: "SceneAudio",
     types: [
         {
             description: "Audio",
             accept: {
-                "audio/*": [".aac", ".mp3", ".oga", ".opus", ".wav", ".weba"],
+                "audio/*": [".mp3", ".wav"],
             },
         },
     ],
@@ -27,20 +28,12 @@ export const AudioOptions = {
 };
 
 export const ImageOptions = {
+    id: "SceneImage",
     types: [
         {
             description: "Image",
             accept: {
-                "image/*": [
-                    ".gif",
-                    ".jpeg",
-                    ".jpg",
-                    ".png",
-                    ".tif",
-                    ".tiff",
-                    ".webp",
-                    ".bmp",
-                ],
+                "image/*": [".gif", ".jpeg", ".jpg", ".png"],
             },
         },
     ],

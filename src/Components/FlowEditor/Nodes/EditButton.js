@@ -10,7 +10,7 @@ const EditButton = ({ history }) => (
         color="primary"
         style={{
             position: "absolute",
-            bottom: -20,
+            top: -20,
             right: -20,
             zIndex: 100000000,
         }}

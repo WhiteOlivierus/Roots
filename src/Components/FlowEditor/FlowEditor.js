@@ -26,9 +26,9 @@ const FlowEditor = ({ flow, history }) => {
     const [elements, setElements] = React.useState(flow.elements || []);
 
     React.useEffect(() => {
-        const [x = 0, y = 0] = flow.position;
-        transform({ x, y, zoom: flow.zoom || 0 });
-    }, [flow, transform]);
+        const [x, y] = flow.position;
+        transform({ x, y, zoom: flow.zoom });
+    }, [flow, nodeViewerState.rfInstance, transform]);
 
     const onLoad = (instance) => {
         nodeViewerState.setElements = setElements;
@@ -42,13 +42,13 @@ const FlowEditor = ({ flow, history }) => {
     const onConnect = (params) =>
         nodeViewerState.setElements((els) => Flow.addEdge(params, els));
 
-    const onRemove = (elements) => {
-        elements = elements.filter((element) => element.type !== "in");
-
-        return nodeViewerState.setElements((els) =>
-            Flow.removeElements(elements, els)
+    const onRemove = (elements) =>
+        nodeViewerState.setElements((els) =>
+            Flow.removeElements(
+                elements.filter((element) => element.type !== "in"),
+                els
+            )
         );
-    };
 
     const onDragOver = (event) => {
         event.preventDefault();
@@ -83,6 +83,7 @@ const FlowEditor = ({ flow, history }) => {
     };
 
     const setActiveNode = (e, node) => (nodeViewerState.activeNode = node);
+
     const handleClose = () => {
         setState(initialState);
 

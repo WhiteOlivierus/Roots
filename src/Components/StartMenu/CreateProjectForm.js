@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import FolderIcon from "@material-ui/icons/Folder";
 import CancelIcon from "@material-ui/icons/Cancel";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import IconButton from "@material-ui/core/IconButton";
+import FilePicker from "./FilePicker";
 
 const validationSchema = Yup.object({
     projectName: Yup.string("Enter a project name")
@@ -133,16 +133,10 @@ const ProjectForm = ({ title, onClose, formik }) => (
             </MUI.Grid>
             {title === "Create project" && (
                 <MUI.Grid item>
-                    <MUI.TextField
+                    <FilePicker
                         name="projectFolder"
                         type="projectFolder"
                         label="Project folder"
-                        variant="outlined"
-                        fullWidth
-                        disabled
-                        style={{
-                            outlineColor: "#f44336",
-                        }}
                         value={formik.values.projectFolder.name}
                         error={
                             formik.touched.projectFolder &&
@@ -152,41 +146,29 @@ const ProjectForm = ({ title, onClose, formik }) => (
                             formik.touched.projectFolder &&
                             formik.errors.projectFolder
                         }
-                        InputProps={{
-                            endAdornment: (
-                                <IconButton
-                                    onClick={(e) =>
-                                        window
-                                            .showDirectoryPicker()
-                                            .then((directory) => {
-                                                const value = {
-                                                    ...e,
-                                                    target: {
-                                                        name: "projectFolder",
-                                                        value: directory,
-                                                    },
-                                                };
-                                                formik.handleChange(value);
-                                            })
-                                    }
-                                >
-                                    <FolderIcon />
-                                </IconButton>
-                            ),
-                        }}
-                    />
+                        onClick={(e) =>
+                            window.showDirectoryPicker().then((directory) => {
+                                const value = {
+                                    ...e,
+                                    target: {
+                                        name: "projectFolder",
+                                        value: directory,
+                                    },
+                                };
+                                formik.handleChange(value);
+                            })
+                        }
+                    >
+                        <FolderIcon />
+                    </FilePicker>
                 </MUI.Grid>
             )}
             <MUI.Grid item>
-                <MUI.TextField
+                <FilePicker
                     name="projectLogo"
                     type="projectLogo"
                     label="Project logo"
-                    variant="outlined"
-                    fullWidth
-                    disabled
                     value={formik.values.projectLogo.name}
-                    onChange={formik.handleChange}
                     error={
                         formik.touched.projectLogo &&
                         Boolean(formik.errors.projectLogo)
@@ -194,40 +176,34 @@ const ProjectForm = ({ title, onClose, formik }) => (
                     helperText={
                         formik.touched.projectLogo && formik.errors.projectLogo
                     }
-                    InputProps={{
-                        endAdornment: (
-                            <IconButton
-                                onClick={(e) =>
-                                    window
-                                        .showOpenFilePicker({
-                                            startIn: "pictures",
-                                            id: "importLogo",
-                                            types: [
-                                                {
-                                                    description: "Logo file",
-                                                    accept: {
-                                                        "image/png": [".png"],
-                                                    },
-                                                },
-                                            ],
-                                        })
-                                        .then((logo) => {
-                                            const value = {
-                                                ...e,
-                                                target: {
-                                                    name: "projectLogo",
-                                                    value: logo[0],
-                                                },
-                                            };
-                                            formik.handleChange(value);
-                                        })
-                                }
-                            >
-                                <FolderIcon />
-                            </IconButton>
-                        ),
-                    }}
-                />
+                    onClick={(e) =>
+                        window
+                            .showOpenFilePicker({
+                                startIn: "pictures",
+                                id: "importLogo",
+                                types: [
+                                    {
+                                        description: "Logo file",
+                                        accept: {
+                                            "image/png": [".png"],
+                                        },
+                                    },
+                                ],
+                            })
+                            .then((logo) => {
+                                const value = {
+                                    ...e,
+                                    target: {
+                                        name: "projectLogo",
+                                        value: logo[0],
+                                    },
+                                };
+                                formik.handleChange(value);
+                            })
+                    }
+                >
+                    <FolderIcon />
+                </FilePicker>
             </MUI.Grid>
             <MUI.Grid item>
                 <MUI.Grid

@@ -7,9 +7,9 @@ import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFiles
 import Inspector from "./Inspector";
 import Editor from "./Editor";
 import useOnUnload from "../../Utilities/UseOnUnLoad";
+import MenuBar from "../FlowEditor/MenuBar/MenuBar";
 
 import { EditorCanvas } from "./EditorCanvas";
-import MenuBar from "../FlowEditor/MenuBar/MenuBar";
 import { EditorWrapper } from "../EditorWrapper";
 import { SceneCanvasHooks as Hooks } from "dutchskull-scene-manager";
 import { Redirect } from "react-router";
@@ -18,15 +18,12 @@ import { Container, Content, Header, Item } from "../../Container";
 const SceneEditor = () => {
     useOnUnload();
 
-    const imageRef = React.useRef();
-
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
     const { projectFilesState } = useProjectFilesState();
 
     const activeRoot = projectFilesState.activeRoot;
 
     const zones = Hooks.useStateful([]);
-    const imageSize = Hooks.useStateful({ width: 0, height: 0 });
 
     const node = Hooks.useStateful(nodeViewerState.activeNode);
     const mode = Hooks.useStateful("select");
@@ -34,8 +31,23 @@ const SceneEditor = () => {
     const selection = Hooks.useStateful(undefined);
     const selectedZone = Hooks.useStateful(undefined);
 
+    const imageSize = Hooks.useStateful({ width: 0, height: 0 });
+
+    const handleChangeSize = React.useCallback(
+        (element) => {
+            const size = {};
+            ({ width: size.width, height: size.height } = element);
+
+            imageSize.setValue(size);
+            return size;
+        },
+        [imageSize]
+    );
+
     const onLoad = React.useCallback(
-        (ref) => {
+        (element) => {
+            const size = handleChangeSize(element);
+
             if (
                 !node ||
                 !node.value.data.zones ||
@@ -43,11 +55,6 @@ const SceneEditor = () => {
                 !("points" in node.value.data.zones[0])
             )
                 return;
-
-            const size = {};
-            ({ width: size.width, height: size.height } = ref.target);
-
-            imageSize.setValue(size);
 
             const translatedZones = Transform.TransformPoints(
                 node.value.data.zones,
@@ -57,8 +64,10 @@ const SceneEditor = () => {
 
             zones.setValue(translatedZones);
         },
-        [imageSize, node, zones]
+        [node, handleChangeSize, zones]
     );
+
+    const imageRef = React.useRef();
 
     const onExit = React.useCallback(() => {
         mode.setValue("select");
@@ -88,9 +97,11 @@ const SceneEditor = () => {
 
     React.useEffect(() => {
         if (!selection.value) return;
+
         const newSelectedZone = zones.value.find(
             (zone) => zone.id === selection.value
         );
+
         selectedZone.setValue(newSelectedZone);
     }, [zones.value, selectedZone, selection.value]);
 
@@ -121,13 +132,13 @@ const SceneEditor = () => {
                                 />
                             </EditorWrapper>
                             <EditorCanvas
-                                polygon={zones}
+                                polygons={zones}
                                 imageRef={imageRef}
                                 mode={mode.value}
                                 selection={selection}
                             />
                         </Item>
-                        <Item auto noShrink style={{ minWidth: 300 }}>
+                        <Item auto noShrink style={{ width: 300 }}>
                             <Inspector
                                 node={node}
                                 activeRoot={activeRoot}

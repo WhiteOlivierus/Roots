@@ -22,26 +22,24 @@ export const NodeContent = ({ data }) => {
 
     const { projectFilesState } = useProjectFilesState();
 
-    const [src, setSrc] = React.useState(data.imageSrc || "");
+    const [src, setSrc] = React.useState(data.imageSrc);
 
     React.useEffect(() => {
-        if (!("imageSrc" in data) && "image" in data) {
-            FindFile(projectFilesState.activeRoot, data.image).then(
-                (fileHandle) => {
-                    GetImageBlobPath(fileHandle).then((blobUrl) => {
-                        var image = new Image();
-                        image.scr = blobUrl;
-                        data.imageSrc = blobUrl;
-                        setSrc(blobUrl);
-                    });
-                }
-            );
-        }
-    });
+        let mounted = true;
 
-    const nodeImage = React.createElement("img", {
-        src: src,
-        className: classes.img,
+        if (!(!("imageSrc" in data) && "image" in data)) return;
+
+        FindFile(projectFilesState.activeRoot, data.image)
+            .then((fileHandle) => GetImageBlobPath(fileHandle))
+            .then((blobUrl) => {
+                if (!mounted) return;
+
+                const image = new Image();
+                image.scr = blobUrl;
+                setSrc(blobUrl);
+            });
+
+        return () => (mounted = false);
     });
 
     return (
@@ -52,7 +50,7 @@ export const NodeContent = ({ data }) => {
                 value={data.label}
                 nodeId={data.id}
             />
-            {src && nodeImage}
+            {src && <img src={src} className={classes.img} />}
         </div>
     );
 };

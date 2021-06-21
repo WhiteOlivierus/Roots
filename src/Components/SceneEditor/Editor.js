@@ -5,17 +5,17 @@ import { theme } from "../../Utilities/Theme";
 
 const Editor = ({ node, onLoad, imageRef }) => {
     const hasSrc = node.value.data.imageSrc;
-    const test = {
-        width: !hasSrc && "100%",
-        paddingTop: !hasSrc && "56.25%",
-        backgroundColor: !hasSrc && theme.palette.primary.main,
-    };
+
+    const handleLoad = ({ target }) => onLoad(target);
+
     return (
         <MUI.Paper
             style={{
                 margin: "auto",
                 position: "relative",
-                ...test,
+                width: !hasSrc && "100%",
+                paddingTop: !hasSrc && "56.25%",
+                backgroundColor: !hasSrc && theme.palette.primary.main,
             }}
         >
             {hasSrc ? (
@@ -27,7 +27,7 @@ const Editor = ({ node, onLoad, imageRef }) => {
                         borderRadius: 4,
                     }}
                     alt="scene"
-                    onLoad={onLoad}
+                    onLoad={handleLoad}
                     ref={imageRef}
                 />
             ) : (
