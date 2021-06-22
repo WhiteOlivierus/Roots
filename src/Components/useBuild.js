@@ -11,6 +11,7 @@ import { Build } from "../Utilities/BuildHandler";
 import { SeparateNodesAndEdges } from "./FlowEditor/Nodes/NodeUtilities";
 import { Button } from "@material-ui/core";
 import { useModal } from "react-modal-hook";
+import { get, set } from "idb-keyval";
 
 const useBuild = (isPreview) => {
     const preview = React.useRef(isPreview);
@@ -24,37 +25,50 @@ const useBuild = (isPreview) => {
 
     const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
         <MUI.Dialog open={open} onExited={onExited} onClose={hideModal}>
-            <MUI.DialogTitle>How to build</MUI.DialogTitle>
-            <MUI.DialogContent>
-                <MUI.List dense>
-                    <MUI.ListItem>
-                        <MUI.ListItemText primary="1. Find your project in the windows explorer" />
-                    </MUI.ListItem>
-                    <MUI.ListItem>
-                        <MUI.ListItemText primary="2. Navigate too the build folder" />
-                    </MUI.ListItem>
-                    <MUI.ListItem>
-                        <MUI.ListItemText primary="3. Execute `Roots-builder.exe` and wait for it to be done" />
-                    </MUI.ListItem>
-                    <MUI.ListItem>
-                        <MUI.ListItemText primary="4. Share the build file in the build folder" />
-                    </MUI.ListItem>
-                </MUI.List>
-                <img src="./tutorial.png" alt="build tutorial" width="100%" />
-            </MUI.DialogContent>
-            <MUI.DialogActions>
-                <MUI.Button
-                    color="secondary"
-                    variant="contained"
-                    onClick={hideModal}
-                >
-                    Understood
-                </MUI.Button>
-            </MUI.DialogActions>
+            <MUI.Box p={4}>
+                <MUI.DialogTitle>How to build</MUI.DialogTitle>
+                <MUI.DialogContent>
+                    <MUI.List dense>
+                        <MUI.ListItem>
+                            <MUI.ListItemText primary="1. Find your project in the windows explorer" />
+                        </MUI.ListItem>
+                        <MUI.ListItem>
+                            <MUI.ListItemText primary="2. Navigate too the build folder" />
+                        </MUI.ListItem>
+                        <MUI.ListItem>
+                            <MUI.ListItemText primary="3. Execute `Roots-builder.exe` and wait for it to be done" />
+                        </MUI.ListItem>
+                        <MUI.ListItem>
+                            <MUI.ListItemText primary="4. Share the build file in the build folder" />
+                        </MUI.ListItem>
+                    </MUI.List>
+                    <img
+                        src="./tutorial.png"
+                        alt="build tutorial"
+                        width="100%"
+                    />
+                </MUI.DialogContent>
+                <MUI.DialogActions>
+                    <MUI.Button
+                        color="secondary"
+                        variant="contained"
+                        onClick={hideModal}
+                    >
+                        Understood
+                    </MUI.Button>
+                </MUI.DialogActions>
+            </MUI.Box>
         </MUI.Dialog>
     ));
 
     return React.useCallback(() => {
+        get("firstTimeBuild").then((hasBuild) => {
+            if (!hasBuild) {
+                showModal();
+                set("firstTimeBuild", true);
+            }
+        });
+
         SaveFlow(projectFilesState.activeFlow, nodeViewerState.rfInstance)
             .then(() => {
                 let { nodes, edges } = SeparateNodesAndEdges(
