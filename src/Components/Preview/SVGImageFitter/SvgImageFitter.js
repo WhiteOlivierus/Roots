@@ -57,7 +57,7 @@ const useSVGScaler = (container, zones) => {
     const UpdateZones = () => {
         const copyInputZones = CopyArray(zonesRef.current);
         setInputZonesState(handleSVGScaling(copyInputZones));
-        console.log("Recalculate svg");
+        // console.log("Recalculate svg");
     };
 
     const handleSVGScaling = React.useCallback(

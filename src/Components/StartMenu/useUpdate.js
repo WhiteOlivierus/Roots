@@ -29,6 +29,7 @@ const useUpdate = (showSnackBar, location = undefined) => {
             enqueueSnackbar("A new update is available", {
                 variant: "info",
                 persist: true,
+                preventDuplicate: true,
                 action: (
                     <Button color="secondary" size="small" onClick={reloadPage}>
                         Update

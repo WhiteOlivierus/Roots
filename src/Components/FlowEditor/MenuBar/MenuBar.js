@@ -1,23 +1,20 @@
-import PropTypes from "prop-types";
 import * as React from "react";
 import * as MUI from "@material-ui/core";
 
+import PropTypes from "prop-types";
 import clsx from "clsx";
-
 import MenuIcon from "@material-ui/icons/Menu";
 import SettingsIcon from "@material-ui/icons/Settings";
-
-import { MenuDrawer } from "./MenuDrawer";
-import { menuBarStyles } from "./menuBarStyles";
-import { MenuBarTitle } from "./MenuBarTitle";
-import { withRouter } from "react-router";
+import MenuDrawer from "./MenuDrawer";
 import Home from "./home";
 import ProjectSettingsModal from "../../StartMenu/ProjectSettingsModal";
 import useProjectFilesState from "../../../Context/ProjectFilesContext/ProjectFilesContext";
+
+import { menuBarStyles } from "./menuBarStyles";
+import { MenuBarTitle } from "./MenuBarTitle";
+import { withRouter } from "react-router";
 import { FindFile, WriteFile } from "../../../Utilities/FileHandler";
 import { useOpen } from "./useOpen";
-
-export const drawerWidth = 240;
 
 const MenuBar = () => {
     const classes = menuBarStyles();
@@ -35,7 +32,7 @@ const MenuBar = () => {
                     handleModalClose();
                     return;
                 }
-                Promise.all([
+                return Promise.all([
                     projectFilesState.activeRoot.getFileHandle(
                         `logo.${values.projectLogo.name.split(".")[1]}`,
                         {

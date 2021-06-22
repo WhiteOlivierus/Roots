@@ -34,6 +34,7 @@ export function useFileActions() {
             .catch(() =>
                 enqueueSnackbar(`New project could not be created`, {
                     variant: "error",
+                    preventDuplicate: true,
                 })
             );
     }, [projectFilesState, nodeViewerState, enqueueSnackbar]);
@@ -47,6 +48,7 @@ export function useFileActions() {
             .catch(() => {
                 enqueueSnackbar(`New project could not be created`, {
                     variant: "error",
+                    preventDuplicate: true,
                 });
             });
     }, [enqueueSnackbar, projectFilesState]);
@@ -62,6 +64,7 @@ export function useFileActions() {
             .catch(() => {
                 enqueueSnackbar(`Could not open flow`, {
                     variant: "error",
+                    preventDuplicate: true,
                 });
             });
     }, [projectFilesState, nodeViewerState, enqueueSnackbar]);
@@ -76,11 +79,13 @@ export function useFileActions() {
 
                 enqueueSnackbar(`Opened project ${fileName}`, {
                     variant: "success",
+                    preventDuplicate: true,
                 });
             })
             .catch(() => {
                 enqueueSnackbar(`Could not open project`, {
                     variant: "error",
+                    preventDuplicate: true,
                 });
             });
     }, [enqueueSnackbar, projectFilesState]);
@@ -95,11 +100,13 @@ export function useFileActions() {
             .then(() => {
                 enqueueSnackbar(`${fileName} saved`, {
                     variant: "success",
+                    preventDuplicate: true,
                 });
             })
             .catch(() => {
                 enqueueSnackbar(`${fileName} was not saved`, {
                     variant: "error",
+                    preventDuplicate: true,
                 });
             });
     }, [
@@ -121,11 +128,13 @@ export function useFileActions() {
                 const activeFlowName = RemoveExtension(activeFlow.name);
                 enqueueSnackbar(`${fileName} saved as ${activeFlowName}`, {
                     variant: "success",
+                    preventDuplicate: true,
                 });
             })
             .catch(() => {
                 enqueueSnackbar(`${fileName} was not saved`, {
                     variant: "error",
+                    preventDuplicate: true,
                 });
             });
     }, [enqueueSnackbar, nodeViewerState.rfInstance, projectFilesState]);
@@ -137,6 +146,7 @@ export function useFileActions() {
 
         enqueueSnackbar(`Builder is being prepared`, {
             variant: "warning",
+            preventDuplicate: true,
         });
 
         let buildHandle;
@@ -159,11 +169,13 @@ export function useFileActions() {
                 if (e.message.includes("'name'")) return;
                 enqueueSnackbar(e.message, {
                     variant: "error",
+                    preventDuplicate: true,
                 });
             })
             .finally(() => {
                 enqueueSnackbar(`Builder has been place in project folder`, {
                     variant: "success",
+                    preventDuplicate: true,
                 });
                 build();
             });

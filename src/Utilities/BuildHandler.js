@@ -19,6 +19,9 @@ export async function Build(activeRoot, nodes, edges, preview) {
         (node) => node.id === connectedEdgesInNode.target
     );
 
+    if (firstNodeID === -1)
+        throw new Error("No node connected to the start node");
+
     let id = copiedNodes[firstNodeID].id;
 
     let newScene = await CreateScene(copiedNodes[firstNodeID], edges);

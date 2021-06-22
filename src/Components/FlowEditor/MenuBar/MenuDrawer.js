@@ -6,22 +6,19 @@ import PropTypes from "prop-types";
 
 import { MenuButtons } from "./MenuButtons.js";
 import { useFileActions } from "./useFileActions";
+import { withStyles } from "@material-ui/core";
 
-const useMenuDrawerStyles = MUI.makeStyles((theme) =>
-    MUI.createStyles({
-        drawerHeader: {
-            display: "flex",
-            alignItems: "center",
-            padding: theme.spacing(0, 1),
-            ...theme.mixins.toolbar,
-            justifyContent: "flex-end",
-        },
-    })
-);
+const useMenuDrawerStyles = (theme) => ({
+    drawerHeader: {
+        display: "flex",
+        alignItems: "center",
+        padding: theme.spacing(0, 1),
+        ...theme.mixins.toolbar,
+        justifyContent: "flex-end",
+    },
+});
 
-export const MenuDrawer = ({ open, handleDrawerClose }) => {
-    const classes = useMenuDrawerStyles();
-
+const MenuDrawer = ({ open, handleDrawerClose, classes }) => {
     const fileActions = useFileActions();
 
     return (
@@ -44,12 +41,14 @@ export const MenuDrawer = ({ open, handleDrawerClose }) => {
         </MUI.Drawer>
     );
 };
-
 MenuDrawer.displayName = "MenuDrawer";
 
 MenuDrawer.propTypes = {
-    open: PropTypes.bool,
+    classes: PropTypes.shape({
+        drawerHeader: PropTypes.any,
+    }),
     handleDrawerClose: PropTypes.func.isRequired,
+    open: PropTypes.bool,
 };
 
-export default React.memo(MenuDrawer);
+export default React.memo(withStyles(useMenuDrawerStyles)(MenuDrawer));

@@ -1,14 +1,19 @@
-import { useCallback, useRef } from "react";
+import * as React from "react";
+import * as MUI from "@material-ui/core";
+
+import useProjectFilesState from "../Context/ProjectFilesContext/ProjectFilesContext";
+import useNodeViewerState from "../Context/NodeViewerContext/NodeViewerContext";
+
 import { SaveFlow } from "../Utilities/FlowHandler";
 import { useHistory } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import useProjectFilesState from "../Context/ProjectFilesContext/ProjectFilesContext";
-import useNodeViewerState from "../Context/NodeViewerContext/NodeViewerContext";
 import { Build } from "../Utilities/BuildHandler";
 import { SeparateNodesAndEdges } from "./FlowEditor/Nodes/NodeUtilities";
+import { Button } from "@material-ui/core";
+import { useModal } from "react-modal-hook";
 
-const useBuild = (p) => {
-    const preview = useRef(p);
+const useBuild = (isPreview) => {
+    const preview = React.useRef(isPreview);
 
     const history = useHistory();
 
@@ -17,22 +22,41 @@ const useBuild = (p) => {
     const { projectFilesState } = useProjectFilesState();
     const { nodeViewerState } = useNodeViewerState();
 
-    return useCallback(() => {
+    const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
+        <MUI.Dialog open={open} onExited={onExited} onClose={hideModal}>
+            <MUI.DialogTitle>How to build</MUI.DialogTitle>
+            <MUI.DialogContent>
+                <MUI.List dense>
+                    <MUI.ListItem>
+                        <MUI.ListItemText primary="1. Find your project in the windows explorer" />
+                    </MUI.ListItem>
+                    <MUI.ListItem>
+                        <MUI.ListItemText primary="2. Navigate too the build folder" />
+                    </MUI.ListItem>
+                    <MUI.ListItem>
+                        <MUI.ListItemText primary="3. Execute `Roots-builder.exe` and wait for it to be done" />
+                    </MUI.ListItem>
+                    <MUI.ListItem>
+                        <MUI.ListItemText primary="4. Share the build file in the build folder" />
+                    </MUI.ListItem>
+                </MUI.List>
+                <img src="./tutorial.png" alt="build tutorial" width="100%" />
+            </MUI.DialogContent>
+            <MUI.DialogActions>
+                <MUI.Button
+                    color="secondary"
+                    variant="contained"
+                    onClick={hideModal}
+                >
+                    Understood
+                </MUI.Button>
+            </MUI.DialogActions>
+        </MUI.Dialog>
+    ));
+
+    return React.useCallback(() => {
         SaveFlow(projectFilesState.activeFlow, nodeViewerState.rfInstance)
             .then(() => {
-                const FileName = projectFilesState.activeFlow.name.replace(
-                    ".json",
-                    ""
-                );
-
-                enqueueSnackbar(
-                    `Start building
-                    ${preview.current ? "Preview" : ""} ${FileName}`,
-                    {
-                        variant: "info",
-                    }
-                );
-
                 let { nodes, edges } = SeparateNodesAndEdges(
                     nodeViewerState.rfInstance.getElements()
                 );
@@ -47,10 +71,21 @@ const useBuild = (p) => {
             .then(({ buildHandle, id }) => {
                 projectFilesState.buildHandle = buildHandle;
 
+                const FileName = projectFilesState.activeFlow.name.replace(
+                    ".json",
+                    ""
+                );
+
                 enqueueSnackbar(
-                    `${preview.current ? "Preview" : ""} build successfully`,
+                    `This is how you start building
+                    ${preview.current ? "Preview" : ""} ${FileName}`,
                     {
-                        variant: "success",
+                        variant: "info",
+                        action: (
+                            <Button size="small" onClick={showModal}>
+                                Info
+                            </Button>
+                        ),
                     }
                 );
                 if (preview.current) {
@@ -58,7 +93,7 @@ const useBuild = (p) => {
                 }
             })
             .catch((e) => {
-                enqueueSnackbar(e, {
+                enqueueSnackbar(e.message, {
                     variant: "error",
                 });
             });
@@ -66,7 +101,7 @@ const useBuild = (p) => {
         projectFilesState,
         nodeViewerState.rfInstance,
         enqueueSnackbar,
-        preview,
+        showModal,
         history,
     ]);
 };
