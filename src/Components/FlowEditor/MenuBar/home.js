@@ -1,14 +1,13 @@
-import PropTypes from "prop-types";
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Popover from "@material-ui/core/Popover";
-import Typography from "@material-ui/core/Typography";
-import HomeIcon from "@material-ui/icons/Home";
+import * as React from "react";
 import * as MUI from "@material-ui/core";
-import { withRouter } from "react-router";
+import * as Router from "react-router";
+
+import PropTypes from "prop-types";
+import HomeIcon from "@material-ui/icons/Home";
+
 import { useFileActions } from "./useFileActions";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = MUI.makeStyles((theme) => ({
     typography: {
         padding: theme.spacing(2),
     },
@@ -38,12 +37,16 @@ function Home({ history }) {
             >
                 <HomeIcon />
             </MUI.IconButton>
-            <Popover
+            <MUI.Popover
                 id={id}
                 open={open}
                 anchorEl={anchorEl}
                 onClose={handleClose}
-                style={{ height: "auto" }}
+                PaperProps={{
+                    style: {
+                        padding: 20,
+                    },
+                }}
                 anchorOrigin={{
                     vertical: "bottom",
                     horizontal: "center",
@@ -55,9 +58,9 @@ function Home({ history }) {
             >
                 <MUI.Grid container direction="column">
                     <MUI.Grid item>
-                        <Typography className={classes.typography}>
+                        <MUI.Typography className={classes.typography}>
                             Do you want to save before going home?
-                        </Typography>
+                        </MUI.Typography>
                     </MUI.Grid>
                     <MUI.Grid
                         container
@@ -90,7 +93,7 @@ function Home({ history }) {
                         </MUI.Grid>
                     </MUI.Grid>
                 </MUI.Grid>
-            </Popover>
+            </MUI.Popover>
         </>
     );
 }
@@ -99,4 +102,4 @@ Home.propTypes = {
     history: PropTypes.any,
 };
 
-export default withRouter(Home);
+export default Router.withRouter(Home);
