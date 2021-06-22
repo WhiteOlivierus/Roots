@@ -147,14 +147,11 @@ export function useFileActions() {
     const build = useBuild(false);
 
     const handleBuild = React.useCallback(() => {
-        // TODO check if the builder is all ready there
-
         enqueueSnackbar(`Builder is being prepared`, {
             variant: "warning",
             preventDuplicate: true,
         });
 
-        let buildHandle;
         FileHandler.FindDir(projectFilesState.activeRoot, "Build")
             .then((buildFolderHandle) => {
                 if (!buildFolderHandle)
@@ -166,40 +163,51 @@ export function useFileActions() {
                     );
                 else return buildFolderHandle;
             })
-            .then((buildFolderHandle) => (buildHandle = buildFolderHandle));
+            .then((buildFolderHandle) =>
+                FileHandler.FindFile("roots-builder.exe")
+                    .then((file) => {
+                        if (file) return;
 
-        FileHandler.FindFile("roots-builder.exe")
-            .then((file) => {
-                if (file) return;
-
-                fetch("./roots-builder.exe")
-                    .then((response) =>
-                        Promise.all([
-                            buildHandle.getFileHandle("roots-builder.exe", {
-                                create: true,
-                            }),
-                            response.blob(),
-                        ])
-                    )
-                    .then((args) => FileHandler.WriteFile(args[0], args[1]))
-                    .then((file) =>
-                        FileHandler.SaveFileInFolder(buildHandle, file)
-                    )
-                    .catch((e) => {
-                        if (e.message.includes("'name'")) return;
-                        enqueueSnackbar(e.message, {
-                            variant: "error",
-                            preventDuplicate: true,
-                        });
-                    });
-            })
-            .finally(() => {
-                enqueueSnackbar(`Builder has been place in project folder`, {
-                    variant: "success",
-                    preventDuplicate: true,
-                });
-                build();
-            });
+                        fetch("./roots-builder.exe")
+                            .then((response) =>
+                                Promise.all([
+                                    buildFolderHandle.getFileHandle(
+                                        "roots-builder.exe",
+                                        {
+                                            create: true,
+                                        }
+                                    ),
+                                    response.blob(),
+                                ])
+                            )
+                            .then((args) =>
+                                FileHandler.WriteFile(args[0], args[1])
+                            )
+                            .then((file) =>
+                                FileHandler.SaveFileInFolder(
+                                    buildFolderHandle,
+                                    file
+                                )
+                            )
+                            .catch((e) => {
+                                if (e.message.includes("'name'")) return;
+                                enqueueSnackbar(e.message, {
+                                    variant: "error",
+                                    preventDuplicate: true,
+                                });
+                            });
+                    })
+                    .finally(() => {
+                        enqueueSnackbar(
+                            `Builder has been place in project folder`,
+                            {
+                                variant: "success",
+                                preventDuplicate: true,
+                            }
+                        );
+                        build();
+                    })
+            );
     }, [build, enqueueSnackbar, projectFilesState.activeRoot]);
 
     useKeyboardShortCuts(

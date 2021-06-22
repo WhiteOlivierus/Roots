@@ -1,9 +1,11 @@
-import { SwitchTransition, CSSTransition } from "react-transition-group";
+import * as React from "react";
 import * as Router from "react-router-dom";
+
+import { SwitchTransition, CSSTransition } from "react-transition-group";
+import { useEffectOnce } from "react-use";
+
 import Scene from "./Scene";
 import PropTypes from "prop-types";
-import * as React from "react";
-import { useEffectOnce } from "react-use";
 
 const SceneTransition = ({ game, location, history }) => {
     useEffectOnce(() => history.push(`/${game.scenes[0].id}`));

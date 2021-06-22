@@ -28,6 +28,10 @@ const FlowEditor = ({ flow, history }) => {
     const onLoad = (instance) => {
         nodeViewerState.setElements = setElements;
         nodeViewerState.rfInstance = instance;
+
+        nodeViewerState.rfInstance
+            .getElements()
+            .map((element) => updateNodeInternals(element.id));
         return instance;
     };
 

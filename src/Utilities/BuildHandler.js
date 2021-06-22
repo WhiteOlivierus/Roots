@@ -63,6 +63,27 @@ export async function Build(activeRoot, nodes, edges, preview) {
         create: true,
     });
 
+    const config = await FindFile(activeRoot, "config.json");
+
+    const configHandle = await buildHandle.getFileHandle("config.json", {
+        create: true,
+    });
+
+    const configFile = await config.getFile();
+
+    await WriteFile(configHandle, configFile);
+
+    const logo = await FindFile(activeRoot, "logo.png");
+
+    if (logo) {
+        const logoHandle = await buildHandle.getFileHandle("logo.png", {
+            create: true,
+        });
+
+        const logoFile = await logo.getFile();
+
+        await WriteFile(logoHandle, logoFile);
+    }
     for (let index = 0; index < images.length; index++) {
         const image = images[index];
         await Move(imagesHandle, image);
