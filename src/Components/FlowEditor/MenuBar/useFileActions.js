@@ -43,7 +43,6 @@ export function useFileActions() {
             .catch(() =>
                 enqueueSnackbar(`New project could not be created`, {
                     variant: "error",
-                    preventDuplicate: true,
                 })
             );
     }, [projectFilesState, nodeViewerState, enqueueSnackbar]);
@@ -90,7 +89,6 @@ export function useFileActions() {
             .catch(() => {
                 enqueueSnackbar(`Could not open project`, {
                     variant: "error",
-                    preventDuplicate: true,
                 });
             });
     }, [SetContext, enqueueSnackbar]);
