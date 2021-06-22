@@ -13,7 +13,8 @@ const Inspector = ({
     polygons,
     mode,
 }) => {
-    const showSelectionDrawer = mode.value !== "edit" && selectedZone.value;
+    const showSelectionDrawer =
+        mode.value !== "edit" && selectedZone.value && selection.value;
 
     return (
         <EditorInspector>

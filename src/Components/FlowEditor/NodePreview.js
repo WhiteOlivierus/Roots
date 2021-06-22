@@ -31,7 +31,11 @@ const NodePreview = () => {
                         }}
                     >
                         <Box p={2}>
-                            <Typography variant="h6" gutterBottom>
+                            <Typography
+                                variant="h6"
+                                gutterBottom
+                                style={{ color: "white" }}
+                            >
                                 {key} Node
                             </Typography>
                         </Box>
