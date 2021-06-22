@@ -5,7 +5,6 @@ import { hasSourceConnection } from "./NodeUtilities";
 import NodeContent from "./NodeContent";
 import { nodeStyle } from "./NodeStyle";
 import useNodeViewerState from "../../../Context/NodeViewerContext/NodeViewerContext";
-import short from "short-uuid";
 import { SceneCanvasHooks } from "dutchskull-scene-manager";
 import PropTypes from "prop-types";
 import NodePaper from "./NodePaper";
@@ -35,7 +34,7 @@ const SceneNode = ({ data, selected }) => {
         zones &&
         zones.map((zone, index) => (
             <Handle
-                key={short.generate()}
+                key={zone.id}
                 type="source"
                 position={Position.Right}
                 className={classes.handleRoot}

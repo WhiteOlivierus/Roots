@@ -25,19 +25,22 @@ const FlowEditor = ({ flow, history }) => {
     const { transform } = Flow.useZoomPanHelper();
     const [elements, setElements] = React.useState(flow.elements || []);
 
-    React.useEffect(() => {
-        const [x, y] = flow.position;
-        transform({ x, y, zoom: flow.zoom });
-    }, [flow, nodeViewerState.rfInstance, transform]);
-
     const onLoad = (instance) => {
         nodeViewerState.setElements = setElements;
         nodeViewerState.rfInstance = instance;
+        return instance;
+    };
 
-        instance
+    React.useEffect(() => {
+        const [x, y] = flow.position;
+        transform({ x, y, zoom: flow.zoom });
+
+        if (!nodeViewerState.rfInstance) return;
+
+        nodeViewerState.rfInstance
             .getElements()
             .map((element) => updateNodeInternals(element.id));
-    };
+    }, [flow, nodeViewerState.rfInstance, transform, updateNodeInternals]);
 
     const onConnect = (params) =>
         nodeViewerState.setElements((els) => Flow.addEdge(params, els));
