@@ -3,7 +3,7 @@ import * as React from "react";
 import EditorInspector from "./Inspector/EditorInspector";
 import SceneSettingsDrawer from "./Inspector/SceneSettingsDrawer";
 import PropTypes from "prop-types";
-import SelectionDrawer from "./SelectionDrawer";
+import SelectionDrawer from "./Inspector/SelectionDrawer";
 
 const Inspector = ({
     node,

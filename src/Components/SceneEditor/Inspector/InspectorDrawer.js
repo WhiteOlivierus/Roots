@@ -32,12 +32,8 @@ const InspectorDrawer = ({ form }) => {
 };
 
 InspectorDrawer.propTypes = {
-    form: PropTypes.shape({
-        inputs: PropTypes.shape({
-            map: PropTypes.func,
-        }),
-        name: PropTypes.any,
-    }),
+    form: PropTypes.object,
+    name: PropTypes.any,
 };
 
 export default InspectorDrawer;

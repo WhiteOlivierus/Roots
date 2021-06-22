@@ -16,7 +16,7 @@ import { Redirect } from "react-router";
 import { Container, Content, Header, Item } from "../../Container";
 
 const SceneEditor = () => {
-    useOnUnload();
+    useOnUnload("/roots");
 
     const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
     const { projectFilesState } = useProjectFilesState();
@@ -151,7 +151,7 @@ const SceneEditor = () => {
                     </Content>
                 </Container>
             ) : (
-                <Redirect to={"/"} />
+                <Redirect to={"/roots"} />
             )}
         </>
     );

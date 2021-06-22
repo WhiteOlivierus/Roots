@@ -11,7 +11,6 @@ const Editor = ({ node, onLoad, imageRef }) => {
     return (
         <MUI.Paper
             style={{
-                margin: "auto",
                 position: "relative",
                 width: !hasSrc && "100%",
                 paddingTop: !hasSrc && "56.25%",

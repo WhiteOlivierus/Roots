@@ -1,18 +1,20 @@
-import { memo, useCallback, useEffect, useRef, useState } from "react";
-import { isNode } from "react-flow-renderer";
+import * as React from "react";
+import * as MUI from "@material-ui/core";
+
 import useNodeViewerState from "../../../Context/NodeViewerContext/NodeViewerContext";
-import TextField from "@material-ui/core/TextField";
 import PropTypes from "prop-types";
 
-export const EditNodeText = ({ value, nodeId, inputStyle, textStyle }) => {
-    const [toggle, setToggle] = useState(false);
-    const [nodeName, setNodeName] = useState(value);
+import { isNode } from "react-flow-renderer";
 
-    const input = useRef(null);
+export const EditNodeText = ({ value, nodeId, inputStyle, textStyle }) => {
+    const [toggle, setToggle] = React.useState(false);
+    const [nodeName, setNodeName] = React.useState(value);
+
+    const input = React.useRef();
 
     const { nodeViewerState } = useNodeViewerState();
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (nodeViewerState.rfInstance)
             nodeViewerState.setElements(
                 nodeViewerState.rfInstance.getElements().map((el) => {
@@ -28,11 +30,11 @@ export const EditNodeText = ({ value, nodeId, inputStyle, textStyle }) => {
             );
     }, [nodeName, nodeViewerState, nodeId]);
 
-    const toggleEdit = useCallback((e) => {
+    const toggleEdit = React.useCallback((e) => {
         if (e.target.type !== "text") setToggle(false);
     }, []);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (toggle) {
             window.addEventListener("click", toggleEdit);
             input.current.focus();
@@ -60,7 +62,7 @@ export const EditNodeText = ({ value, nodeId, inputStyle, textStyle }) => {
     return (
         <div>
             {toggle ? (
-                <TextField
+                <MUI.TextField
                     id="outlined-basic"
                     label="scene name"
                     variant="outlined"
@@ -88,4 +90,4 @@ EditNodeText.propTypes = {
     inputStyle: PropTypes.string.isRequired,
     textStyle: PropTypes.string.isRequired,
 };
-export default memo(EditNodeText);
+export default React.memo(EditNodeText);

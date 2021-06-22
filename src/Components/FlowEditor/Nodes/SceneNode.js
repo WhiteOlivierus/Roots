@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { Handle, Position } from "react-flow-renderer";
 import { hasSourceConnection } from "./NodeUtilities";
-import { NodeContent } from "./NodeContent";
+import NodeContent from "./NodeContent";
 import { nodeStyle } from "./NodeStyle";
 import useNodeViewerState from "../../../Context/NodeViewerContext/NodeViewerContext";
 import short from "short-uuid";

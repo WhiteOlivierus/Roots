@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as MUI from "@material-ui/core";
 import PropTypes from "prop-types";
-import InspectorDrawer from "./Inspector/InspectorDrawer";
+import InspectorDrawer from "./InspectorDrawer";
 
 const SelectionDrawer = ({ onChange, selection, selectedZone }) => {
     const handleToggleZone = ({ target }) =>
