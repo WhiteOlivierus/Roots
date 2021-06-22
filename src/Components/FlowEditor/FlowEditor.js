@@ -1,12 +1,10 @@
 import * as React from "react";
 import ReactFlow, * as Flow from "react-flow-renderer";
-import * as MUI from "@material-ui/core";
-import * as Router from "react-router-dom";
 
 import { NodeBar } from "./NodeBar";
 import { MinimapSettings, NodeTypes } from "./Nodes/NodeTypes";
 import { CreateNode } from "./Nodes/NodeFactory";
-import { EditorWrapper } from "../EditorWrapper";
+import { Container, Content, Header, Item } from "../../Container";
 
 import useNodeViewerState from "../../Context/NodeViewerContext/NodeViewerContext";
 import MenuBar from "./MenuBar/MenuBar";
@@ -17,7 +15,7 @@ const initialState = {
     mouseY: null,
 };
 
-const FlowEditor = ({ flow, history }) => {
+const FlowEditor = ({ flow }) => {
     const { nodeViewerState } = useNodeViewerState();
 
     const updateNodeInternals = Flow.useUpdateNodeInternals();
@@ -76,7 +74,7 @@ const FlowEditor = ({ flow, history }) => {
         );
     };
 
-    const [state, setState] = React.useState(initialState);
+    const [, setState] = React.useState(initialState);
 
     const handleClick = (e, node) => {
         e.preventDefault();
@@ -97,49 +95,42 @@ const FlowEditor = ({ flow, history }) => {
         nodeViewerState.activeNode = undefined;
     };
 
-    const onShowEditor = () => history.push("/editor");
-
     return (
-        <EditorWrapper>
-            <MenuBar />
-            <ReactFlow
-                elements={elements}
-                onLoad={onLoad}
-                nodeTypes={NodeTypes}
-                onConnect={onConnect}
-                onElementsRemove={onRemove}
-                onDragOver={onDragOver}
-                onDrop={onDrop}
-                deleteKeyCode={46}
-                minZoom={0.1}
-                maxZoom={2}
-                multiSelectionKeyCode={17}
-                onNodeContextMenu={handleClick}
-                onPaneClick={handleClose}
-                onNodeMouseEnter={setActiveNode}
-            >
-                <Flow.Background variant="lines" gap={30} size={2} />
-                <Flow.Controls style={{ left: 220 }} />
-                <NodeBar />
-                <Flow.MiniMap
-                    nodeColor={MinimapSettings}
-                    style={{ left: 10 }}
-                />
-            </ReactFlow>
-            <MUI.Menu
-                keepMounted
-                open={state.mouseY !== null}
-                onClose={handleClose}
-                anchorReference="anchorPosition"
-                anchorPosition={
-                    state.mouseY !== null && state.mouseX !== null
-                        ? { top: state.mouseY, left: state.mouseX }
-                        : undefined
-                }
-            >
-                <MUI.MenuItem onClick={onShowEditor}>Edit</MUI.MenuItem>
-            </MUI.Menu>
-        </EditorWrapper>
+        <Container>
+            <Header>
+                <MenuBar />
+            </Header>
+            <Content>
+                <Item>
+                    <ReactFlow
+                        elements={elements}
+                        onLoad={onLoad}
+                        nodeTypes={NodeTypes}
+                        onConnect={onConnect}
+                        onElementsRemove={onRemove}
+                        onDragOver={onDragOver}
+                        onDrop={onDrop}
+                        deleteKeyCode={46}
+                        minZoom={0.1}
+                        maxZoom={2}
+                        multiSelectionKeyCode={17}
+                        onNodeContextMenu={handleClick}
+                        onPaneClick={handleClose}
+                        onNodeMouseEnter={setActiveNode}
+                    >
+                        <Flow.Background variant="lines" gap={30} size={2} />
+                        <Flow.Controls style={{ left: 220 }} />
+                        <Flow.MiniMap
+                            nodeColor={MinimapSettings}
+                            style={{ left: 10 }}
+                        />
+                    </ReactFlow>
+                </Item>
+                <Item auto noShrink style={{ width: 300 }}>
+                    <NodeBar />
+                </Item>
+            </Content>
+        </Container>
     );
 };
 
@@ -156,4 +147,4 @@ FlowEditor.propTypes = {
     }),
 };
 
-export default Router.withRouter(FlowEditor);
+export default FlowEditor;

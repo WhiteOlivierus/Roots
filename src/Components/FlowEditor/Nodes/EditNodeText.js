@@ -75,7 +75,11 @@ export const EditNodeText = ({ value, nodeId, inputStyle, textStyle }) => {
                     onKeyDown={handleKeyDown}
                 />
             ) : (
-                <p className={textStyle} onDoubleClick={handleDoubleClick}>
+                <p
+                    className={textStyle}
+                    style={{ cursor: "pointer" }}
+                    onDoubleClick={handleDoubleClick}
+                >
                     {nodeName}
                 </p>
             )}

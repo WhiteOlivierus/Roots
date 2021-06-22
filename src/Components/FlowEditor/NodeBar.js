@@ -1,53 +1,25 @@
-import {
-    Box,
-    Card,
-    CardContent,
-    Divider,
-    Grid,
-    makeStyles,
-    Typography,
-} from "@material-ui/core";
+import * as MUI from "@material-ui/core";
 import NodePreview from "./NodePreview";
 
-const useStyles = makeStyles({
-    root: {
-        maxWidth: 275,
-    },
-    title: {
-        fontSize: 14,
-    },
-});
-
-export const NodeBar = () => {
-    const classes = useStyles();
-
-    return (
-        <Box p={2} style={{ position: "absolute", right: 0, zIndex: 5 }}>
-            <Card className={classes.root}>
-                <CardContent>
-                    <Grid
-                        container
-                        spacing={2}
-                        direction="column"
-                        alignItems="center"
-                    >
-                        <Grid item>
-                            <Typography variant="h5" gutterBottom>
-                                Nodes
-                            </Typography>
-                        </Grid>
-                        <Grid item>
-                            <Typography variant="body1" gutterBottom>
-                                You can drag the nodes in too the flow editor.
-                            </Typography>
-                        </Grid>
-                        <Grid item>
-                            <Divider />
-                        </Grid>
-                        <NodePreview />
-                    </Grid>
-                </CardContent>
-            </Card>
-        </Box>
-    );
-};
+export const NodeBar = () => (
+    <MUI.Paper square style={{ height: "100%" }}>
+        <MUI.Box p={4}>
+            <MUI.Grid
+                container
+                spacing={2}
+                direction="column"
+                alignItems="center"
+            >
+                <MUI.Grid item>
+                    <MUI.Typography variant="h5">Nodes</MUI.Typography>
+                </MUI.Grid>
+                <MUI.Grid item>
+                    <MUI.Typography variant="body1">
+                        You can drag the nodes in too the flow editor.
+                    </MUI.Typography>
+                </MUI.Grid>
+                <NodePreview />
+            </MUI.Grid>
+        </MUI.Box>
+    </MUI.Paper>
+);

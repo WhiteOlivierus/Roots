@@ -23,7 +23,7 @@ const NodeContent = ({ data, classes }) => (
             value={data.label}
             nodeId={data.id}
         />
-        <img src={data.imageSrc} className={classes.img} />
+        {data.imageSrc && <img src={data.imageSrc} className={classes.img} />}
     </div>
 );
 
