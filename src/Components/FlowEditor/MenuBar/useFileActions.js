@@ -23,6 +23,15 @@ export function useFileActions() {
     const { projectFilesState } = useProjectFilesState();
     const { nodeViewerState } = useNodeViewerState();
 
+    const SetContext = React.useCallback(
+        ({ activeRoot, activeFlow, activeConfig }) => {
+            projectFilesState.activeFlow = activeFlow;
+            projectFilesState.activeRoot = activeRoot;
+            projectFilesState.config = activeConfig;
+        },
+        [projectFilesState]
+    );
+
     const handleNewFlow = React.useCallback(() => {
         FlowHandler.NewFlow(projectFilesState.activeRoot)
             .then(({ activeFlow }) => {
@@ -41,17 +50,14 @@ export function useFileActions() {
 
     const handleNewProject = React.useCallback(() => {
         ProjectHandler.NewProject()
-            .then(({ activeRoot, activeFlow }) => {
-                projectFilesState.activeRoot = activeRoot;
-                projectFilesState.activeFlow = activeFlow;
-            })
+            .then(SetContext)
             .catch(() => {
                 enqueueSnackbar(`New project could not be created`, {
                     variant: "error",
                     preventDuplicate: true,
                 });
             });
-    }, [enqueueSnackbar, projectFilesState]);
+    }, [SetContext, enqueueSnackbar]);
 
     const handleOpenFlow = React.useCallback(() => {
         FlowHandler.OpenFlow(projectFilesState.activeRoot)
@@ -71,11 +77,10 @@ export function useFileActions() {
 
     const handleOpenProject = React.useCallback(() => {
         ProjectHandler.OpenProject()
-            .then(({ activeRoot, activeFlow }) => {
-                projectFilesState.activeRoot = activeRoot;
-                projectFilesState.activeFlow = activeFlow;
+            .then((out) => {
+                SetContext(out);
 
-                let fileName = RemoveExtension(activeFlow.name);
+                let fileName = RemoveExtension(out.activeFlow.name);
 
                 enqueueSnackbar(`Opened project ${fileName}`, {
                     variant: "success",
@@ -88,7 +93,7 @@ export function useFileActions() {
                     preventDuplicate: true,
                 });
             });
-    }, [enqueueSnackbar, projectFilesState]);
+    }, [SetContext, enqueueSnackbar]);
 
     const handleSaveFlow = React.useCallback(() => {
         let fileName = RemoveExtension(projectFilesState.activeFlow.name);
@@ -150,27 +155,43 @@ export function useFileActions() {
         });
 
         let buildHandle;
-        FileHandler.FindDir(projectFilesState.activeRoot, "Build").then(
-            (buildFolderHandle) => (buildHandle = buildFolderHandle)
-        );
+        FileHandler.FindDir(projectFilesState.activeRoot, "Build")
+            .then((buildFolderHandle) => {
+                if (!buildFolderHandle)
+                    return projectFilesState.activeRoot.getDirectoryHandle(
+                        "Build",
+                        {
+                            create: true,
+                        }
+                    );
+                else return buildFolderHandle;
+            })
+            .then((buildFolderHandle) => (buildHandle = buildFolderHandle));
 
-        fetch("./roots-builder.exe")
-            .then((response) =>
-                Promise.all([
-                    buildHandle.getFileHandle("roots-builder.exe", {
-                        create: true,
-                    }),
-                    response.blob(),
-                ])
-            )
-            .then((args) => FileHandler.WriteFile(args[0], args[1]))
-            .then((file) => FileHandler.SaveFileInFolder(buildHandle, file))
-            .catch((e) => {
-                if (e.message.includes("'name'")) return;
-                enqueueSnackbar(e.message, {
-                    variant: "error",
-                    preventDuplicate: true,
-                });
+        FileHandler.FindFile("roots-builder.exe")
+            .then((file) => {
+                if (file) return;
+
+                fetch("./roots-builder.exe")
+                    .then((response) =>
+                        Promise.all([
+                            buildHandle.getFileHandle("roots-builder.exe", {
+                                create: true,
+                            }),
+                            response.blob(),
+                        ])
+                    )
+                    .then((args) => FileHandler.WriteFile(args[0], args[1]))
+                    .then((file) =>
+                        FileHandler.SaveFileInFolder(buildHandle, file)
+                    )
+                    .catch((e) => {
+                        if (e.message.includes("'name'")) return;
+                        enqueueSnackbar(e.message, {
+                            variant: "error",
+                            preventDuplicate: true,
+                        });
+                    });
             })
             .finally(() => {
                 enqueueSnackbar(`Builder has been place in project folder`, {

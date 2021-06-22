@@ -14,21 +14,21 @@ import { TransitionGroup } from "react-transition-group";
 
 const GlobalProvider = ({ children }) => {
     return (
-        <ModalProvider rootComponent={TransitionGroup}>
-            <Router.BrowserRouter>
-                <SnackbarProvider maxSnack={3}>
-                    <ProjectFilesProvider>
-                        <NodeViewerProvider>
-                            <ReactFlowProvider>
-                                <ThemeProvider theme={theme}>
+        <Router.BrowserRouter>
+            <SnackbarProvider maxSnack={3}>
+                <ProjectFilesProvider>
+                    <NodeViewerProvider>
+                        <ReactFlowProvider>
+                            <ThemeProvider theme={theme}>
+                                <ModalProvider rootComponent={TransitionGroup}>
                                     {children}
-                                </ThemeProvider>
-                            </ReactFlowProvider>
-                        </NodeViewerProvider>
-                    </ProjectFilesProvider>
-                </SnackbarProvider>
-            </Router.BrowserRouter>
-        </ModalProvider>
+                                </ModalProvider>
+                            </ThemeProvider>
+                        </ReactFlowProvider>
+                    </NodeViewerProvider>
+                </ProjectFilesProvider>
+            </SnackbarProvider>
+        </Router.BrowserRouter>
     );
 };
 
