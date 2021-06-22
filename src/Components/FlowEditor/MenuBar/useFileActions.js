@@ -5,7 +5,7 @@ import * as FileHandler from "../../../Utilities/FileHandler.js";
 
 import SaveIcon from "@material-ui/icons/Save";
 import BuildIcon from "@material-ui/icons/Build";
-import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
+// import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
 import FolderIcon from "@material-ui/icons/Folder";
 
 import useProjectFilesState from "../../../Context/ProjectFilesContext/ProjectFilesContext";
@@ -47,7 +47,7 @@ export function useFileActions() {
                 })
             );
     }, [projectFilesState, nodeViewerState, enqueueSnackbar]);
-
+    /* 
     const handleNewProject = React.useCallback(() => {
         ProjectHandler.NewProject()
             .then(SetContext)
@@ -57,9 +57,9 @@ export function useFileActions() {
                     preventDuplicate: true,
                 });
             });
-    }, [SetContext, enqueueSnackbar]);
+    }, [SetContext, enqueueSnackbar]); */
 
-    const handleOpenFlow = React.useCallback(() => {
+    /*  const handleOpenFlow = React.useCallback(() => {
         FlowHandler.OpenFlow(projectFilesState.activeRoot)
             .then(({ activeFlow, flow }) => {
                 projectFilesState.activeFlow = activeFlow;
@@ -73,7 +73,7 @@ export function useFileActions() {
                     preventDuplicate: true,
                 });
             });
-    }, [projectFilesState, nodeViewerState, enqueueSnackbar]);
+    }, [projectFilesState, nodeViewerState, enqueueSnackbar]); */
 
     const handleOpenProject = React.useCallback(() => {
         ProjectHandler.OpenProject()
@@ -120,7 +120,7 @@ export function useFileActions() {
         projectFilesState.activeFlow,
     ]);
 
-    const handleSaveFlowAs = React.useCallback(() => {
+    /*   const handleSaveFlowAs = React.useCallback(() => {
         let fileName = RemoveExtension(projectFilesState.activeFlow.name);
 
         FlowHandler.SaveFlowAs(
@@ -142,7 +142,7 @@ export function useFileActions() {
                     preventDuplicate: true,
                 });
             });
-    }, [enqueueSnackbar, nodeViewerState.rfInstance, projectFilesState]);
+    }, [enqueueSnackbar, nodeViewerState.rfInstance, projectFilesState]); */
 
     const build = useBuild(false);
 
@@ -212,15 +212,15 @@ export function useFileActions() {
 
     useKeyboardShortCuts(
         handleSaveFlow,
-        handleSaveFlowAs,
-        handleOpenFlow,
+        // handleSaveFlowAs,
+        // handleOpenFlow,
         handleOpenProject,
         handleNewFlow,
         handleBuild
     );
 
     return [
-        { divide: "" },
+        /*         { divide: "" },
         {
             name: "New Flow",
             action: handleNewFlow,
@@ -234,15 +234,15 @@ export function useFileActions() {
             icon: <InsertDriveFileIcon />,
             tooltip: "Ctrl-Shift-N",
             shortCut: "Ctrl-Shift-N",
-        },
-        { divide: "" },
-        {
+        }, */
+        // { divide: "" },
+        /*    {
             name: "Open Flow",
             action: handleOpenFlow,
             icon: <FolderIcon />,
             tooltip: "Ctrl-O",
             shortCut: "Ctrl-O",
-        },
+        }, */
         {
             name: "Open Project",
             action: handleOpenProject,
@@ -250,7 +250,7 @@ export function useFileActions() {
             tooltip: "Ctrl-Shift-O",
             shortCut: "Ctrl-Shift-O",
         },
-        { divide: "" },
+        // { divide: "" },
         {
             name: "Save Flow",
             action: handleSaveFlow,
@@ -258,14 +258,14 @@ export function useFileActions() {
             tooltip: "Ctrl-S",
             shortCut: "Ctrl-S",
         },
-        {
+        /*         {
             name: "Save Flow As",
             action: handleSaveFlowAs,
             icon: <SaveIcon />,
             tooltip: "Ctrl-Shift-S",
             shortCut: "Ctrl-Shift-S",
-        },
-        { divide: "" },
+        }, */
+        // { divide: "" },
         {
             name: "Build",
             action: handleBuild,
