@@ -4416,6 +4416,11 @@ chrome-trace-event@^1.0.2:
   dependencies:
     tslib "^1.9.0"
 
+chromium-detector@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/chromium-detector/-/chromium-detector-1.0.9.tgz#12ba7cf677fbf449d575b988815f4ece28eb285e"
+  integrity sha512-CQswzZRHYfeKOZb+EX12rbrwW/ntnseIBWSgO4N6bASFiG1hVV1L9Or6JeZe20sQoGerBZJ6I6MbQk5rE3eOBg==
+
 ci-info@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-2.0.0.tgz"
