@@ -1,29 +1,21 @@
+import * as MUI from "@material-ui/core";
+import * as React from "react";
+
 import PropTypes from "prop-types";
-import React from "react";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import Link from "@material-ui/core/Link";
-import { withRouter } from "react-router";
 
 const Copyright = () => (
-    <Typography variant="body2" color="textSecondary" align="center">
+    <MUI.Typography variant="body2" color="textSecondary" align="center">
         {"Copyright © "}
-        <Link color="inherit" href="https://dutchskull.com/">
+        <MUI.Link color="inherit" href="https://dutchskull.com/">
             Dutchskull
-        </Link>{" "}
+        </MUI.Link>{" "}
         {new Date().getFullYear()}
         {"."}
-    </Typography>
+    </MUI.Typography>
 );
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = MUI.makeStyles((theme) => ({
     icon: {
         marginRight: theme.spacing(2),
     },
@@ -125,12 +117,12 @@ const contributions = [
     },
 ];
 
-const FrontPage = ({ history }) => {
+const FrontPage = () => {
     const classes = useStyles();
-    const theme = useTheme();
+    const theme = MUI.useTheme();
     return (
         <>
-            <CssBaseline />
+            <MUI.CssBaseline />
             <main style={{ backgroundColor: theme.palette.primary.main }}>
                 <div className={classes.heroContent}>
                     <Container maxWidth="sm">
@@ -143,27 +135,36 @@ const FrontPage = ({ history }) => {
                             }}
                             preload="true"
                         />
-                        <Typography
+                        <MUI.Typography
                             variant="h5"
                             align="center"
                             color="textSecondary"
                             paragraph
                         >
                             A 2D narrative engine right in the browser.
-                        </Typography>
+                        </MUI.Typography>
                         <div className={classes.heroButtons}>
-                            <Grid container spacing={2} justify="center">
-                                <Grid item>
-                                    <Button
+                            <MUI.Grid container spacing={2} justify="center">
+                                <MUI.Grid item>
+                                    <MUI.Button
                                         variant="contained"
                                         color="primary"
-                                        onClick={() => history.push("/roots")}
+                                        onClick={() => {
+                                            var getUrl = window.location;
+                                            var baseUrl =
+                                                getUrl.protocol +
+                                                "//" +
+                                                getUrl.host +
+                                                "/" +
+                                                "roots";
+                                            window.open(baseUrl, "_blank");
+                                        }}
                                     >
                                         Get started
-                                    </Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button
+                                    </MUI.Button>
+                                </MUI.Grid>
+                                <MUI.Grid item>
+                                    <MUI.Button
                                         variant="outlined"
                                         color="primary"
                                         onClick={() => {
@@ -174,16 +175,16 @@ const FrontPage = ({ history }) => {
                                         }}
                                     >
                                         Github
-                                    </Button>
-                                </Grid>
-                            </Grid>
+                                    </MUI.Button>
+                                </MUI.Grid>
+                            </MUI.Grid>
                         </div>
                     </Container>
                 </div>
                 <Container className={classes.cardGrid} maxWidth="md">
-                    <Grid container spacing={4}>
-                        <Grid item xs={12}>
-                            <Typography
+                    <MUI.Grid container spacing={4}>
+                        <MUI.Grid item xs={12}>
+                            <MUI.Typography
                                 gutterBottom
                                 variant="h2"
                                 style={{
@@ -191,17 +192,17 @@ const FrontPage = ({ history }) => {
                                 }}
                             >
                                 Features
-                            </Typography>
-                        </Grid>
+                            </MUI.Typography>
+                        </MUI.Grid>
                         {cards.map((card) => (
-                            <Grid item key={card.heading} xs={4}>
-                                <Card
+                            <MUI.Grid item key={card.heading} xs={4}>
+                                <MUI.Card
                                     className={classes.card}
                                     style={{
                                         flexDirection: "column",
                                     }}
                                 >
-                                    <CardMedia
+                                    <MUI.CardMedia
                                         style={{
                                             backgroundSize: "contain",
                                             margin: theme.spacing(),
@@ -210,25 +211,27 @@ const FrontPage = ({ history }) => {
                                         image={card.img}
                                         title="Image title"
                                     />
-                                    <CardContent
+                                    <MUI.CardContent
                                         className={classes.cardContent}
                                     >
-                                        <Typography
+                                        <MUI.Typography
                                             gutterBottom
                                             variant="h5"
                                             component="h2"
                                         >
                                             {card.heading}
-                                        </Typography>
-                                        <Typography>{card.text}</Typography>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
+                                        </MUI.Typography>
+                                        <MUI.Typography>
+                                            {card.text}
+                                        </MUI.Typography>
+                                    </MUI.CardContent>
+                                </MUI.Card>
+                            </MUI.Grid>
                         ))}
-                        <Grid item xs={12}>
-                            <Grid container spacing={4}>
-                                <Grid item xs={12}>
-                                    <Typography
+                        <MUI.Grid item xs={12}>
+                            <MUI.Grid container spacing={4}>
+                                <MUI.Grid item xs={12}>
+                                    <MUI.Typography
                                         gutterBottom
                                         variant="h2"
                                         style={{
@@ -238,8 +241,8 @@ const FrontPage = ({ history }) => {
                                         }}
                                     >
                                         Contribute
-                                    </Typography>
-                                </Grid>
+                                    </MUI.Typography>
+                                </MUI.Grid>
                                 {contributions.map((contribution, i) => (
                                     <Contribution
                                         key={`contribution_${i}`}
@@ -247,46 +250,33 @@ const FrontPage = ({ history }) => {
                                         contribution={contribution}
                                     />
                                 ))}
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                            </MUI.Grid>
+                        </MUI.Grid>
+                    </MUI.Grid>
                 </Container>
             </main>
             <footer className={classes.footer}>
-                <Typography
+                <MUI.Typography
                     variant="subtitle1"
                     align="center"
                     color="textSecondary"
                     component="p"
                 >
                     Roots - 2D narrative game engine on the web
-                </Typography>
+                </MUI.Typography>
                 <Copyright />
             </footer>
         </>
     );
 };
 
-FrontPage.propTypes = {
-    classes: PropTypes.shape({
-        card: PropTypes.any,
-        cardContent: PropTypes.any,
-        cardGrid: PropTypes.any,
-        cardMedia: PropTypes.any,
-        footer: PropTypes.any,
-        heroButtons: PropTypes.any,
-        heroContent: PropTypes.any,
-    }),
-    history: PropTypes.shape({
-        push: PropTypes.func,
-    }),
-};
+FrontPage.propTypes = {};
 
-export default withRouter(FrontPage);
+export default FrontPage;
 
 const Contribution = ({ theme, contribution }) => (
-    <Grid item xs={4} style={{ display: "flex", flexDirection: "column" }}>
-        <Typography
+    <MUI.Grid item xs={4} style={{ display: "flex", flexDirection: "column" }}>
+        <MUI.Typography
             style={{
                 color: theme.palette.primary.contrastText,
             }}
@@ -294,8 +284,8 @@ const Contribution = ({ theme, contribution }) => (
             variant="h3"
         >
             {contribution.title}
-        </Typography>
-        <Typography
+        </MUI.Typography>
+        <MUI.Typography
             style={{
                 color: theme.palette.primary.contrastText,
                 flexGrow: 1,
@@ -303,8 +293,8 @@ const Contribution = ({ theme, contribution }) => (
             gutterBottom
         >
             {contribution.text}
-        </Typography>
-        <Button
+        </MUI.Typography>
+        <MUI.Button
             style={{ margin: theme.spacing(4) }}
             variant="contained"
             color="secondary"
@@ -313,8 +303,8 @@ const Contribution = ({ theme, contribution }) => (
             }}
         >
             {contribution.button}
-        </Button>
-    </Grid>
+        </MUI.Button>
+    </MUI.Grid>
 );
 
 Contribution.propTypes = {
