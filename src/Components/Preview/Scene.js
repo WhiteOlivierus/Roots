@@ -13,10 +13,10 @@ const Scene = ({ scene }) => {
         <div id={scene.id}>
             <UILayer end={scene.end} />
 
-            <AudioLayer audio={scene.audio} />
+            <AudioLayer audio={scene.audioSrc} />
 
             <img
-                src={scene.src ? scene.src : `/img/${scene.image}`}
+                src={scene.imageSrc ? scene.imageSrc : `/img/${scene.image}`}
                 style={{
                     width: "100vw",
                     height: "100vh",

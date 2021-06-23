@@ -101,6 +101,7 @@ const useBuild = (isPreview) => {
                     ${preview.current ? "Preview" : ""} ${FileName}`,
                         {
                             variant: "info",
+                            preventDuplicate: true,
                             action: (
                                 <Button size="small" onClick={showModal}>
                                     Info
@@ -111,6 +112,7 @@ const useBuild = (isPreview) => {
                 else
                     enqueueSnackbar(`Preview build success`, {
                         variant: "success",
+                        preventDuplicate: true,
                     });
 
                 if (preview.current) {

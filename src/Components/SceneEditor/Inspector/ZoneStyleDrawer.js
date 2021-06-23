@@ -24,12 +24,10 @@ const ZoneStyleDrawer = ({ onChange, selection, selectedZone }) => {
         });
 
         onChange((draft) => {
-            const zoneIndex = draft.findIndex((zone) => zone.id === selection);
-            const newStyle = {
-                ...draft[zoneIndex].style,
+            draft.findIndex((zone) => zone.id === selection).style = {
+                ...draft.findIndex((zone) => zone.id === selection).style,
                 [target.name]: target.value,
             };
-            draft[zoneIndex].style = newStyle;
         });
     };
 

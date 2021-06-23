@@ -275,8 +275,8 @@ export function useFileActions() {
 }
 function useKeyboardShortCuts(
     handleSaveFlow,
-    handleSaveFlowAs,
-    handleOpenFlow,
+    /*     handleSaveFlowAs,
+    handleOpenFlow, */
     handleOpenProject,
     handleNewFlow,
     handleBuild
@@ -295,7 +295,7 @@ function useKeyboardShortCuts(
             return;
         }
 
-        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === "KeyS") {
+        /*         if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === "KeyS") {
             e.preventDefault();
             handleSaveFlowAs();
             return;
@@ -305,7 +305,7 @@ function useKeyboardShortCuts(
             e.preventDefault();
             handleOpenFlow();
             return;
-        }
+        } */
 
         if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === "KeyO") {
             e.preventDefault();

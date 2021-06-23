@@ -1,16 +1,23 @@
-import { Move } from "./FileHandler";
+import { WriteFile } from "./FileHandler";
 
 export const LoadFile = async (root, options = {}) => {
     let fileHandle = await window.showOpenFilePicker(options);
 
     if (Array.isArray(fileHandle)) fileHandle = fileHandle[0];
 
-    await Move(root, fileHandle);
-
+    const fileName = await root.getFileHandle(
+        fileHandle.name.replace(/ /g, ""),
+        {
+            create: true,
+        }
+    );
     const file = await fileHandle.getFile();
-    const blobUrl = await URL.createObjectURL(file);
 
-    return { fileName: fileHandle.name, blobUrl };
+    await WriteFile(fileName, file);
+
+    const blobUrl = URL.createObjectURL(file);
+
+    return { fileName: fileName.name, blobUrl };
 };
 
 export const AudioOptions = {
@@ -41,6 +48,11 @@ export const ImageOptions = {
     multiple: false,
 };
 
-export const LoadAudioFile = async (root) => LoadFile(root, AudioOptions);
+export const LoadAudioFile = async (root) => {
+    const test = LoadFile(root, AudioOptions);
+    const audio = new Audio();
+    audio.src = test.blobUrl;
+    return test;
+};
 
 export const LoadImageFile = async (root) => LoadFile(root, ImageOptions);

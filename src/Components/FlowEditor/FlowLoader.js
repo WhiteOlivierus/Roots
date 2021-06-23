@@ -41,7 +41,7 @@ const FlowLoader = ({ history }) => {
             SetFlow(nodeViewerState.rfInstance.toObject());
         } else {
             LoadFlow(projectFilesState.activeRoot, projectFilesState.activeFlow)
-                .then((flow) =>
+                .then((flow) => {
                     LoadImagesFlow(flow, projectFilesState).then(
                         (loadedElements) => {
                             SetFlow({
@@ -49,8 +49,16 @@ const FlowLoader = ({ history }) => {
                                 elements: [...loadedElements],
                             });
                         }
-                    )
-                )
+                    );
+                    LoadAudioFlow(flow, projectFilesState).then(
+                        (loadedElements) => {
+                            SetFlow({
+                                ...flow,
+                                elements: [...loadedElements],
+                            });
+                        }
+                    );
+                })
                 .catch(() => history.push("/roots"));
         }
     }, [SetFlow, history, nodeViewerState.rfInstance, projectFilesState]);
@@ -116,6 +124,25 @@ const LoadImagesFlow = (flow, projectFilesState) => {
                 const image = new Image();
                 image.scr = blobUrl;
                 element.data.imageSrc = blobUrl;
+                return element;
+            });
+        return newLocal;
+    });
+    return Promise.all(test);
+};
+
+const LoadAudioFlow = (flow, projectFilesState) => {
+    const test = flow.elements.map(async (element) => {
+        const data = element.data;
+
+        if (!(isNode(element) && "audio" in data)) return element;
+
+        const newLocal = FindFile(projectFilesState.activeRoot, data.audio)
+            .then((fileHandle) => GetImageBlobPath(fileHandle))
+            .then((blobUrl) => {
+                const audio = new Audio();
+                audio.scr = blobUrl;
+                element.data.audioSrc = blobUrl;
                 return element;
             });
         return newLocal;
