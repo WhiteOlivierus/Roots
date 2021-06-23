@@ -1,9 +1,10 @@
 import * as React from "react";
 
-import EditorInspector from "./Inspector/EditorInspector";
-import SceneSettingsDrawer from "./Inspector/SceneSettingsDrawer";
+import EditorInspector from "./EditorInspector";
+import SceneSettingsDrawer from "./SceneSettingsDrawer";
 import PropTypes from "prop-types";
-import SelectionDrawer from "./Inspector/SelectionDrawer";
+import SelectionDrawer from "./SelectionDrawer";
+import ZoneStyleDrawer from "./ZoneStyleDrawer";
 
 const Inspector = ({
     node,
@@ -24,11 +25,18 @@ const Inspector = ({
                 projectFolder={activeRoot}
             />
             {showSelectionDrawer && (
-                <SelectionDrawer
-                    onChange={polygons.setValue}
-                    selection={selection.value}
-                    selectedZone={selectedZone.value}
-                />
+                <>
+                    <SelectionDrawer
+                        onChange={polygons.setValue}
+                        selection={selection.value}
+                        selectedZone={selectedZone.value}
+                    />
+                    <ZoneStyleDrawer
+                        onChange={polygons.setValue}
+                        selection={selection.value}
+                        selectedZone={selectedZone.value}
+                    />
+                </>
             )}
         </EditorInspector>
     );

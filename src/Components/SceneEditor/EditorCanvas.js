@@ -1,5 +1,5 @@
 import * as React from "react";
-import SceneCanvas from "dutchskull-scene-manager";
+import SceneCanvas from "./scene-manager";
 import PropTypes from "prop-types";
 
 export const EditorCanvas = ({ mode, polygons, imageRef, selection }) => (

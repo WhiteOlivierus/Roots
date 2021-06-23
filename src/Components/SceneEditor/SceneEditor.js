@@ -4,14 +4,14 @@ import * as Transform from "../../Utilities/Transform";
 import useNodeViewerState from "../../Context/NodeViewerContext/NodeViewerContext";
 import ToolBar from "./Toolbar/ToolBar";
 import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
-import Inspector from "./Inspector";
+import Inspector from "./Inspector/Inspector";
 import Editor from "./Editor";
 import useOnUnload from "../../Utilities/UseOnUnLoad";
 import MenuBar from "../FlowEditor/MenuBar/MenuBar";
 
 import { EditorCanvas } from "./EditorCanvas";
 import { EditorWrapper } from "../EditorWrapper";
-import { SceneCanvasHooks as Hooks } from "dutchskull-scene-manager";
+import { SceneCanvasHooks as Hooks } from "./scene-manager";
 import { Redirect } from "react-router";
 import { Container, Content, Header, Item } from "../../Utilities/Container";
 
