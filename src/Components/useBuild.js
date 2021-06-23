@@ -75,6 +75,11 @@ const useBuild = (isPreview) => {
                     nodeViewerState.rfInstance.getElements()
                 );
 
+                if (preview.current)
+                    enqueueSnackbar(`Building preview`, {
+                        variant: "info",
+                    });
+
                 return Build(
                     projectFilesState.activeRoot,
                     nodes,
@@ -90,18 +95,24 @@ const useBuild = (isPreview) => {
                     ""
                 );
 
-                enqueueSnackbar(
-                    `This is how you start building
+                if (!preview.current)
+                    enqueueSnackbar(
+                        `This is how you start building
                     ${preview.current ? "Preview" : ""} ${FileName}`,
-                    {
-                        variant: "info",
-                        action: (
-                            <Button size="small" onClick={showModal}>
-                                Info
-                            </Button>
-                        ),
-                    }
-                );
+                        {
+                            variant: "info",
+                            action: (
+                                <Button size="small" onClick={showModal}>
+                                    Info
+                                </Button>
+                            ),
+                        }
+                    );
+                else
+                    enqueueSnackbar(`Preview build success`, {
+                        variant: "success",
+                    });
+
                 if (preview.current) {
                     history.push(`/preview/${id}`);
                 }
