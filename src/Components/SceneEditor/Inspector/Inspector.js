@@ -4,7 +4,7 @@ import EditorInspector from "./EditorInspector";
 import SceneSettingsDrawer from "./SceneSettingsDrawer";
 import PropTypes from "prop-types";
 import SelectionDrawer from "./SelectionDrawer";
-import ZoneStyleDrawer from "./ZoneStyleDrawer";
+// import ZoneStyleDrawer from "./ZoneStyleDrawer";
 
 const Inspector = ({
     node,
@@ -31,11 +31,11 @@ const Inspector = ({
                         selection={selection.value}
                         selectedZone={selectedZone.value}
                     />
-                    <ZoneStyleDrawer
+                    {/*                     <ZoneStyleDrawer
                         onChange={polygons.setValue}
                         selection={selection.value}
                         selectedZone={selectedZone.value}
-                    />
+                    /> */}
                 </>
             )}
         </EditorInspector>

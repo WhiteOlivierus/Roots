@@ -39,7 +39,8 @@ const Editor = ({ node, onLoad, imageRef }) => {
                         textAlign: "center",
                     }}
                 >
-                    No scene image yet, please add one.
+                    No scene image yet, please add one. <br /> You can do this
+                    under scene settings in the inspector.
                 </h1>
             )}
         </MUI.Paper>

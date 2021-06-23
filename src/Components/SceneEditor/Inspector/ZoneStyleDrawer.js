@@ -24,8 +24,8 @@ const ZoneStyleDrawer = ({ onChange, selection, selectedZone }) => {
         });
 
         onChange((draft) => {
-            draft.findIndex((zone) => zone.id === selection).style = {
-                ...draft.findIndex((zone) => zone.id === selection).style,
+            draft.find((zone) => zone.id === selection).style = {
+                ...draft.find((zone) => zone.id === selection).style,
                 [target.name]: target.value,
             };
         });
