@@ -5,18 +5,19 @@ import { hasSourceConnection } from "./NodeUtilities";
 import NodeContent from "./NodeContent";
 import { nodeStyle } from "./NodeStyle";
 import useNodeViewerState from "../../../Context/NodeViewerContext/NodeViewerContext";
-import { SceneCanvasHooks } from "dutchskull-scene-manager";
+
 import PropTypes from "prop-types";
 import NodePaper from "./NodePaper";
 import EditButton from "./EditButton";
 import { CalculateHandlePosition } from "./CalculateHandlePosition";
+import { useStateful } from "../../SceneEditor/scene-manager/Hooks";
 
 const SceneNode = ({ data, selected }) => {
     const classes = nodeStyle();
 
     const { nodeViewerState } = useNodeViewerState();
 
-    const hover = SceneCanvasHooks.useStateful(false);
+    const hover = useStateful(false);
 
     const zones =
         data.zones &&

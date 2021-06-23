@@ -16,7 +16,7 @@ export const useStateful = (initial) => {
             value,
             setValue,
         }),
-        [setValue, value]
+        [value]
     );
 };
 

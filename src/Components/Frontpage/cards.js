@@ -42,20 +42,20 @@ export const contributions = [
         text:
             "Do you want to help and make Roots better by lending your development skills? Quickly go to GitHub and start talking about what you want to help with.",
         button: "Github",
-        link: "https://github.com/WhiteOlivierus/Roots",
+        link: "https://github.com/Dutchskull/Roots",
     },
     {
         title: "Bugs",
         text:
             "Oh no, Roots broke down when you were working on your story.Help us to make Roots more stable by reporting the bug, so you can go on with your project.",
         button: "Report bug",
-        link: "https://github.com/WhiteOlivierus/Roots/issues",
+        link: "https://github.com/Dutchskull/Roots/issues",
     },
     {
         title: "Features",
         text:
             "Do you have a great idea to improve everyone's productivity or creativity? Leave a request for your feature on GitHub.",
         button: "Feature request",
-        link: "https://github.com/WhiteOlivierus/Roots/issues",
+        link: "https://github.com/Dutchskull/Roots/issues",
     },
 ];

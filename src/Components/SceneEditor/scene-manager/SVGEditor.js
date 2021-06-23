@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useCallback, useRef, Fragment } from "react";
+import React, { useCallback, useRef } from "react";
 import short from "short-uuid";
 import { EditablePolygon, EditablePolyLine } from "./EditablePolygon";
 import { useStateful } from "./Hooks";
@@ -21,7 +21,7 @@ const SVGEditor = ({ container, polygon }) => {
             draft.handles.splice(pointSelection.value, 1);
             draft.points = [].concat.apply([], draft.handles);
         });
-    }, [pointSelection.value, polygon]);
+    }, [polygon]);
 
     useKeyPress(46, DeleteHandle);
 
@@ -41,7 +41,7 @@ const SVGEditor = ({ container, polygon }) => {
                 draft.points = [].concat.apply([], draft.handles);
             });
         },
-        [container.left, container.top, polygon]
+        [polygon, editorId]
     );
 
     const ClosePolygon = useCallback(() => {
@@ -106,22 +106,8 @@ const SVGEditor = ({ container, polygon }) => {
 };
 
 SVGEditor.propTypes = {
-    container: PropTypes.shape({
-        bottom: PropTypes.any,
-        left: PropTypes.any,
-        right: PropTypes.any,
-        top: PropTypes.any,
-    }),
-    polygon: PropTypes.shape({
-        setValue: PropTypes.func,
-        value: PropTypes.shape({
-            closed: PropTypes.any,
-            handles: PropTypes.shape({
-                map: PropTypes.func,
-            }),
-            points: PropTypes.any,
-        }),
-    }),
+    container: PropTypes.object,
+    polygon: PropTypes.object,
 };
 
 export default React.memo(SVGEditor);

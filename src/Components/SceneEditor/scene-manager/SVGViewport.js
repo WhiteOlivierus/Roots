@@ -22,10 +22,7 @@ export const SVGViewport = ({ id, container, onClick, children }) => {
 
 SVGViewport.propTypes = {
     children: PropTypes.any,
-    container: PropTypes.shape({
-        height: PropTypes.any,
-        width: PropTypes.any,
-    }),
+    container: PropTypes.object,
     id: PropTypes.any,
     onClick: PropTypes.any,
 };

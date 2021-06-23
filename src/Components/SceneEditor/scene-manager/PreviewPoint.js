@@ -1,15 +1,16 @@
 import styled from "styled-components";
+import { theme } from "../../../Utilities/Theme";
 
 export const PreviewPoint = styled.circle`
-    fill: #e040fb;
+    fill: ${theme.palette.primary.main};
 
     &:hover {
-        fill: white;
+        fill: ${theme.palette.secondary.main};
         cursor: pointer;
     }
 
     &.selected {
-        fill: black;
+        fill: ${theme.palette.secondary.main};
         fill-opacity: 1;
     }
 `;

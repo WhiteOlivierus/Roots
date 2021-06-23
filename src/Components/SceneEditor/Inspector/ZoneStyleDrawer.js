@@ -2,14 +2,20 @@ import * as React from "react";
 import * as MUI from "@material-ui/core";
 import PropTypes from "prop-types";
 import InspectorDrawer from "./InspectorDrawer";
+import ColorPicker from "material-ui-color-picker";
+import { useTheme } from "@material-ui/core";
 
 const ZoneStyleDrawer = ({ onChange, selection, selectedZone }) => {
-    const [selected, setSelected] = React.useState({
-        ...{
-            style: {
+    const theme = useTheme();
+
+    const [selected] = React.useState({
+        style: {
+            ...{
                 strokeWidth: 2,
-                ...selectedZone.style,
+                stroke: "#ffffff",
+                fill: theme.palette.primary.main,
             },
+            ...selectedZone.style,
         },
         ...selectedZone,
     });
@@ -17,18 +23,11 @@ const ZoneStyleDrawer = ({ onChange, selection, selectedZone }) => {
     const handleStyleChange = ({ target }) =>
         onChange((draft) => {
             const zoneIndex = draft.findIndex((zone) => zone.id === selection);
-            const newLocal = {
+            const newStyle = {
                 ...draft[zoneIndex].style,
-                [target.name]: Number(target.value),
+                [target.name]: target.value,
             };
-            draft[zoneIndex].style = newLocal;
-            setSelected({
-                ...selected,
-                style: {
-                    ...selected.style,
-                    ...newLocal,
-                },
-            });
+            draft[zoneIndex].style = newStyle;
         });
 
     const form = {
@@ -46,7 +45,44 @@ const ZoneStyleDrawer = ({ onChange, selection, selectedZone }) => {
                 helperText={
                     !selected.style.strokeWidth && "Give a stroke width"
                 }
-                onChange={handleStyleChange}
+                onChange={({ target }) =>
+                    handleStyleChange({
+                        target: {
+                            name: target.name,
+                            value: Number(target.value),
+                        },
+                    })
+                }
+            />,
+            <ColorPicker
+                key="2"
+                name="stroke"
+                type="stroke"
+                label="Outline color"
+                variant="outlined"
+                fullWidth
+                defaultValue={selected.style.stroke}
+                value={selected.style.stroke}
+                onChange={(color) =>
+                    handleStyleChange({
+                        target: { name: "stroke", value: color },
+                    })
+                }
+            />,
+            <ColorPicker
+                key="2"
+                name="fill"
+                type="fill"
+                label="Fill color"
+                variant="outlined"
+                fullWidth
+                defaultValue={selected.style.fill}
+                value={selected.style.fill}
+                onChange={(color) =>
+                    handleStyleChange({
+                        target: { name: "fill", value: color },
+                    })
+                }
             />,
         ],
     };

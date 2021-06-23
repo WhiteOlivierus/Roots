@@ -16,35 +16,41 @@ const StartMenu = ({ history }) => {
 
     const [showModal] = useModal(({ in: open, onExited }) => (
         <MUI.Dialog open={open} onExited={onExited}>
-            <MUI.DialogTitle>No chromium detected</MUI.DialogTitle>
-            <MUI.DialogContent>
-                <MUI.Typography>
-                    Roots only works with chromium at the moment. Please install
-                    a chromium based browser to use Roots.
-                </MUI.Typography>
-            </MUI.DialogContent>
-            <MUI.DialogActions>
-                <MUI.Button
-                    variant="contained"
-                    onClick={() => {
-                        window.location.href = "https://www.google.com/chrome/";
-                    }}
-                >
-                    Get Chrome
-                </MUI.Button>
-                <MUI.Button
-                    variant="outlined"
-                    onClick={() => history.push("/")}
-                >
-                    Back
-                </MUI.Button>
-            </MUI.DialogActions>
+            <MUI.Box p={4}>
+                <MUI.DialogTitle>No chromium detected</MUI.DialogTitle>
+                <MUI.DialogContent>
+                    <MUI.Typography>
+                        Roots only works with a browser that is build on
+                        chromium. <br />
+                        Please install a chromium based browser to use Roots.
+                    </MUI.Typography>
+                </MUI.DialogContent>
+                <MUI.DialogActions>
+                    <MUI.Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                            window.location.href =
+                                "https://www.google.com/chrome/";
+                        }}
+                    >
+                        Get Chrome
+                    </MUI.Button>
+                    <MUI.Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => history.push("/")}
+                    >
+                        Back
+                    </MUI.Button>
+                </MUI.DialogActions>
+            </MUI.Box>
         </MUI.Dialog>
     ));
 
     React.useEffect(() => {
-        const info = chromiumDetector.getBrowserInfo();
-        if (!info.isChromium) showModal();
+        const browserInfo = chromiumDetector.getBrowserInfo();
+        if (!browserInfo.isChromium) showModal();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

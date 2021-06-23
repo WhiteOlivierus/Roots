@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 const EditorInspector = ({ children }) => {
     return (
-        <MUI.Box pl={3} height="100%">
+        <MUI.Box pl={3} height="100%" style={{ overflowY: "auto" }}>
             <MUI.Card square={true} style={{ height: "100%" }}>
                 <MUI.CardContent>
                     <MUI.Typography variant="h5" gutterBottom>

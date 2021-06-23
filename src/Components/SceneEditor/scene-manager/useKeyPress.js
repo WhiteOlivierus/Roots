@@ -17,7 +17,7 @@ export function useKeyPress(targetKey, action) {
 
     useEffect(() => {
         if (keyPressed) action();
-    }, [action, keyPressed]);
+    }, [keyPressed]);
 
     useEffect(() => {
         window.addEventListener("keydown", downHandler);
@@ -26,7 +26,6 @@ export function useKeyPress(targetKey, action) {
             window.removeEventListener("keydown", downHandler);
             window.removeEventListener("keyup", upHandler);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return keyPressed;

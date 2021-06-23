@@ -57,7 +57,7 @@ const FrontPage = ({ theme, classes }) => (
                                     color="primary"
                                     onClick={() => {
                                         window.open(
-                                            "https://github.com/WhiteOlivierus/Roots",
+                                            "https://github.com/Dutchskull/Roots",
                                             "_blank"
                                         );
                                     }}

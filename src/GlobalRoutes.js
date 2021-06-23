@@ -27,7 +27,7 @@ const GlobalRoutes = () => {
             <FullScreenApp>
                 <Router.Route path="/roots">
                     <GithubCorner
-                        href="https://github.com/WhiteOlivierus/Roots"
+                        href="https://github.com/Dutchskull/Roots"
                         direction="left"
                     />
                     <StartMenu />
