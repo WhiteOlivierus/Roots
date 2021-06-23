@@ -1,54 +1,51 @@
-import { Box, Icon, Tooltip, Grid, Paper } from "@material-ui/core";
+import * as MUI from "@material-ui/core";
 import * as React from "react";
-import ToggleButton from "@material-ui/lab/ToggleButton";
-import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
+import * as MUILab from "@material-ui/lab";
+
 import BackButton from "./BackButton";
 import PropTypes from "prop-types";
 
+import { toolBarIcons } from "./toolbarIcons";
+
 const ToolBar = ({ mode, onExit }) => {
-    const handleChange = (e, nextView) => mode.setValue(nextView);
+    const handleChange = (e, icon) => mode.setValue(icon);
 
     return (
-        <Box p={3}>
-            <Grid
+        <MUI.Box p={3}>
+            <MUI.Grid
                 container
                 direction="column"
                 justify="center"
                 alignItems="center"
                 spacing={2}
             >
-                <Grid item>
+                <MUI.Grid item>
                     <BackButton to={"/flow"} onExit={onExit} />
-                </Grid>
-                <Grid item>
-                    <Paper>
-                        <ToggleButtonGroup
+                </MUI.Grid>
+                <MUI.Grid item>
+                    <MUI.Paper>
+                        <MUILab.ToggleButtonGroup
                             orientation="vertical"
                             value={mode.value}
                             exclusive
                             onChange={handleChange}
                         >
-                            <ToggleButton value="select" aria-label="select">
-                                <Tooltip title="select">
-                                    <Icon
-                                        className="fas fa-mouse-pointer"
-                                        color="primary"
-                                    />
-                                </Tooltip>
-                            </ToggleButton>
-                            <ToggleButton value="edit" aria-label="edit">
-                                <Tooltip title="edit zones">
-                                    <Icon
-                                        className="fas fa-pen-fancy"
-                                        color="primary"
-                                    />
-                                </Tooltip>
-                            </ToggleButton>
-                        </ToggleButtonGroup>
-                    </Paper>
-                </Grid>
-            </Grid>
-        </Box>
+                            {toolBarIcons.map(({ icon, title }) => (
+                                <MUILab.ToggleButton
+                                    key={title}
+                                    value={title}
+                                    aria-label={title}
+                                >
+                                    <MUI.Tooltip title={title}>
+                                        {icon}
+                                    </MUI.Tooltip>
+                                </MUILab.ToggleButton>
+                            ))}
+                        </MUILab.ToggleButtonGroup>
+                    </MUI.Paper>
+                </MUI.Grid>
+            </MUI.Grid>
+        </MUI.Box>
     );
 };
 

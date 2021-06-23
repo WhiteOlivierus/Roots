@@ -1,51 +1,62 @@
-import { Typography } from "@material-ui/core";
 import * as React from "react";
-import { FileField } from "./FileField";
-import { LoadAudioFile, LoadImageFile } from "../../../Utilities/LoadFile";
+
 import PropTypes from "prop-types";
+import FilePicker from "../../StartMenu/FilePicker";
+import InspectorDrawer from "./InspectorDrawer";
 
-export const SceneSettingsDrawer = ({ node, projectFolder }) => {
-    const data = node.value.data;
+import { LoadAudioFile, LoadImageFile } from "../../../Utilities/LoadFile";
 
-    const handleLoadFile = React.useCallback(
-        (key, LoadAction) => {
-            LoadAction(projectFolder).then(({ fileName, blobUrl }) =>
-                node.setValue({
-                    ...node.value,
-                    data: {
-                        ...data,
-                        [key]: fileName,
-                        [`${key}Src`]: blobUrl,
-                    },
-                })
-            );
-        },
-        [data, node, projectFolder]
-    );
+const SceneSettingsDrawer = ({ node, onChange, projectFolder }) => {
+    const data = node.data;
 
-    const onLoadImage = React.useCallback(() => {
-        handleLoadFile("image", LoadImageFile);
-    }, [handleLoadFile]);
+    const handleLoadFile = (key, LoadAction) =>
+        LoadAction(projectFolder).then(({ fileName, blobUrl }) =>
+            onChange({
+                ...node,
+                data: {
+                    ...data,
+                    [key]: fileName,
+                    [`${key}Src`]: blobUrl,
+                },
+            })
+        );
 
-    const onLoadAudio = React.useCallback(() => {
-        handleLoadFile("audio", LoadAudioFile);
-    }, [handleLoadFile]);
+    const onLoadImage = () => handleLoadFile("image", LoadImageFile);
 
-    return (
-        <>
-            <Typography variant="h6" gutterBottom>
-                Scene settings
-            </Typography>
-            <FileField action={onLoadImage} label="Image" value={data.image} />
-            <FileField action={onLoadAudio} label="Music" value={data.audio} />
-        </>
-    );
+    const onLoadAudio = () => handleLoadFile("audio", LoadAudioFile);
+
+    const form = {
+        name: "Scene settings",
+        inputs: [
+            <FilePicker
+                key="1"
+                {...{
+                    name: "sceneImage",
+                    label: "Scene image",
+                    value: data.image,
+                    onClick: onLoadImage,
+                }}
+            />,
+            <FilePicker
+                key="2"
+                {...{
+                    name: "sceneAudio",
+                    label: "Scene audio",
+                    value: data.audio,
+                    onClick: onLoadAudio,
+                }}
+            />,
+        ],
+    };
+
+    return <InspectorDrawer form={form} />;
 };
 
 SceneSettingsDrawer.displayName = "SceneSettingsDrawer";
 
 SceneSettingsDrawer.propTypes = {
     node: PropTypes.object.isRequired,
+    onChange: PropTypes.func,
     projectFolder: PropTypes.object.isRequired,
 };
 

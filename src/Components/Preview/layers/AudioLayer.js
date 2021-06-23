@@ -1,13 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-function AudioLayer(props) {
-    return (
-        <div>
-            <audio autoPlay>
-                <source src={props.audio} type="audio/mp3" />
-            </audio>
-        </div>
-    );
+import { useAudio } from "react-use";
+
+function AudioLayer({ audio }) {
+    const [a] = useAudio({
+        src: audio,
+        autoPlay: true,
+    });
+
+    return <div>{a}</div>;
 }
 
 AudioLayer.displayName = "AudioLayer";

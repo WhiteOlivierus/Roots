@@ -1,24 +1,86 @@
-import { memo } from "react";
+import PropTypes from "prop-types";
+import * as React from "react";
+import * as MUI from "@material-ui/core";
+import * as Router from "react-router-dom";
 
-import { Box, Container, Grid } from "@material-ui/core";
+import CreateProject from "./CreateProject";
+import chromiumDetector from "chromium-detector";
+
 import { Logo } from "./Logo";
-import { File } from "./File";
 import { Recent } from "./Recent";
+import { useOpen } from "../FlowEditor/MenuBar/useOpen";
+import { useModal } from "react-modal-hook";
 
-const StartMenu = () => {
+const StartMenu = ({ history }) => {
+    const [open, handleOpen, handleClose] = useOpen(false);
+
+    const [showModal] = useModal(({ in: open, onExited }) => (
+        <MUI.Dialog open={open} onExited={onExited}>
+            <MUI.Box p={4}>
+                <MUI.DialogTitle>No chromium detected</MUI.DialogTitle>
+                <MUI.DialogContent>
+                    <MUI.Typography>
+                        Roots only works with a browser that is build on
+                        chromium. <br />
+                        Please install a chromium based browser to use Roots.
+                    </MUI.Typography>
+                </MUI.DialogContent>
+                <MUI.DialogActions>
+                    <MUI.Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                            window.location.href =
+                                "https://www.google.com/chrome/";
+                        }}
+                    >
+                        Get Chrome
+                    </MUI.Button>
+                    <MUI.Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => history.push("/")}
+                    >
+                        Back
+                    </MUI.Button>
+                </MUI.DialogActions>
+            </MUI.Box>
+        </MUI.Dialog>
+    ));
+
+    React.useEffect(() => {
+        const browserInfo = chromiumDetector.getBrowserInfo();
+        if (!browserInfo.isChromium) showModal();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
-        <Box paddingTop={10} bgcolor="primary.main" width={1} height={1}>
-            <Container maxWidth="lg">
+        <MUI.Box bgcolor="primary.main" width={1} height="100vh">
+            <MUI.Container
+                maxWidth="lg"
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100vh",
+                }}
+            >
                 <Logo />
-                <Grid container direction="row" spacing={2}>
-                    <File />
-                    <Recent />
-                </Grid>
-            </Container>
-        </Box>
+                <Recent onClick={handleOpen} />
+                <MUI.Box style={{ flex: "0 1 auto", height: "32px" }}></MUI.Box>
+            </MUI.Container>
+            <CreateProject
+                open={open}
+                handleOpen={handleOpen}
+                handleClose={handleClose}
+            />
+        </MUI.Box>
     );
+};
+
+StartMenu.propTypes = {
+    history: PropTypes.object,
 };
 
 StartMenu.displayName = "StartMenu";
 
-export default memo(StartMenu);
+export default React.memo(Router.withRouter(StartMenu));

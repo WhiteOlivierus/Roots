@@ -4,7 +4,7 @@ import GlobalProvider from "./GlobalProviders";
 import GlobalRoutes from "./GlobalRoutes";
 
 const App = () => {
-    useEventListener("contextmenu", (e) => e.preventDefault());
+    useEventListener("contextmenu", (event) => event.preventDefault());
 
     return (
         <GlobalProvider>

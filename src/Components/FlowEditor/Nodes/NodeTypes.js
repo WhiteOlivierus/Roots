@@ -1,11 +1,15 @@
 import { InputNode } from "./InputNode";
 import SceneNode from "./SceneNode";
 import { OutputNode } from "./OutputNode";
+import { theme } from "../../../Utilities/Theme";
 
 export const AllNodes = {
-    in: { color: "green", obj: InputNode, default: true },
-    scene: { color: "grey", obj: SceneNode, default: false },
-    out: { color: "red", obj: OutputNode, default: false },
+    in: { color: theme.palette.secondary.main, obj: InputNode, default: true },
+    scene: {
+        color: theme.palette.primary.main,
+        obj: SceneNode,
+        default: false,
+    },
 };
 
 export const NodeTypes = {

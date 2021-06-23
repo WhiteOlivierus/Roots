@@ -1,26 +1,9 @@
-import React, { useEffect, useState } from "react";
-import * as serviceWorkerRegistration from "../../serviceWorkerRegistration";
+import React from "react";
 import { Box, Button, Card, Grid, Typography } from "@material-ui/core";
+import useUpdate from "./useUpdate";
 
-export const ServiceWorkerWrapper = () => {
-    const [showReload, setShowReload] = useState(false);
-    const [waitingWorker, setWaitingWorker] = useState(null);
-
-    const onSWUpdate = (registration) => {
-        setShowReload(true);
-        setWaitingWorker(registration.waiting);
-    };
-
-    useEffect(() => {
-        serviceWorkerRegistration.register({ onUpdate: onSWUpdate });
-    }, []);
-
-    const reloadPage = () => {
-        waitingWorker?.postMessage({ type: "SKIP_WAITING" });
-        setShowReload(false);
-        window.location.reload(true);
-    };
-
+const ServiceWorkerWrapper = () => {
+    const { showReload, reloadPage } = useUpdate(false);
     return (
         <div>
             {showReload && (
@@ -54,3 +37,5 @@ export const ServiceWorkerWrapper = () => {
         </div>
     );
 };
+
+export default ServiceWorkerWrapper;

@@ -2,12 +2,12 @@ import * as React from "react";
 import * as MUI from "@material-ui/core";
 import PropTypes from "prop-types";
 import { nodeStyle } from "./NodeStyle";
-import { SceneCanvasHooks } from "dutchskull-scene-manager";
+import { useToggle } from "../../SceneEditor/scene-manager/Hooks";
 
-const NodePaper = ({ onHover, selected, children }) => {
+const NodePaper = ({ onHover, selected, children, style }) => {
     const classes = nodeStyle();
 
-    const hover = SceneCanvasHooks.useToggle(false);
+    const hover = useToggle(false);
 
     const elevation = selected ? 10 : hover.value ? 5 : 1;
 
@@ -23,6 +23,7 @@ const NodePaper = ({ onHover, selected, children }) => {
             elevation={elevation}
             onMouseEnter={handleHover}
             onMouseLeave={handleHover}
+            style={style}
         >
             {children}
         </MUI.Paper>
@@ -38,6 +39,7 @@ NodePaper.propTypes = {
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node,
     ]),
+    style: PropTypes.object,
 };
 
 NodePaper.defaultProps = {

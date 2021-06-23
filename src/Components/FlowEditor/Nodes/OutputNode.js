@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Handle, Position } from "react-flow-renderer";
-import { NodeContent } from "./NodeContent";
+import NodeContent from "./NodeContent";
 import PropTypes from "prop-types";
 import NodePaper from "./NodePaper";
 

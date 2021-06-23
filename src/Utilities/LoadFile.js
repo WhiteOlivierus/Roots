@@ -1,24 +1,32 @@
-import { Move } from "./FileHandler";
+import { WriteFile } from "./FileHandler";
 
 export const LoadFile = async (root, options = {}) => {
-    var fileHandle = await window.showOpenFilePicker(options);
+    let fileHandle = await window.showOpenFilePicker(options);
 
     if (Array.isArray(fileHandle)) fileHandle = fileHandle[0];
 
-    await Move(root, fileHandle);
+    const fileName = await root.getFileHandle(
+        fileHandle.name.replace(/ /g, ""),
+        {
+            create: true,
+        }
+    );
+    const file = await fileHandle.getFile();
 
-    var file = await fileHandle.getFile();
-    var blobUrl = await URL.createObjectURL(file);
+    await WriteFile(fileName, file);
 
-    return { fileName: fileHandle.name, blobUrl };
+    const blobUrl = URL.createObjectURL(file);
+
+    return { fileName: fileName.name, blobUrl };
 };
 
 export const AudioOptions = {
+    id: "SceneAudio",
     types: [
         {
             description: "Audio",
             accept: {
-                "audio/*": [".aac", ".mp3", ".oga", ".opus", ".wav", ".weba"],
+                "audio/*": [".mp3", ".wav"],
             },
         },
     ],
@@ -27,20 +35,12 @@ export const AudioOptions = {
 };
 
 export const ImageOptions = {
+    id: "SceneImage",
     types: [
         {
             description: "Image",
             accept: {
-                "image/*": [
-                    ".gif",
-                    ".jpeg",
-                    ".jpg",
-                    ".png",
-                    ".tif",
-                    ".tiff",
-                    ".webp",
-                    ".bmp",
-                ],
+                "image/*": [".gif", ".jpeg", ".jpg", ".png"],
             },
         },
     ],
@@ -48,6 +48,11 @@ export const ImageOptions = {
     multiple: false,
 };
 
-export const LoadAudioFile = async (root) => LoadFile(root, AudioOptions);
+export const LoadAudioFile = async (root) => {
+    const test = LoadFile(root, AudioOptions);
+    const audio = new Audio();
+    audio.src = test.blobUrl;
+    return test;
+};
 
 export const LoadImageFile = async (root) => LoadFile(root, ImageOptions);

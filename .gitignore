@@ -23,3 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 /.circleci/.config.yml
 /firebase.json
+/ProjectFiles
+/.vscode

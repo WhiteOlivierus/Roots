@@ -5,7 +5,7 @@ import * as FileHandler from "../../../Utilities/FileHandler.js";
 
 import SaveIcon from "@material-ui/icons/Save";
 import BuildIcon from "@material-ui/icons/Build";
-import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
+// import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
 import FolderIcon from "@material-ui/icons/Folder";
 
 import useProjectFilesState from "../../../Context/ProjectFilesContext/ProjectFilesContext";
@@ -20,15 +20,22 @@ import useBuild from "../../useBuild";
 export function useFileActions() {
     const { enqueueSnackbar } = useSnackbar();
 
-    const { projectFilesState, setProjectFilesState } = useProjectFilesState();
+    const { projectFilesState } = useProjectFilesState();
     const { nodeViewerState } = useNodeViewerState();
+
+    const SetContext = React.useCallback(
+        ({ activeRoot, activeFlow, activeConfig }) => {
+            projectFilesState.activeFlow = activeFlow;
+            projectFilesState.activeRoot = activeRoot;
+            projectFilesState.config = activeConfig;
+        },
+        [projectFilesState]
+    );
 
     const handleNewFlow = React.useCallback(() => {
         FlowHandler.NewFlow(projectFilesState.activeRoot)
             .then(({ activeFlow }) => {
                 projectFilesState.activeFlow = activeFlow;
-
-                setProjectFilesState(projectFilesState);
 
                 nodeViewerState.setElements((els) => removeElements(els, els));
                 nodeViewerState.setElements(defaultFlow.elements);
@@ -38,34 +45,23 @@ export function useFileActions() {
                     variant: "error",
                 })
             );
-    }, [
-        projectFilesState,
-        setProjectFilesState,
-        nodeViewerState,
-        enqueueSnackbar,
-    ]);
-
+    }, [projectFilesState, nodeViewerState, enqueueSnackbar]);
+    /* 
     const handleNewProject = React.useCallback(() => {
         ProjectHandler.NewProject()
-            .then(({ activeRoot, activeFlow }) => {
-                projectFilesState.activeRoot = activeRoot;
-                projectFilesState.activeFlow = activeFlow;
-
-                setProjectFilesState(projectFilesState);
-            })
+            .then(SetContext)
             .catch(() => {
                 enqueueSnackbar(`New project could not be created`, {
                     variant: "error",
+                    preventDuplicate: true,
                 });
             });
-    }, [enqueueSnackbar, projectFilesState, setProjectFilesState]);
+    }, [SetContext, enqueueSnackbar]); */
 
-    const handleOpenFlow = React.useCallback(() => {
+    /*  const handleOpenFlow = React.useCallback(() => {
         FlowHandler.OpenFlow(projectFilesState.activeRoot)
             .then(({ activeFlow, flow }) => {
                 projectFilesState.activeFlow = activeFlow;
-
-                setProjectFilesState(projectFilesState);
 
                 nodeViewerState.setElements((els) => removeElements(els, els));
                 nodeViewerState.setElements(flow.elements);
@@ -73,27 +69,21 @@ export function useFileActions() {
             .catch(() => {
                 enqueueSnackbar(`Could not open flow`, {
                     variant: "error",
+                    preventDuplicate: true,
                 });
             });
-    }, [
-        projectFilesState,
-        setProjectFilesState,
-        nodeViewerState,
-        enqueueSnackbar,
-    ]);
+    }, [projectFilesState, nodeViewerState, enqueueSnackbar]); */
 
     const handleOpenProject = React.useCallback(() => {
         ProjectHandler.OpenProject()
-            .then(({ activeRoot, activeFlow }) => {
-                projectFilesState.activeRoot = activeRoot;
-                projectFilesState.activeFlow = activeFlow;
+            .then((out) => {
+                SetContext(out);
 
-                setProjectFilesState(projectFilesState);
-
-                let fileName = RemoveExtension(activeFlow.name);
+                let fileName = RemoveExtension(out.activeFlow.name);
 
                 enqueueSnackbar(`Opened project ${fileName}`, {
                     variant: "success",
+                    preventDuplicate: true,
                 });
             })
             .catch(() => {
@@ -101,7 +91,7 @@ export function useFileActions() {
                     variant: "error",
                 });
             });
-    }, [enqueueSnackbar, projectFilesState, setProjectFilesState]);
+    }, [SetContext, enqueueSnackbar]);
 
     const handleSaveFlow = React.useCallback(() => {
         let fileName = RemoveExtension(projectFilesState.activeFlow.name);
@@ -113,11 +103,13 @@ export function useFileActions() {
             .then(() => {
                 enqueueSnackbar(`${fileName} saved`, {
                     variant: "success",
+                    preventDuplicate: true,
                 });
             })
             .catch(() => {
                 enqueueSnackbar(`${fileName} was not saved`, {
                     variant: "error",
+                    preventDuplicate: true,
                 });
             });
     }, [
@@ -126,7 +118,7 @@ export function useFileActions() {
         projectFilesState.activeFlow,
     ]);
 
-    const handleSaveFlowAs = React.useCallback(() => {
+    /*   const handleSaveFlowAs = React.useCallback(() => {
         let fileName = RemoveExtension(projectFilesState.activeFlow.name);
 
         FlowHandler.SaveFlowAs(
@@ -135,75 +127,98 @@ export function useFileActions() {
         )
             .then((activeFlow) => {
                 projectFilesState.activeFlow = activeFlow;
-                setProjectFilesState(projectFilesState);
 
                 const activeFlowName = RemoveExtension(activeFlow.name);
                 enqueueSnackbar(`${fileName} saved as ${activeFlowName}`, {
                     variant: "success",
+                    preventDuplicate: true,
                 });
             })
             .catch(() => {
                 enqueueSnackbar(`${fileName} was not saved`, {
                     variant: "error",
+                    preventDuplicate: true,
                 });
             });
-    }, [
-        enqueueSnackbar,
-        nodeViewerState.rfInstance,
-        projectFilesState,
-        setProjectFilesState,
-    ]);
+    }, [enqueueSnackbar, nodeViewerState.rfInstance, projectFilesState]); */
 
     const build = useBuild(false);
 
     const handleBuild = React.useCallback(() => {
-        // TODO check if the builder is all ready there
-
         enqueueSnackbar(`Builder is being prepared`, {
             variant: "warning",
+            preventDuplicate: true,
         });
 
-        let buildHandle;
-        FileHandler.FindDir(projectFilesState.activeRoot, "Build").then(
-            (buildFolderHandle) => (buildHandle = buildFolderHandle)
-        );
-
-        fetch("./roots-builder.exe")
-            .then((response) =>
-                Promise.all([
-                    buildHandle.getFileHandle("roots-builder.exe", {
-                        create: true,
-                    }),
-                    response.blob(),
-                ])
-            )
-            .then((args) => FileHandler.WriteFile(args[0], args[1]))
-            .then((file) => FileHandler.SaveFileInFolder(buildHandle, file))
-            .catch((e) => {
-                if (e.message.includes("'name'")) return;
-                enqueueSnackbar(e.message, {
-                    variant: "error",
-                });
+        FileHandler.FindDir(projectFilesState.activeRoot, "Build")
+            .then((buildFolderHandle) => {
+                if (!buildFolderHandle)
+                    return projectFilesState.activeRoot.getDirectoryHandle(
+                        "Build",
+                        {
+                            create: true,
+                        }
+                    );
+                else return buildFolderHandle;
             })
-            .finally(() => {
-                enqueueSnackbar(`Builder has been place in project folder`, {
-                    variant: "success",
-                });
-                build();
-            });
+            .then((buildFolderHandle) =>
+                FileHandler.FindFile("roots-builder.exe")
+                    .then((file) => {
+                        if (file) return;
+
+                        fetch("./roots-builder.exe")
+                            .then((response) =>
+                                Promise.all([
+                                    buildFolderHandle.getFileHandle(
+                                        "roots-builder.exe",
+                                        {
+                                            create: true,
+                                        }
+                                    ),
+                                    response.blob(),
+                                ])
+                            )
+                            .then((args) =>
+                                FileHandler.WriteFile(args[0], args[1])
+                            )
+                            .then((file) =>
+                                FileHandler.SaveFileInFolder(
+                                    buildFolderHandle,
+                                    file
+                                )
+                            )
+                            .catch((e) => {
+                                if (e.message.includes("'name'")) return;
+                                enqueueSnackbar(e.message, {
+                                    variant: "error",
+                                    preventDuplicate: true,
+                                });
+                            });
+                    })
+                    .finally(() => {
+                        enqueueSnackbar(
+                            `Builder has been place in project folder`,
+                            {
+                                variant: "success",
+                                preventDuplicate: true,
+                            }
+                        );
+                        build();
+                    })
+            );
     }, [build, enqueueSnackbar, projectFilesState.activeRoot]);
 
     useKeyboardShortCuts(
         handleSaveFlow,
-        handleSaveFlowAs,
-        handleOpenFlow,
+        // handleSaveFlowAs,
+        // handleOpenFlow,
         handleOpenProject,
         handleNewFlow,
         handleBuild
     );
 
     return [
-        { divide: "" },
+        /*         { divide: "" },
         {
             name: "New Flow",
             action: handleNewFlow,
@@ -217,15 +232,15 @@ export function useFileActions() {
             icon: <InsertDriveFileIcon />,
             tooltip: "Ctrl-Shift-N",
             shortCut: "Ctrl-Shift-N",
-        },
-        { divide: "" },
-        {
+        }, */
+        // { divide: "" },
+        /*    {
             name: "Open Flow",
             action: handleOpenFlow,
             icon: <FolderIcon />,
             tooltip: "Ctrl-O",
             shortCut: "Ctrl-O",
-        },
+        }, */
         {
             name: "Open Project",
             action: handleOpenProject,
@@ -233,7 +248,7 @@ export function useFileActions() {
             tooltip: "Ctrl-Shift-O",
             shortCut: "Ctrl-Shift-O",
         },
-        { divide: "" },
+        // { divide: "" },
         {
             name: "Save Flow",
             action: handleSaveFlow,
@@ -241,14 +256,14 @@ export function useFileActions() {
             tooltip: "Ctrl-S",
             shortCut: "Ctrl-S",
         },
-        {
+        /*         {
             name: "Save Flow As",
             action: handleSaveFlowAs,
             icon: <SaveIcon />,
             tooltip: "Ctrl-Shift-S",
             shortCut: "Ctrl-Shift-S",
-        },
-        { divide: "" },
+        }, */
+        // { divide: "" },
         {
             name: "Build",
             action: handleBuild,
@@ -260,8 +275,8 @@ export function useFileActions() {
 }
 function useKeyboardShortCuts(
     handleSaveFlow,
-    handleSaveFlowAs,
-    handleOpenFlow,
+    /*     handleSaveFlowAs,
+    handleOpenFlow, */
     handleOpenProject,
     handleNewFlow,
     handleBuild
@@ -280,7 +295,7 @@ function useKeyboardShortCuts(
             return;
         }
 
-        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === "KeyS") {
+        /*         if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === "KeyS") {
             e.preventDefault();
             handleSaveFlowAs();
             return;
@@ -290,7 +305,7 @@ function useKeyboardShortCuts(
             e.preventDefault();
             handleOpenFlow();
             return;
-        }
+        } */
 
         if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === "KeyO") {
             e.preventDefault();

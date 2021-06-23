@@ -1,56 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="overflow: hidden">
     <head>
         <meta charset="utf-8" />
         <meta
             name="viewport"
             content="minimum-scale=1, initial-scale=1, width=device-width"
         />
-        <meta name="theme-color" content="#e040fb" />
-        <meta
-            name="description"
-            content="A 2D narrative game engine powered by the browser"
-        />
-        <link
-            rel="apple-touch-icon"
-            sizes="180x180"
-            href="/favicon/favicon-light/apple-touch-icon.png"
-        />
+
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicon/" />
         <link
             rel="icon"
             type="image/png"
             sizes="32x32"
-            href="/favicon/favicon-light/favicon-32x32.png"
+            href="/favicon/favicon-32x32.png"
         />
         <link
             rel="icon"
             type="image/png"
             sizes="16x16"
-            href="/favicon/favicon-light/favicon-16x16.png"
+            href="/favicon/favicon-16x16.png"
         />
-        <link rel="icon" href="favicon/favicon-light/favicon.ico" />
-
-        <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-        <script
-            src="https://kit.fontawesome.com/cce45b8e76.js"
-            crossorigin="anonymous"
-        ></script>
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link rel="manifest" href="/manifest.json" />
         <link
-            href="https://fonts.googleapis.com/css2?family=Martel:wght@900&display=swap"
-            rel="stylesheet"
+            rel="mask-icon"
+            href="/favicon/safari-pinned-tab.svg"
+            color="#5bbad5"
         />
+        <meta name="apple-mobile-web-app-title" content="Roots" />
+        <meta name="application-name" content="Roots" />
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="theme-color" content="#ffffff" />
 
         <title>Roots</title>
-
-        <!-- Jquery -->
-        <script
-            type="text/javascript"
-            src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"
-        ></script>
-
-        <!-- F-mode -->
-        <script type="text/javascript" src="js/fmode.min.js"></script>
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -80,5 +61,28 @@
                 </h1>
             </div>
         </div>
+
+        <!-- The core Firebase JS SDK is always required and must be listed first -->
+        <script src="https://www.gstatic.com/firebasejs/8.6.3/firebase-app.js"></script>
+
+        <!-- TODO: Add SDKs for Firebase products that you want to use https://firebase.google.com/docs/web/setup#available-libraries -->
+        <script src="https://www.gstatic.com/firebasejs/8.6.3/firebase-analytics.js"></script>
+
+        <script>
+            // Your web app's Firebase configuration
+            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+            var firebaseConfig = {
+                apiKey: "AIzaSyDfmV1XeBRjy0dvIYUfEAj2HbiX7stGe7U",
+                authDomain: "pwa-test-f3c10.firebaseapp.com",
+                projectId: "pwa-test-f3c10",
+                storageBucket: "pwa-test-f3c10.appspot.com",
+                messagingSenderId: "185251523818",
+                appId: "1:185251523818:web:2e112a89d5c9a0a4c3fb93",
+                measurementId: "G-2BMVJNKNNN",
+            };
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            firebase.analytics();
+        </script>
     </body>
 </html>

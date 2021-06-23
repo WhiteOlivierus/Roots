@@ -1,39 +1,36 @@
+import * as React from "react";
+import * as Router from "react-router-dom";
+import * as MUI from "@material-ui/core";
+
+import PropTypes from "prop-types";
 import Game from "./Game";
 import useProjectFilesState from "../../Context/ProjectFilesContext/ProjectFilesContext";
-import * as React from "react";
-import { useHistory, Link } from "react-router-dom";
-import { Button, Tooltip } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+
 import { useBeforeReload } from "../../Utilities/UseBeforeReload";
 import { EditorWrapper } from "../EditorWrapper";
 import { GetObjectFromFileHandle } from "../../Utilities/FileHandler";
 
-export const Preview = () => {
-    const history = useHistory();
-
-    useBeforeReload(() => history.push("/"));
+const Preview = ({ history }) => {
+    useBeforeReload(() => history.push("/roots"));
 
     const { projectFilesState } = useProjectFilesState();
 
-    const [state, setState] = React.useState(undefined);
+    const [game, setGame] = React.useState();
 
-    React.useEffect(() => {
-        if (projectFilesState.buildHandle === undefined) {
-            history.push("/");
-        } else {
-            GetObjectFromFileHandle(projectFilesState.buildHandle).then(
-                ({ obj: build }) => {
-                    setState(build);
-                }
-            );
-        }
-    }, [history, projectFilesState]);
+    React.useEffect(
+        () =>
+            GetObjectFromFileHandle(projectFilesState.buildHandle)
+                .then(({ obj: build }) => setGame(build))
+                .catch(() => history.push("/roots")),
+        [history, projectFilesState.buildHandle]
+    );
 
     return (
         <EditorWrapper>
-            <Link to="/flow">
-                <Tooltip title="Back to flow editor">
-                    <Button
+            <Router.Link to="/flow">
+                <MUI.Tooltip title="Back to flow editor">
+                    <MUI.Button
                         variant="contained"
                         color="primary"
                         style={{
@@ -44,14 +41,20 @@ export const Preview = () => {
                         }}
                     >
                         <ChevronLeftIcon style={{ fill: "white" }} />
-                    </Button>
-                </Tooltip>
-            </Link>
-            {state && <Game game={state} />}
+                    </MUI.Button>
+                </MUI.Tooltip>
+            </Router.Link>
+            {game && <Game game={game} />}
         </EditorWrapper>
     );
 };
 
+Preview.propTypes = {
+    history: PropTypes.shape({
+        push: PropTypes.func,
+    }),
+};
+
 Preview.displayName = "Preview";
 
-export default React.memo(Preview);
+export default React.memo(Router.withRouter(Preview));

@@ -1,28 +1,25 @@
 import React from "react";
-import logo from "../../Resources/LogoWhite.png";
-import { Box, Grid, Typography } from "@material-ui/core";
-import { useStyles } from "./useStyles";
+import { Box, Grid } from "@material-ui/core";
 
-export const Logo = () => {
-    const classes = useStyles();
-    return (
-        <Box p={5}>
-            <Grid
-                container
-                direction="row"
-                justify="center"
-                alignItems="center"
-                spacing={5}
-            >
-                <Grid item>
-                    <img src={logo} width="200px" />
-                </Grid>
-                <Grid item>
-                    <Typography variant="h1" className={classes.logoTitle}>
-                        Roots
-                    </Typography>
-                </Grid>
+export const Logo = () => (
+    <Box p={5} pt={10} style={{ flex: "0 1 auto" }}>
+        <Grid
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+            spacing={5}
+        >
+            <Grid item>
+                <a href="/">
+                    <img
+                        style={{ cursor: "pointer" }}
+                        src="/compressed/logo_text_white.svg"
+                        width="40%"
+                        preload="true"
+                    />
+                </a>
             </Grid>
-        </Box>
-    );
-};
+        </Grid>
+    </Box>
+);

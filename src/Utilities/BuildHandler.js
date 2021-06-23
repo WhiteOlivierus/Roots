@@ -19,17 +19,27 @@ export async function Build(activeRoot, nodes, edges, preview) {
         (node) => node.id === connectedEdgesInNode.target
     );
 
+    if (firstNodeID === -1)
+        throw new Error("No node connected to the start node");
+
     let id = copiedNodes[firstNodeID].id;
 
     let newScene = await CreateScene(copiedNodes[firstNodeID], edges);
 
     if ("image" in copiedNodes[firstNodeID].data) {
         newScene.image = copiedNodes[firstNodeID].data.image;
-        if (preview) newScene.src = copiedNodes[firstNodeID].data.imageSrc;
-
+        newScene.audio = copiedNodes[firstNodeID].data.audio;
+        if (preview) {
+            newScene.imageSrc = copiedNodes[firstNodeID].data.imageSrc;
+            newScene.audioSrc = copiedNodes[firstNodeID].data.audioSrc;
+        }
         images.push(
             await FindFile(activeRoot, copiedNodes[firstNodeID].data.image)
         );
+        if ("audio" in copiedNodes[firstNodeID].data)
+            images.push(
+                await FindFile(activeRoot, copiedNodes[firstNodeID].data.audio)
+            );
     }
 
     copiedNodes.splice(firstNodeID, 1);
@@ -43,10 +53,15 @@ export async function Build(activeRoot, nodes, edges, preview) {
 
         if ("image" in node.data) {
             newScene.image = node.data.image;
+            newScene.audio = node.data.audio;
 
-            if (preview) newScene.src = node.data.imageSrc;
-
+            if (preview) {
+                newScene.imageSrc = node.data.imageSrc;
+                newScene.audioSrc = node.data.audioSrc;
+            }
             images.push(await FindFile(activeRoot, node.data.image));
+            if ("audio" in node.data)
+                images.push(await FindFile(activeRoot, node.data.audio));
         }
 
         projectFile.scenes.push(newScene);
@@ -59,6 +74,28 @@ export async function Build(activeRoot, nodes, edges, preview) {
     const imagesHandle = await buildHandle.getDirectoryHandle("img", {
         create: true,
     });
+
+    const config = await FindFile(activeRoot, "config.json");
+
+    const configHandle = await buildHandle.getFileHandle("config.json", {
+        create: true,
+    });
+
+    const configFile = await config.getFile();
+
+    await WriteFile(configHandle, configFile);
+
+    const logo = await FindFile(activeRoot, "logo.png");
+
+    if (logo) {
+        const logoHandle = await buildHandle.getFileHandle("logo.png", {
+            create: true,
+        });
+
+        const logoFile = await logo.getFile();
+
+        await WriteFile(logoHandle, logoFile);
+    }
 
     for (let index = 0; index < images.length; index++) {
         const image = images[index];

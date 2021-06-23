@@ -1,32 +1,32 @@
-import { IconButton } from "@material-ui/core";
 import * as React from "react";
+import * as Router from "react-router-dom";
+import * as MUI from "@material-ui/core";
+
+import PropTypes from "prop-types";
 import EditIcon from "@material-ui/icons/Edit";
-import { useHistory } from "react-router-dom";
 
-export const EditButton = () => {
-    const history = useHistory();
-
-    const onShowEditor = React.useCallback(() => {
-        history.push("/editor");
-    }, [history]);
-
-    return (
-        <IconButton
-            style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                zIndex: 100000000,
-            }}
-            onClick={onShowEditor}
-        >
-            <EditIcon color="secondary" fontSize="small" />
-        </IconButton>
-    );
-};
+const EditButton = ({ history }) => (
+    <MUI.Fab
+        color="primary"
+        style={{
+            position: "absolute",
+            top: -20,
+            right: -20,
+            zIndex: 100000000,
+        }}
+        onClick={() => history.push("/editor")}
+        size="small"
+    >
+        <EditIcon />
+    </MUI.Fab>
+);
 
 EditButton.displayName = "EditButton";
 
-EditButton.propTypes = {};
+EditButton.propTypes = {
+    history: PropTypes.shape({
+        push: PropTypes.func,
+    }),
+};
 
-export default React.memo(EditButton);
+export default React.memo(Router.withRouter(EditButton));

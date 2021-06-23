@@ -47,14 +47,15 @@ export async function LoadElementImages(dirHandle, elements) {
     return elements;
 }
 
-export async function GetImageBlobPath(fileHandle) {
+export function GetImageBlobPath(fileHandle) {
     if (Array.isArray(fileHandle)) fileHandle = fileHandle[0];
 
     if (!fileHandle) return;
 
-    const file = await fileHandle.getFile();
-    var path = URL.createObjectURL(file);
-    return path;
+    return fileHandle
+        .getFile()
+        .then((file) => URL.createObjectURL(file))
+        .catch((e) => () => console.log(e.stack));
 }
 
 export async function verifyPermission(fileHandle, readWrite) {
@@ -87,7 +88,8 @@ async function Find(dirHandle, fileName, type) {
                 return entry;
             }
         }
-    } catch {
+    } catch (e) {
+        console.log(e);
         return null;
     }
 }

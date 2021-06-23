@@ -1,23 +1,13 @@
-import React, { memo, useState } from "react";
-import ReactFlow, {
-    removeElements,
-    addEdge,
-    Controls,
-    MiniMap,
-    Background,
-    useUpdateNodeInternals,
-} from "react-flow-renderer";
+import * as React from "react";
+import ReactFlow, * as Flow from "react-flow-renderer";
+
 import { NodeBar } from "./NodeBar";
-import { useHistory } from "react-router-dom";
-
 import { MinimapSettings, NodeTypes } from "./Nodes/NodeTypes";
-
-import { MenuBar } from "./MenuBar/MenuBar";
-import useNodeViewerState from "../../Context/NodeViewerContext/NodeViewerContext";
-
 import { CreateNode } from "./Nodes/NodeFactory";
-import { Menu, MenuItem } from "@material-ui/core";
-import { EditorWrapper } from "../EditorWrapper";
+import { Container, Content, Header, Item } from "../../Utilities/Container";
+
+import useNodeViewerState from "../../Context/NodeViewerContext/NodeViewerContext";
+import MenuBar from "./MenuBar/MenuBar";
 import PropTypes from "prop-types";
 
 const initialState = {
@@ -25,48 +15,46 @@ const initialState = {
     mouseY: null,
 };
 
-const FlowEditor = memo(({ flow }) => {
-    const { nodeViewerState, setNodeViewerState } = useNodeViewerState();
+const FlowEditor = ({ flow }) => {
+    const { nodeViewerState } = useNodeViewerState();
 
-    const updateNodeInternals = useUpdateNodeInternals();
+    const updateNodeInternals = Flow.useUpdateNodeInternals();
 
-    const [elements, setElements] = useState([]);
-    // eslint-disable-next-line no-unused-vars
-    const [instance, setInstance] = useState(null);
+    const { transform } = Flow.useZoomPanHelper();
+    const [elements, setElements] = React.useState(flow.elements || []);
 
     const onLoad = (instance) => {
-        instance.setTransform({
-            x: flow.position[0],
-            y: flow.position[1],
-            zoom: flow.zoom || 0,
-        });
-
-        setElements(flow.elements);
-
         nodeViewerState.setElements = setElements;
         nodeViewerState.rfInstance = instance;
 
-        setNodeViewerState(nodeViewerState);
+        instance
+            .getElements()
+            .map((element) => updateNodeInternals(element.id));
 
-        instance.getElements().map((element) => {
-            return updateNodeInternals(element.id);
-        });
-
-        return setInstance(instance);
+        return instance;
     };
+
+    React.useEffect(() => {
+        const [x, y] = flow.position;
+        transform({ x, y, zoom: flow.zoom });
+
+        if (!nodeViewerState.rfInstance) return;
+
+        nodeViewerState.rfInstance
+            .getElements()
+            .map((element) => updateNodeInternals(element.id));
+    }, [flow, nodeViewerState.rfInstance, transform, updateNodeInternals]);
 
     const onConnect = (params) =>
-        nodeViewerState.setElements((els) => addEdge(params, els));
+        nodeViewerState.setElements((els) => Flow.addEdge(params, els));
 
-    const onRemove = (elements) => {
-        elements = elements.filter((element) => {
-            return element.type !== "in";
-        });
-
-        return nodeViewerState.setElements((els) =>
-            removeElements(elements, els)
+    const onRemove = (elements) =>
+        nodeViewerState.setElements((els) =>
+            Flow.removeElements(
+                elements.filter((element) => element.type !== "in"),
+                els
+            )
         );
-    };
 
     const onDragOver = (event) => {
         event.preventDefault();
@@ -82,15 +70,12 @@ const FlowEditor = memo(({ flow }) => {
             y: event.clientY,
         });
 
-        CreateNode(type, position).then((node) => {
-            nodeViewerState.setElements((els) => {
-                const newLocal = els.concat(node);
-                return newLocal;
-            });
-        });
+        CreateNode(type, position).then((node) =>
+            nodeViewerState.setElements((els) => els.concat(node))
+        );
     };
 
-    const [state, setState] = useState(initialState);
+    const [, setState] = React.useState(initialState);
 
     const handleClick = (e, node) => {
         e.preventDefault();
@@ -103,69 +88,64 @@ const FlowEditor = memo(({ flow }) => {
         setActiveNode(e, node);
     };
 
-    const setActiveNode = (e, node) => {
-        nodeViewerState.activeNode = node;
-        setNodeViewerState(nodeViewerState);
-    };
+    const setActiveNode = (e, node) => (nodeViewerState.activeNode = node);
 
     const handleClose = () => {
         setState(initialState);
 
         nodeViewerState.activeNode = undefined;
-        setNodeViewerState(nodeViewerState);
-    };
-
-    const history = useHistory();
-
-    const onShowEditor = () => {
-        history.push("/editor");
     };
 
     return (
-        <EditorWrapper>
-            <MenuBar />
-            <ReactFlow
-                elements={elements}
-                onLoad={onLoad}
-                nodeTypes={NodeTypes}
-                onConnect={onConnect}
-                onElementsRemove={onRemove}
-                onDragOver={onDragOver}
-                onDrop={onDrop}
-                deleteKeyCode={46}
-                minZoom={0.1}
-                maxZoom={2}
-                multiSelectionKeyCode={17}
-                onNodeContextMenu={handleClick}
-                onPaneClick={handleClose}
-                onNodeMouseEnter={setActiveNode}
-            >
-                <Background variant="lines" gap={30} size={2} />
-                <Controls />
-                <NodeBar />
-                <MiniMap nodeColor={MinimapSettings} />
-            </ReactFlow>
-            <Menu
-                keepMounted
-                open={state.mouseY !== null}
-                onClose={handleClose}
-                anchorReference="anchorPosition"
-                anchorPosition={
-                    state.mouseY !== null && state.mouseX !== null
-                        ? { top: state.mouseY, left: state.mouseX }
-                        : undefined
-                }
-            >
-                <MenuItem onClick={onShowEditor}>Edit</MenuItem>
-            </Menu>
-        </EditorWrapper>
+        <Container>
+            <Header>
+                <MenuBar />
+            </Header>
+            <Content>
+                <Item>
+                    <ReactFlow
+                        elements={elements}
+                        onLoad={onLoad}
+                        nodeTypes={NodeTypes}
+                        onConnect={onConnect}
+                        onElementsRemove={onRemove}
+                        onDragOver={onDragOver}
+                        onDrop={onDrop}
+                        deleteKeyCode={46}
+                        minZoom={0.1}
+                        maxZoom={2}
+                        multiSelectionKeyCode={17}
+                        onNodeContextMenu={handleClick}
+                        onPaneClick={handleClose}
+                        onNodeMouseEnter={setActiveNode}
+                    >
+                        <Flow.Background variant="lines" gap={30} size={2} />
+                        <Flow.Controls style={{ left: 220 }} />
+                        <Flow.MiniMap
+                            nodeColor={MinimapSettings}
+                            style={{ left: 10 }}
+                        />
+                    </ReactFlow>
+                </Item>
+                <Item auto noShrink style={{ width: 300 }}>
+                    <NodeBar />
+                </Item>
+            </Content>
+        </Container>
     );
-});
+};
 
 FlowEditor.displayName = "FlowEditor";
 
 FlowEditor.propTypes = {
-    flow: PropTypes.any.isRequired,
+    flow: PropTypes.shape({
+        elements: PropTypes.array,
+        position: PropTypes.any,
+        zoom: PropTypes.number,
+    }).isRequired,
+    history: PropTypes.shape({
+        push: PropTypes.func,
+    }),
 };
 
 export default FlowEditor;
