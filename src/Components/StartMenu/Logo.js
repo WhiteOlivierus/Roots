@@ -11,11 +11,14 @@ export const Logo = () => (
             spacing={5}
         >
             <Grid item>
-                <img
-                    src="/compressed/logo_text_white.svg"
-                    width="40%"
-                    preload="true"
-                />
+                <a href="/">
+                    <img
+                        style={{ cursor: "pointer" }}
+                        src="/compressed/logo_text_white.svg"
+                        width="40%"
+                        preload="true"
+                    />
+                </a>
             </Grid>
         </Grid>
     </Box>
