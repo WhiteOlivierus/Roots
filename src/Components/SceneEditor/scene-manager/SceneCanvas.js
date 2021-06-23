@@ -117,6 +117,7 @@ const SceneCanvas = ({ selection, editMode, polygons, container }) => {
                         key={`PreviewPolygon_${index}`}
                         points={polygon.points}
                         className={editMode ? "" : "interactable"}
+                        style={polygon.style}
                     />
                 ))}
             </SVGViewport>

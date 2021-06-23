@@ -8,19 +8,21 @@ import { useTheme } from "@material-ui/core";
 const ZoneStyleDrawer = ({ onChange, selection, selectedZone }) => {
     const theme = useTheme();
 
-    const [selected] = React.useState({
-        style: {
-            ...{
-                strokeWidth: 2,
-                stroke: "#ffffff",
-                fill: theme.palette.primary.main,
-            },
-            ...selectedZone.style,
+    const [selected, setSelected] = React.useState({
+        ...{
+            strokeWidth: 2,
+            stroke: "#ffffff",
+            fill: theme.palette.primary.main,
         },
-        ...selectedZone,
+        ...selectedZone.style,
     });
 
-    const handleStyleChange = ({ target }) =>
+    const handleStyleChange = ({ target }) => {
+        setSelected({
+            ...selected,
+            [target.name]: target.value,
+        });
+
         onChange((draft) => {
             const zoneIndex = draft.findIndex((zone) => zone.id === selection);
             const newStyle = {
@@ -29,6 +31,7 @@ const ZoneStyleDrawer = ({ onChange, selection, selectedZone }) => {
             };
             draft[zoneIndex].style = newStyle;
         });
+    };
 
     const form = {
         name: "Zone style settings",
@@ -40,11 +43,9 @@ const ZoneStyleDrawer = ({ onChange, selection, selectedZone }) => {
                 label="Stroke width"
                 variant="outlined"
                 fullWidth
-                value={selected.style.strokeWidth}
-                error={!selected.style.strokeWidth}
-                helperText={
-                    !selected.style.strokeWidth && "Give a stroke width"
-                }
+                value={selected.strokeWidth}
+                error={!selected.strokeWidth}
+                helperText={!selected.strokeWidth && "Give a stroke width"}
                 onChange={({ target }) =>
                     handleStyleChange({
                         target: {
@@ -61,8 +62,8 @@ const ZoneStyleDrawer = ({ onChange, selection, selectedZone }) => {
                 label="Outline color"
                 variant="outlined"
                 fullWidth
-                defaultValue={selected.style.stroke}
-                value={selected.style.stroke}
+                defaultValue={selected.stroke}
+                value={selected.stroke}
                 onChange={(color) =>
                     handleStyleChange({
                         target: { name: "stroke", value: color },
@@ -76,8 +77,8 @@ const ZoneStyleDrawer = ({ onChange, selection, selectedZone }) => {
                 label="Fill color"
                 variant="outlined"
                 fullWidth
-                defaultValue={selected.style.fill}
-                value={selected.style.fill}
+                defaultValue={selected.fill}
+                value={selected.fill}
                 onChange={(color) =>
                     handleStyleChange({
                         target: { name: "fill", value: color },
