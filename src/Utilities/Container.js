@@ -14,7 +14,8 @@ export const Content = styled.div`
     flex-direction: row;
     flex: 1 1 100%;
 `;
+const basis = ({ auto }) => (auto ? "auto" : "100%");
+const shrink = ({ noShrink }) => (noShrink ? 0 : 1);
 export const Item = styled.div`
-    flex: 1 ${(props) => (props.noShrink ? 0 : 1)}
-        ${(props) => (props.auto ? "auto" : "100%")};
+    flex: 1 ${shrink} ${basis};
 `;

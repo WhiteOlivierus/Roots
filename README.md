@@ -6,6 +6,8 @@
 
 A open source 2D narrative engine in the browser. [Get started today.](https://roots.dutchskull.com/)
 
+This is still a proof of concept. The main workflow is working. But there are still some features missing which will come later.
+
 ## Installation
 
 Use [npm](https://www.npmjs.com/) or [yarn](https://classic.yarnpkg.com/en/) to install Roots.

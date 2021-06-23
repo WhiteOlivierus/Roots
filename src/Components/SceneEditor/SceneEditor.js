@@ -13,7 +13,7 @@ import { EditorCanvas } from "./EditorCanvas";
 import { EditorWrapper } from "../EditorWrapper";
 import { SceneCanvasHooks as Hooks } from "dutchskull-scene-manager";
 import { Redirect } from "react-router";
-import { Container, Content, Header, Item } from "../../Container";
+import { Container, Content, Header, Item } from "../../Utilities/Container";
 
 const SceneEditor = () => {
     useOnUnload("/roots");

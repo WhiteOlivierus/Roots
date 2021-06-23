@@ -7,7 +7,7 @@ import Preview from "./Components/Preview/Preview";
 import SceneEditor from "./Components/SceneEditor/SceneEditor";
 import PreviewButton from "./Components/PreviewButton";
 import GithubCorner from "react-github-corner";
-import FrontPage from "./FrontPage";
+import FrontPage from "./Components/Frontpage/FrontPage";
 import styled from "styled-components";
 import useUpdate from "./Components/StartMenu/useUpdate";
 

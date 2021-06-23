@@ -4,7 +4,7 @@ import ReactFlow, * as Flow from "react-flow-renderer";
 import { NodeBar } from "./NodeBar";
 import { MinimapSettings, NodeTypes } from "./Nodes/NodeTypes";
 import { CreateNode } from "./Nodes/NodeFactory";
-import { Container, Content, Header, Item } from "../../Container";
+import { Container, Content, Header, Item } from "../../Utilities/Container";
 
 import useNodeViewerState from "../../Context/NodeViewerContext/NodeViewerContext";
 import MenuBar from "./MenuBar/MenuBar";
