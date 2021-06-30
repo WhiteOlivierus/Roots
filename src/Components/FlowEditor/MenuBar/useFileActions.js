@@ -332,3 +332,24 @@ function useKeyboardShortCuts(
         }
     };
 }
+
+/* const awaitedFunction = async () => {
+    const response = await fetch();
+
+    const json = await response.json();
+
+    return JSON.parse(json);
+};
+
+const thenFunction = async () => {
+    let data = {};
+
+    fetch()
+        .then((response) => response.json())
+        .then((json) => (data = JSON.parse(json)))
+        .catch((e) => console.log(e))
+        .finally(() => console.log("Funcion fired"));
+
+    return data;
+};
+ */

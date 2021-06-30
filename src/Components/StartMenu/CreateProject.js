@@ -31,18 +31,20 @@ function CreateProject({ history, handleOpen, handleClose, open }) {
         NewProject(values)
             .then((out) => {
                 SetContext(out);
-
-                return Promise.all([
-                    out.activeRoot.getFileHandle(`logo.png`, {
-                        create: true,
-                    }),
-                    values.projectLogo.getFile(),
-                ]);
-            })
-            .then(([logoHandler, logoFile]) => {
-                WriteFile(logoHandler, logoFile);
-                projectFilesState.logo = logoHandler;
-                history.push("/flow");
+                if (values.projectLogo.name)
+                    Promise.all([
+                        out.activeRoot.getFileHandle(`logo.png`, {
+                            create: true,
+                        }),
+                        values.projectLogo.getFile(),
+                    ]).then(([logoHandler, logoFile]) => {
+                        WriteFile(logoHandler, logoFile);
+                        projectFilesState.logo = logoHandler;
+                        history.push("/flow");
+                    });
+                else {
+                    history.push("/flow");
+                }
             })
             .catch();
     };

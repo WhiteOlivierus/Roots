@@ -5,11 +5,11 @@ import ImageIcon from "@material-ui/icons/Image"; */
 
 export const toolBarIcons = [
     {
-        title: "select zones",
+        title: "select",
         icon: <NearMeIcon color="secondary" />,
     },
     {
-        title: "create/edit zones",
+        title: "edit",
         icon: <CreateIcon color="secondary" />,
     },
     /*   {
